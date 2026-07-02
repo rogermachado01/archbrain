@@ -47,3 +47,296 @@ a {
     color-scheme: dark;
   }
 }
+
+.app-layout {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 12px 20px;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.app-header h1 {
+  font-size: 18px;
+}
+
+.app-hint {
+  margin-left: auto;
+  font-size: 12px;
+  color: #8b96a5;
+}
+
+.data-source-selector {
+  font: inherit;
+  font-size: 13px;
+  padding: 4px 8px;
+  border: 1px solid #d8dee6;
+  border-radius: 6px;
+  background: #ffffff;
+  color: inherit;
+}
+
+.app-loading {
+  padding: 40px 20px;
+  color: #8b96a5;
+  font-size: 14px;
+}
+
+.view-mode-toggle {
+  display: flex;
+  border: 1px solid #d8dee6;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.view-mode-toggle button {
+  font: inherit;
+  font-size: 13px;
+  padding: 4px 10px;
+  border: none;
+  background: #ffffff;
+  color: #5a6b82;
+  cursor: pointer;
+}
+
+.view-mode-toggle button + button {
+  border-left: 1px solid #d8dee6;
+}
+
+.view-mode-toggle button.active {
+  background: #1168bd;
+  color: #ffffff;
+}
+
+.view-mode-toggle button:disabled {
+  color: #c3ccd6;
+  cursor: not-allowed;
+}
+
+.app-body--wiki {
+  overflow-y: auto;
+}
+
+.okf-wiki {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 24px 32px 64px;
+}
+
+.okf-wiki-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.okf-wiki-toolbar button {
+  font: inherit;
+  font-size: 13px;
+  padding: 4px 10px;
+  border: 1px solid #d8dee6;
+  border-radius: 6px;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+.okf-wiki-toolbar button:disabled {
+  color: #c3ccd6;
+  cursor: not-allowed;
+}
+
+.okf-wiki-path {
+  font-size: 12px;
+  color: #8b96a5;
+  font-family: ui-monospace, Consolas, monospace;
+}
+
+.okf-wiki-error {
+  color: #c0392b;
+  font-size: 14px;
+}
+
+.okf-wiki-description {
+  color: #5a6b82;
+  margin-top: -8px;
+  margin-bottom: 16px;
+}
+
+.okf-wiki-content h1,
+.okf-wiki-content h2,
+.okf-wiki-content h3 {
+  margin-top: 24px;
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.okf-wiki-content h1 {
+  font-size: 22px;
+}
+
+.okf-wiki-content h2 {
+  font-size: 17px;
+  border-bottom: 1px solid #e5e5e5;
+  padding-bottom: 4px;
+}
+
+.okf-wiki-content h3 {
+  font-size: 14px;
+  color: #5a6b82;
+}
+
+.okf-wiki-content p,
+.okf-wiki-content ul,
+.okf-wiki-content ol {
+  margin-bottom: 12px;
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+.okf-wiki-content ul,
+.okf-wiki-content ol {
+  padding-left: 20px;
+}
+
+.okf-wiki-content code {
+  font-family: ui-monospace, Consolas, monospace;
+  background: #f0f5ff;
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-size: 13px;
+}
+
+.okf-wiki-content a {
+  color: #1168bd;
+  text-decoration: underline;
+}
+
+.breadcrumb button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+  color: #1d39c4;
+}
+
+.breadcrumb button:hover {
+  text-decoration: underline;
+}
+
+.breadcrumb-sep {
+  margin: 0 6px;
+  color: #999;
+}
+
+.app-body {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+.graph-column {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.graph-area {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+
+.view-header {
+  padding: 10px 20px 6px;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.view-header-title {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.view-header-description {
+  font-size: 12px;
+  color: #5a6b82;
+  margin-top: 2px;
+  max-width: 80ch;
+}
+
+.relation-legend {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid #d8dee6;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 11px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  pointer-events: none;
+}
+
+.relation-legend-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 0;
+}
+
+.details-panel {
+  width: 320px;
+  flex-shrink: 0;
+  border-left: 1px solid #e5e5e5;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.details-panel h2 {
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.details-panel h3 {
+  font-size: 13px;
+  margin-top: 16px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  color: #666;
+}
+
+.details-meta {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.details-empty {
+  color: #999;
+  font-size: 14px;
+}
+
+.details-config-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 0;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 13px;
+}
+
+.details-config-row dt {
+  color: #666;
+}
+
+.details-config-row dd {
+  font-weight: 600;
+  text-align: right;
+}
