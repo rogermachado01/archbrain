@@ -14,15 +14,26 @@ bundle conforming to the conventions already established in `CLAUDE.md`
 ("Importing OKF bundles"), so it can be dropped straight into
 `DATA_SOURCES` (`src/lib/data-sources.ts`) like any hand-authored bundle.
 
+The pipeline has to be re-run repeatedly over the application's life as the
+underlying code and infrastructure keep changing — not a one-shot import —
+so two concerns shape this design as much as the extraction logic itself:
+avoiding wasted reprocessing of unchanged inputs, and producing a bundle
+scoped to the right environment (dev/hml/prd), since the same services exist
+independently in each one.
+
 ## Non-goals
 
 This spec intentionally does not cover:
 - Runtime/observability data (CloudWatch, X-Ray) as a relation source
 - Automated inference of `ddd_subdomain`/`ddd_context`/`ddd_role`
-- Cloning remote/private git repos (v1 assumes local checkouts)
+- Cloning brand-new remote/private repos the tool doesn't already have local
+  access to (v1 still requires a local clone with its remote configured per
+  `repo-map.yaml` entry — see "Environments" for the branch-checkout
+  mechanism this enables on top of that clone)
 - `terraform show -json` / state-based resolution
 - Lambda languages other than Node/TypeScript
-- CI automation of re-scans
+- CI automation of re-scans (though the incremental-scan design below is
+  what would make that cheap enough to do later — see "Deferred")
 
 See "Deferred / follow-on phases" at the end for why each is out of scope for
 v1, not forgotten.
@@ -62,28 +73,36 @@ is a standalone TypeScript tool inside this repo.
 ## Architecture
 
 ```
-repo-map.yaml (user-authored, maps TF resources/frontend dirs to local paths)
+repo-map.yaml (maps TF resources/frontend dirs to local paths + per-env branch/file)
+        │
+        ▼ --env dev|hml|prd
+resolve-worktrees.ts (git worktree add/checkout the right branch per repo, per env)
         │
         ▼
-scan-terraform.ts ──┐
+scan-terraform.ts ──┐   (reads dev.tf/hml.tf/prd.tf per --env)
 scan-lambda-repo.ts ─┼─► structured "facts" (JSON): per-concept
 scan-frontend-repo.ts┘   { resourceType, schema, relations[], owner, evidence }
         │
         ▼
 synthesize.ts
+  - hash each concept's inputs, compare to .scan-manifest.json → skip unchanged concepts entirely
   - deterministic: frontmatter (type/aws_resource_type), # Schema, # Relations, groups/, owner, # Links
-  - LLM call (Claude): 1-3 paragraph prose description, grounded in the facts above
+  - LLM call (Claude): 1-3 paragraph prose description, grounded in the facts above (changed concepts only)
         │
         ▼
-public/okf-bundles/<name>/   (OKF bundle, same shape as order-system/webapp)
+public/okf-bundles/<name>-<env>/   (OKF bundle + .scan-manifest.json, committed together)
         │
         ▼
 npm run validate   (existing validate-model.ts catches structural errors)
 ```
 
 Lives at `scripts/okf-scan/` (invoked via `tsx`, same convention as
-`scripts/validate-model.ts`), as a new `npm run` script (e.g. `npm run
-okf-scan -- --repo-map repo-map.yaml --out public/okf-bundles/<name>`).
+`scripts/validate-model.ts`), as a new `npm run` script, one run per
+environment:
+
+```
+npm run okf-scan -- --repo-map repo-map.yaml --env dev --out public/okf-bundles/ecommerce-dev
+```
 
 **Key architectural rule: scanners never call an LLM and never guess
 relations.** Each scanner only emits facts with evidence (e.g. `{ kind:
@@ -96,30 +115,80 @@ even though the descriptions are AI-written.
 ## Config: `repo-map.yaml`
 
 User-authored, explicit (not auto-detected) mapping from Terraform resource
-addresses to local repo checkouts, plus a plain list of frontend repos:
+addresses to local repo checkouts, plus per-environment branch/file info:
 
 ```yaml
-resources:
-  aws_lambda_function.orders: ../orders-service
-  aws_lambda_function.payments: ../payments-service
-frontend:
-  - ../web-storefront
 terraform:
-  - ../infra-terraform
+  path: ../infra-terraform      # local clone; scanned in place, no worktree needed
+  envFiles:                     # env is expressed as a file within the same repo
+    dev: dev.tf
+    hml: hml.tf
+    prd: prd.tf
+
+resources:
+  aws_lambda_function.orders:
+    repo: ../orders-service     # local clone with the remote already configured
+    branch:                     # env is expressed as a branch
+      dev: develop
+      hml: staging
+      prd: main
+  aws_lambda_function.payments:
+    repo: ../payments-service
+    branch: { dev: develop, hml: staging, prd: main }
+
+frontend:
+  - repo: ../web-storefront
+    branch: { dev: develop, hml: staging, prd: main }
 ```
 
 Explicit mapping was chosen over convention-based auto-matching (e.g.
 inferring from Terraform's `filename`/`source_dir` attribute) because a wrong
 guess silently produces a wrong graph, whereas a missing mapping entry is a
-loud, obvious gap the tool can flag and error on.
+loud, obvious gap the tool can flag and error on. The same reasoning applies
+to environments: Terraform resolves an environment to a *file* within the
+same checkout (`dev.tf`/`hml.tf`/`prd.tf`, alongside whatever shared `.tf`
+files apply to all environments), while Lambda and frontend repos resolve an
+environment to a *branch* — both conventions are declared explicitly per
+repo rather than guessed, since the two repo kinds genuinely differ in how
+they encode environment today.
+
+## Environments & worktrees
+
+Every scan run targets exactly one environment (`--env dev|hml|prd`), which
+resolves differently per repo kind:
+
+- **Terraform**: the scanner reads the shared `.tf` files plus whichever
+  env-specific file `repo-map.yaml` names for `--env` (e.g. `dev.tf`) — no
+  branch switching needed, since environment is file-scoped within one
+  checkout.
+- **Lambda/frontend repos**: environment is branch-scoped, so before
+  scanning, `resolve-worktrees.ts` runs `git fetch` against the repo path
+  from `repo-map.yaml`, then `git worktree add` (or reuses/updates an
+  existing one) at a local, gitignored path —
+  `.okf-scan-cache/worktrees/<repo-name>-<env>/` — checked out to that
+  environment's branch. **The path the user configured in `repo-map.yaml` is
+  only ever read for its `.git` metadata and fetched from; it is never
+  checked out, written to, or otherwise disturbed**, so a scan run never
+  collides with in-progress work in the developer's own checkout. Scanners
+  then read source files from the worktree path, not the configured repo
+  path.
+
+Each environment therefore produces its own bundle
+(`public/okf-bundles/<name>-<env>/`), registered as its own `DATA_SOURCES`
+entry (e.g. `{ id: "ecommerce-dev", label: "E-commerce (dev)" }`) — this
+follows directly from environments genuinely having different resource
+configurations (names, sizes, even topology), not just different data, so
+merging them into one `ArchModel` would misrepresent what's actually
+deployed where.
 
 ## Scanners
 
 ### `scan-terraform.ts`
 
 Parses `.tf` files with an HCL→JSON parser (no `terraform init`, no provider
-credentials, no state access required — static parsing only). For each
-`resource "aws_*" "name"` block:
+credentials, no state access required — static parsing only), reading the
+shared files plus the `--env`-selected file per "Environments & worktrees"
+above. For each `resource "aws_*" "name"` block:
 
 - Maps the Terraform resource type to this project's `aws_resource_type`
   vocabulary via a lookup table (`aws_lambda_function` → `AWS Lambda
@@ -183,9 +252,38 @@ bundle).
 A `CODEOWNERS` file at each repo's root maps path patterns to team names,
 attached to each concept scanned from that repo as its `owner` field.
 
+## Incremental scanning
+
+`public/okf-bundles/<name>-<env>/.scan-manifest.json` is committed alongside
+the bundle, mapping each concept id to a hash of its *inputs* — its source
+file(s) plus whatever Terraform facts feed it (e.g. an env-var-to-resource
+binding). Example:
+
+```json
+{
+  "orders-service": { "inputHash": "a1b2c3...", "lastScannedAt": "2026-07-03T10:00:00Z" },
+  "orders-table":   { "inputHash": "d4e5f6...", "lastScannedAt": "2026-07-03T10:00:00Z" }
+}
+```
+
+Scanners always run in full on every invocation — they're cheap, static, and
+their output is exactly what feeds the hash comparison. The skip happens one
+level up, in `synthesize.ts`: for each concept, it hashes the freshly
+produced facts and compares against the manifest entry. **Unchanged
+concepts are skipped entirely — no LLM call, and the existing `.md` file is
+left byte-for-byte untouched** (not rewritten with identical content), so a
+`git diff` after a scan shows exactly, and only, what actually changed. This
+is the primary cost/time saver, since the LLM prose call is by far the
+most expensive step per concept.
+
+A `--force` flag bypasses the manifest and regenerates every concept
+regardless of hash — needed after a prompt or synthesis-logic change, where
+the *inputs* didn't change but the desired *output* did.
+
 ## Synthesis: `synthesize.ts`
 
-Walks the merged facts and, per concept, writes:
+Walks the merged facts and, per concept not skipped by the incremental-scan
+check above, writes:
 
 - Deterministic frontmatter: `type`, `aws_resource_type`, `owner`.
   `title`/`icon` derived via the existing `findAwsIcon` lookup.
@@ -203,8 +301,9 @@ this pipeline.** They're a linguistic/business classification, not something
 derivable from code or Terraform — they stay a manual curation step, same as
 today.
 
-**Regeneration is idempotent and merge-aware.** Before writing a concept
-file, `synthesize.ts` reads the existing file if present and preserves any
+**Regeneration is merge-aware, not overwrite-and-lose.** For a concept whose
+input hash *did* change (so it isn't skipped by "Incremental scanning"
+above), `synthesize.ts` reads the existing file first and preserves any
 `ddd_*` frontmatter and any hand-edited `# Links` entries, while replacing
 the deterministic sections (frontmatter type/schema/relations, prose) with
 freshly-scanned data. This means a re-scan after an infra change doesn't
@@ -220,13 +319,22 @@ bundle would today.
 ## Testing
 
 - Unit tests per scanner against small fixture repos (a minimal Terraform
-  module with 2-3 resources; a minimal Lambda handler with one SDK call; a
-  minimal React component with one API call) — asserting on the emitted
-  facts JSON, not the final bundle, so tests don't depend on the LLM step.
+  module with 2-3 resources across `dev.tf`/`hml.tf`; a minimal Lambda
+  handler with one SDK call; a minimal React component with one API call) —
+  asserting on the emitted facts JSON, not the final bundle, so tests don't
+  depend on the LLM step.
 - A synthesis test (`synthesize.ts` given fixed fact fixtures, LLM call
   mocked) asserting the deterministic sections of the output — frontmatter,
   `# Schema`, `# Relations`, `groups/` — match expected markdown, and that a
   second run preserves a hand-added `ddd_context` field.
+- An incremental-scan test: run synthesis twice against unchanged fixture
+  facts and assert the second run makes zero LLM calls and leaves every
+  `.md` file's mtime/content untouched; then change one fixture's facts and
+  assert only that one concept's file and manifest entry updated.
+- A worktree-resolution test against a local throwaway git fixture repo with
+  two branches, asserting `resolve-worktrees.ts` checks out the right branch
+  per environment into the cache path and never touches the configured repo
+  path's current branch/working tree.
 - An end-to-end fixture run (small fixture repo set → generated bundle →
   `validateArchModel`) to catch integration gaps between scanners and the
   validator's expectations.
@@ -238,12 +346,16 @@ Each of these is out of scope for this spec, not forgotten:
 - **Runtime/observability data** (CloudWatch/X-Ray) as a relation-confirming
   or relation-discovering source, layered on top of the static facts here.
 - **Automated DDD inference** — subdomain/context/role remain manual.
-- **Remote git cloning** with private-repo auth; v1 assumes local checkouts
-  only, matching how the user already works with these repos.
+- **Cloning brand-new remote/private repos** the tool doesn't already have a
+  local, remote-configured clone of; v1's worktree mechanism (see
+  "Environments & worktrees") only fetches/checks-out branches within a
+  clone the user already has, it doesn't perform an initial `git clone` with
+  credential handling.
 - **`terraform show -json`/state-based resolution** for values static HCL
   parsing can't resolve (dynamic `count`/`for_each`, remote state data
   sources) — these stay `needsReview: true` facts until this phase.
 - **Lambda languages beyond Node/TypeScript** (e.g. Python Lambdas via a
   Python AST scanner).
 - **CI automation** of re-scans on a schedule or on infra-repo push; v1 is a
-  manually-invoked script.
+  manually-invoked script, though the incremental-scan manifest is what
+  would make a scheduled/triggered CI run cheap enough to be worth doing.
