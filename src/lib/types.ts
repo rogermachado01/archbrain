@@ -35,6 +35,10 @@ export interface ArchNode {
   icon?: string;
   /** id of the AwsGroup (region/vpc/az/subnet) this node sits inside, if any */
   groupId?: string | null;
+  /** team/squad responsible for this resource */
+  owner?: string;
+  /** operational links (repo, runbook, dashboard, board) shown in the details panel */
+  links?: { label: string; url: string }[];
 }
 
 export interface ArchRelation {
@@ -47,6 +51,8 @@ export interface ArchRelation {
   async?: boolean;
   /** explicit semantic kind; takes precedence over `async` when present */
   kind?: RelationKind;
+  /** set by getRelationsForViewWithRollup on relations synthesized from lower-level ones */
+  aggregated?: boolean;
 }
 
 export interface ArchModel {

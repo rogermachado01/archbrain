@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { Graph } from "@antv/x6";
+import { Export, Graph, MiniMap } from "@antv/x6";
 import type { ArchNode, ArchRelation, AwsGroup, AwsGroupKind } from "@/lib/types";
 import { computeLayeredPositions } from "@/lib/layout";
 import { computeGroupBoxes } from "@/lib/groups";
@@ -29,6 +29,18 @@ const SUBLABEL_WRAP_HEIGHT = 18; // 1 line at fontSize 11 (lineHeight 16)
 
 const GROUP_BOX_PADDING = 20;
 const GROUP_BOX_LABEL_BAND = 26;
+
+// Minimap is only useful once a view has enough nodes that panning around
+// loses context; the container is always mounted (see render below) so the
+// plugin only needs registering once, at graph creation.
+const MINIMAP_NODE_THRESHOLD = 15;
+const MINIMAP_WIDTH = 180;
+const MINIMAP_HEIGHT = 120;
+
+// Opacity applied to cells outside the traced path when path-highlight mode
+// (see tracePath in src/lib/model.ts) is active.
+const DIMMED_NODE_OPACITY = 0.25;
+const DIMMED_EDGE_OPACITY = 0.15;
 
 const GROUP_STYLE: Record<
   AwsGroupKind,
@@ -167,6 +179,12 @@ interface ArchitectureGraphProps {
   onSelectNode: (id: string) => void;
   onDrillInto: (id: string) => void;
   isDrillable: (id: string) => boolean;
+  /** base file name (no extension) used when exporting the current view */
+  exportFileName: string;
+  /** node ids to keep at full opacity; everything else dims. null = highlight off */
+  highlightedNodeIds: Set<string> | null;
+  /** relation ids to keep at full opacity; everything else dims. null = highlight off */
+  highlightedRelationIds: Set<string> | null;
 }
 
 export default function ArchitectureGraph({
@@ -178,9 +196,18 @@ export default function ArchitectureGraph({
   onSelectNode,
   onDrillInto,
   isDrillable,
+  exportFileName,
+  highlightedNodeIds,
+  highlightedRelationIds,
 }: ArchitectureGraphProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const minimapContainerRef = useRef<HTMLDivElement>(null);
   const graphRef = useRef<Graph | null>(null);
+  // Boundary/group cells aren't real ArchNodes, so click handling and the
+  // highlight effect both need to skip them; populated at the end of the
+  // rebuild effect below and read by the separate highlight effect, which
+  // doesn't recompute the graph and so has no other way to know about them.
+  const structuralIdsRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     registerShapes();
@@ -193,6 +220,17 @@ export default function ArchitectureGraph({
       mousewheel: { enabled: true, modifiers: ["ctrl", "meta"] },
       interacting: { nodeMovable: false },
     });
+    graph.use(new Export());
+    if (minimapContainerRef.current) {
+      graph.use(
+        new MiniMap({
+          container: minimapContainerRef.current,
+          width: MINIMAP_WIDTH,
+          height: MINIMAP_HEIGHT,
+          padding: 10,
+        })
+      );
+    }
     graphRef.current = graph;
 
     return () => {
@@ -385,10 +423,12 @@ export default function ArchitectureGraph({
           target: rel.target,
           zIndex: 1,
           vertices,
+          data: { baseOpacity: style.opacity ?? 1 },
           attrs: {
             line: {
               stroke: style.stroke,
               strokeWidth: 1.5,
+              opacity: style.opacity ?? 1,
               targetMarker: { name: "block", width: 8, height: 6 },
               ...(style.dash ? { strokeDasharray: style.dash } : {}),
             },
@@ -424,6 +464,7 @@ export default function ArchitectureGraph({
     // Group boxes aren't real ArchNodes (findNode(archModel, group.id) would find
     // nothing), so clicks on them must be ignored the same way the boundary is.
     const structuralIds = new Set([BOUNDARY_ID, ...groupBoxes.map((b) => b.group.id)]);
+    structuralIdsRef.current = structuralIds;
     const clickHandler = ({ node }: { node: { id: string } }) => {
       if (structuralIds.has(node.id)) return;
       onSelectNode(node.id);
@@ -442,5 +483,55 @@ export default function ArchitectureGraph({
     };
   }, [nodes, relations, groups, boundary, selectedNodeId, onSelectNode, onDrillInto, isDrillable]);
 
-  return <div ref={containerRef} style={{ width: "100%", height: "100%" }} />;
+  // Deliberately separate from the rebuild effect above: path-highlight mode
+  // (see tracePath in src/lib/model.ts) toggles frequently as the user
+  // explores, and only needs to tweak opacity attrs on already-existing
+  // cells — resetCells is the expensive path reserved for actual data
+  // changes, not selection/highlight state.
+  useEffect(() => {
+    const graph = graphRef.current;
+    if (!graph) return;
+    const dimming = highlightedNodeIds !== null;
+
+    graph.getNodes().forEach((cell) => {
+      if (structuralIdsRef.current.has(cell.id)) return;
+      const opacity = dimming && !highlightedNodeIds!.has(String(cell.id)) ? DIMMED_NODE_OPACITY : 1;
+      cell.attr("body/opacity", opacity);
+      cell.attr("icon/opacity", opacity);
+      cell.attr("label/opacity", opacity);
+      cell.attr("sublabel/opacity", opacity);
+      cell.attr("badge/opacity", opacity);
+    });
+
+    graph.getEdges().forEach((cell) => {
+      const baseOpacity = (cell.getData() as { baseOpacity?: number } | undefined)?.baseOpacity ?? 1;
+      const dim = dimming && !highlightedRelationIds!.has(String(cell.id));
+      cell.attr("line/opacity", dim ? DIMMED_EDGE_OPACITY : baseOpacity);
+    });
+  }, [highlightedNodeIds, highlightedRelationIds]);
+
+  function handleExport(format: "png" | "svg") {
+    const graph = graphRef.current;
+    if (!graph) return;
+    if (format === "png") {
+      graph.exportPNG(exportFileName, { serializeImages: true, backgroundColor: "#ffffff", padding: 20 });
+    } else {
+      graph.exportSVG(exportFileName, { serializeImages: true, preserveDimensions: true });
+    }
+  }
+
+  return (
+    <>
+      <div ref={containerRef} style={{ width: "100%", height: "100%" }} />
+      <div className="graph-toolbar">
+        <button onClick={() => handleExport("png")}>Export PNG</button>
+        <button onClick={() => handleExport("svg")}>Export SVG</button>
+      </div>
+      <div
+        ref={minimapContainerRef}
+        className="graph-minimap"
+        style={{ display: nodes.length > MINIMAP_NODE_THRESHOLD ? "block" : "none" }}
+      />
+    </>
+  );
 }

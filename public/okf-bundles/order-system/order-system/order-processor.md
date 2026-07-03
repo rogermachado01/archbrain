@@ -5,6 +5,7 @@ description: Validates and persists incoming orders, then triggers async refund 
 level: container
 aws_resource_type: AWS::Lambda::Function
 group: ../groups/region-use1/vpc-main/az-a/subnet-private-a.md
+owner: Orders Team
 ---
 
 # Schema
@@ -18,3 +19,9 @@ group: ../groups/region-use1/vpc-main/az-a/subnet-private-a.md
 - [Order Table](order-table.md) — Creates order (PENDING)
 - [Order Queue](order-queue.md) — Publishes refund check {kind: async-event}
 - [Refund Worker](refund-worker.md) — Compensates on failure {kind: compensation}
+
+# Links
+
+- [Repository](https://github.com/example-org/order-processor)
+- [Runbook](https://runbooks.example.com/order-processor)
+- [Dashboard](https://dashboard.example.com/d/order-processor)

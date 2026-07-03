@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "validate": "tsx scripts/validate-model.ts"
   },
   "dependencies": {
     "@antv/x6": "^3.1.7",
@@ -14,7 +15,8 @@
     "marked": "^18.0.5",
     "next": "16.2.10",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/node": "^20",
@@ -22,6 +24,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.10",
+    "tsx": "^4.22.5",
     "typescript": "^5"
   }
 }

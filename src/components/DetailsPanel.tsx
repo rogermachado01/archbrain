@@ -37,6 +37,24 @@ export default function DetailsPanel({ node }: DetailsPanelProps) {
           </dl>
         </>
       )}
+
+      {(node.owner || (node.links && node.links.length > 0)) && (
+        <>
+          <h3>Ownership &amp; Links</h3>
+          {node.owner && <p className="details-owner">{node.owner}</p>}
+          {node.links && node.links.length > 0 && (
+            <ul className="details-links">
+              {node.links.map((link) => (
+                <li key={link.url}>
+                  <a href={link.url} target="_blank" rel="noopener noreferrer">
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
+        </>
+      )}
     </aside>
   );
 }

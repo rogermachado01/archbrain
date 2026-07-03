@@ -20,6 +20,7 @@ npm run dev      # start dev server (Turbopack) at http://localhost:3000
 npm run build    # production build (also runs the TypeScript check)
 npm run start    # serve the production build
 npm run lint     # ESLint (flat config, eslint.config.mjs)
+npm run validate # validates every DATA_SOURCES entry (see "Data sources" below)
 npx tsc --noEmit -p .   # type-check only, no test runner is configured yet
 ```
 
@@ -65,7 +66,11 @@ more than one is wired in.
 (`DataSourceSelector`) in the header; add an entry to add another architecture the user can pick,
 whether it's another plain JSON file (`load: () => import("@/data/foo.json").then(m => m.default
 as ArchModel)`, deferred via dynamic import so it's only fetched once selected) or an OKF bundle
-(`load: () => importOkfBundle("/okf-bundles/foo")`).
+(`load: () => importOkfBundle("/okf-bundles/foo")`). Every `load()` result is piped through
+`validateArchModel` (`src/lib/validate-model.ts`) before it resolves — a malformed dataset (dangling
+`parentId`/`groupId`/relation endpoint, id collisions, `parentId` cycles, wrong C4 level nesting)
+rejects the promise instead of silently rendering an incomplete graph; the same validator runs
+standalone via `npm run validate` (`scripts/validate-model.ts`) in CI.
 
 Because loading is async (OKF bundles fetch several files), `page.tsx` tracks the *last completed*
 load as `{ sourceId, model }`/`{ sourceId, message }` state and derives `archModel`/`loadError` by
@@ -80,7 +85,7 @@ also resets `currentParentId`/`selectedNodeId` back to the root, same as navigat
 [OKF (Open Knowledge Format)](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md)
 is a directory-of-markdown-with-YAML-frontmatter format for portable, agent-friendly knowledge
 bundles. It has no concept of typed edges, diagram layout, icons, or network-boundary groups —
-`importOkfBundle(basePath)` converts a bundle into a plain `ArchModel` (our own rendering/data
+`importOkfBundle(basePath, io?)` converts a bundle into a plain `ArchModel` (our own rendering/data
 model stays the source of truth; OKF is only ever an *input* format) by combining OKF's own
 navigation mechanism with a couple of conventions layered on top, in the spirit of OKF's
 "producers may add arbitrary additional keys" / "consumers must tolerate unknown fields":
@@ -106,12 +111,21 @@ navigation mechanism with a couple of conventions layered on top, in the spirit 
   "Function"-suffixed type strings against the "AWS Lambda" manifest entry). Person/external-system
   concepts still need an explicit `icon: user.svg` / `icon: generic-application.svg`, since those
   aren't in the AWS service manifest.
+- **Ownership & links** come from a plain `owner:` frontmatter field (team/squad name) plus a
+  `# Links` section (`- [Label](https://...)`, absolute URLs only — relative `.md` links belong in
+  `# Relations` instead and are silently skipped here) — together these populate `ArchNode.owner`/
+  `ArchNode.links`, rendered by `DetailsPanel`'s "Ownership & Links" section.
 - Frontmatter is parsed by our own minimal `parseFrontmatter` (`src/lib/frontmatter.ts`) — a
   hand-rolled subset covering flat scalars, inline `[a, b]` lists, and block `- item` lists, not a
-  full YAML parser. This is deliberate: it only ever needs to read bundles we author ourselves, it
-  runs in the browser (`importOkfBundle` fetches each `.md` file at runtime, no build step or
-  server route involved), and it avoids pulling in a YAML library whose Node-oriented internals
-  might not be browser-bundle-safe.
+  full YAML parser. This is deliberate: it only ever needs to read bundles we author ourselves, and
+  it avoids pulling in a YAML library whose Node-oriented internals might not be browser-bundle-safe.
+- **File access is injectable**: `importOkfBundle`'s second parameter (`io: OkfIo`, default a
+  `fetch`-based implementation) is how the same parsing logic runs both in the browser
+  (`data-sources.ts`, no build step or server route involved) and in `scripts/validate-model.ts`
+  (a plain Node CLI run via `tsx`, using an `fs`-based `OkfIo` that maps the bundle's logical
+  `/okf-bundles/...` root onto the filesystem's `public/` directory). Don't add browser-only APIs
+  (e.g. `fetch` calls) anywhere in `okf-import.ts` outside the default `browserIo` — that's what
+  would break the CLI path.
 - **Boundary override**: the bundle root `index.md` frontmatter may set `boundary: false` (disable
   the boundary box entirely) or `boundary_label` + optional `boundary_icon` (custom label/icon,
   same `ArchModel.boundary` shape described in "AWS visual style" above). Omit both for the
@@ -157,10 +171,15 @@ as-is for untrusted content.
 
 ### Rendering pipeline
 
-`src/app/page.tsx` (client component) is the only stateful piece: it tracks
+`src/app/page.tsx` is a thin Server Component whose only job is wrapping
+`src/components/ArchVizApp.tsx` (the actual client component, `"use client"`) in a
+`<Suspense>` boundary — required because `ArchVizApp` reads navigation state via
+`useSearchParams()` (see "Deep links, search & path highlight" below), which Next.js
+requires a Suspense boundary above in production builds. `ArchVizApp` derives
 `currentParentId` (which node we've drilled into, `null` = root Context view) and
-`selectedNodeId` (which node's config is shown in the details panel). Everything else derives
-from those two ids via the helpers in `src/lib/model.ts`.
+`selectedNodeId` (which node's config is shown in the details panel) from the URL, not
+`useState` — see below. Everything else derives from those two ids via the helpers in
+`src/lib/model.ts`.
 
 - **`ArchitectureGraph`** (`src/components/ArchitectureGraph.tsx`) owns the AntV X6 `Graph`
   instance. X6 is imperative, not declarative, so this component: creates the `Graph` once in
@@ -200,6 +219,16 @@ from those two ids via the helpers in `src/lib/model.ts`.
   name just disappears — instead of truncating with an ellipsis. `LABEL_WRAP_HEIGHT` /
   `SUBLABEL_WRAP_HEIGHT` in `ArchitectureGraph.tsx` are sized with margin above that threshold;
   keep new font sizes comfortably below `height / 1.4` too.
+  Export (PNG/SVG download buttons) and the minimap use X6's built-in `Export`/`MiniMap`
+  classes, imported straight from `@antv/x6` and registered via `graph.use(new Export())` /
+  `graph.use(new MiniMap({ container, ... }))`. **Don't install the separate
+  `@antv/x6-plugin-export`/`@antv/x6-plugin-minimap` npm packages** — as of X6 v3 those are
+  deprecated empty stub releases (their `peerDependencies` still pin `@antv/x6@^2.x` anyway);
+  the plugins were folded into the `@antv/x6` core package itself (`export * from './plugin'`
+  in its entry point) and that's the only place to import them from now. The minimap's
+  container `<div>` is always rendered (visibility toggled via CSS on `nodes.length >
+  MINIMAP_NODE_THRESHOLD`) rather than conditionally mounted, since the `MiniMap` plugin is
+  registered once at graph creation and needs a live container ref at that point.
 - **`DetailsPanel`** renders whatever node is currently selected, including its full
   `aws.properties` map. Pure presentational, no X6 dependency.
 - **`Breadcrumb`** renders the ancestor chain of `currentParentId` (via `getBreadcrumb`) so
@@ -213,6 +242,37 @@ from those two ids via the helpers in `src/lib/model.ts`.
   `getVisibleRelationKinds` in `src/lib/relation-style.ts`). It needs `pointer-events: none`
   because `ArchitectureGraph` binds `panning`/`mousewheel` to the whole container div.
 
+### Deep links, search & path highlight (`src/components/ArchVizApp.tsx`)
+
+Navigation state (`source`/`parent`/`node`/`view` query params) lives **only** in the URL,
+read via `useSearchParams()` — there is no `useState` mirroring it, so there's nothing to
+resync: `sourceId`/`rawParentId`/`rawSelectedId`/`viewMode` are plain derived reads each
+render, and `currentParentId`/`selectedNodeId` are further validated against the loaded
+`archModel` (`findNode` must find the id) before use, falling back to `null`/root when a
+URL id is stale or invalid. All navigation (`handleDrillInto`, `handleNavigate`, node
+selection, search results, view-mode toggle) goes through a single `updateUrl(patch, push?)`
+helper that merges the patch into a new `URLSearchParams` and calls `router.replace` (or
+`router.push` only when switching data source, so drill-in clicks don't spam browser
+history). **Keep it this way** — the project already avoids `setState`-in-effect
+resyncing (see "Data sources" above); adding a `useState` layer here would reintroduce
+exactly that problem for four fields instead of one.
+
+`SearchPalette` (Ctrl+K/Cmd+K, listened for in `ArchVizApp`) filters `archModel.nodes` — a
+flat list, so no tree traversal — by `name`/`technology`/`aws.resourceType`, and navigates
+via the same `updateUrl` path as clicking a node, so search results are deep-linkable too.
+
+`PathModeControl` + `tracePath` (`src/lib/model.ts`) implement upstream/downstream
+highlighting: `tracePath(relations, nodeId, direction, kindFilter?)` is a plain BFS over
+whatever relations are currently visible (post-rollup, see "Relation kinds" below), so the
+highlighted set always matches what's actually drawn. `ArchitectureGraph` applies this via
+a **second, separate `useEffect`** from the data-rebuild one — it only toggles `opacity`
+attrs on already-existing cells (`cell.attr("body/opacity", ...)` etc.) via
+`graph.getNodes()`/`graph.getEdges()`, never `resetCells`, which stays reserved for actual
+data changes. Boundary/group cells are skipped using `structuralIdsRef` (populated at the
+end of the rebuild effect) since they aren't real `ArchNode`s. Edges preserve their own
+base opacity (e.g. dimmed further for `aggregated` relations, see below) via a `baseOpacity`
+value stashed in the edge cell's `data` at creation time, rather than assuming `1`.
+
 ### Relation kinds (`src/lib/relation-style.ts`)
 
 `ArchRelation.kind` (`"sync" | "async-event" | "compensation"`) replaces the old binary
@@ -223,6 +283,26 @@ back through the legacy `async` boolean when `kind` is absent, so old data (`asy
 this *did* recolor existing async edges from gray-dashed to blue-dashed (intentional, not a
 regression). `ArchitectureGraph` calls `getRelationStyle(rel)` for the edge's `line` attrs;
 nothing else about edge creation (vertices/detour-lane/router) changed for this.
+
+`getRelationsForViewWithRollup` (`src/lib/model.ts`) is what `ArchVizApp` actually calls
+instead of the plain `getRelationsForView` — a relation whose endpoints aren't both visible
+at the current drill level gets walked up each endpoint's `parentId` chain to the nearest
+visible ancestor instead of being dropped, so e.g. a component-to-component relation across
+two different containers still shows up (as an edge between those containers) once you're
+zoomed out past them. Multiple relations rolling up to the same `(source, target)` pair
+merge into one edge with `aggregated: true` (label becomes `"N interações"` unless there's
+only one) and a lower `getRelationStyle` opacity; relations already visible at the current
+level pass through unchanged (same objects `getRelationsForView` would return — the rollup
+function calls it internally for that part). `RelationLegend` adds a fixed extra row
+whenever `hasAggregatedRelations(relations)` is true, since `aggregated` isn't a `RelationKind`
+and so doesn't come out of `getVisibleRelationKinds`. Deliberately does **not** merge a
+rolled-up edge with an already-visible direct edge between the same pair, even though both
+can render as separate overlapping edges (see e.g. `payment-service → payment-system` in
+`sample-architecture.json`, which rolls up alongside the existing direct
+`webapp-system → payment-system` relation at the root Context view) — keeping the two
+concepts separate was a deliberate scope call, not an oversight; if the overlap becomes a
+real problem, dedicating effort to smarter edge-label collision avoidance (not just for
+rollup) would be the right fix rather than special-casing this one interaction.
 
 ### AWS network-boundary groups (`src/lib/groups.ts`)
 

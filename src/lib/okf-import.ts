@@ -4,6 +4,32 @@ import { resolveRelativePath } from "./paths";
 import type { ArchModel, ArchNode, ArchRelation, AwsGroup, AwsGroupKind, C4Level, RelationKind } from "./types";
 
 /**
+ * File-access abstraction so the parsing logic below can run both in the
+ * browser (default, via fetch) and in a plain Node CLI (scripts/validate-model.ts,
+ * via fs) without duplicating any of the markdown/frontmatter parsing.
+ */
+export interface OkfIo {
+  readText(path: string): Promise<string>;
+  exists(path: string): Promise<boolean>;
+}
+
+const browserIo: OkfIo = {
+  async readText(path) {
+    const res = await fetch(path);
+    if (!res.ok) throw new Error(`OKF import: failed to fetch "${path}" (HTTP ${res.status})`);
+    return res.text();
+  },
+  async exists(path) {
+    try {
+      const res = await fetch(path);
+      return res.ok;
+    } catch {
+      return false;
+    }
+  },
+};
+
+/**
  * Imports an Open Knowledge Format (OKF, see
  * https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md)
  * bundle into an ArchModel.
@@ -21,33 +47,23 @@ import type { ArchModel, ArchNode, ArchRelation, AwsGroup, AwsGroupKind, C4Level
  * 2. Adds our own convention on top, using fields/sections OKF explicitly
  *    allows producers to add: a `# Relations` section (bullet list of
  *    `[label](link.md)` with an optional `{kind: async-event}` suffix) for
- *    typed ArchRelations, and custom frontmatter (`level`, `icon`, `group`,
- *    `aws_resource_type`, plus `kind`/`subnet_type` on group concepts) for
- *    everything OKF has no native field for.
+ *    typed ArchRelations, a `# Links` section (bullet list of
+ *    `[label](https://...)`, absolute URLs only) for operational links, and
+ *    custom frontmatter (`level`, `icon`, `group`, `owner`, `aws_resource_type`,
+ *    plus `kind`/`subnet_type` on group concepts) for everything OKF has no
+ *    native field for.
  *
  * A concept's `icon` falls back to `findAwsIcon(type)` when omitted, so
  * bundle authors don't need to know our exact icon filenames for AWS
  * services — only Person/external-system concepts need an explicit `icon`.
  */
-export async function importOkfBundle(basePath: string): Promise<ArchModel> {
+export async function importOkfBundle(basePath: string, io: OkfIo = browserIo): Promise<ArchModel> {
   const nodes: ArchNode[] = [];
   const relations: ArchRelation[] = [];
   const groups: AwsGroup[] = [];
 
-  async function fetchText(path: string): Promise<string> {
-    const res = await fetch(path);
-    if (!res.ok) throw new Error(`OKF import: failed to fetch "${path}" (HTTP ${res.status})`);
-    return res.text();
-  }
-
-  async function pathExists(path: string): Promise<boolean> {
-    try {
-      const res = await fetch(path);
-      return res.ok;
-    } catch {
-      return false;
-    }
-  }
+  const fetchText = io.readText;
+  const pathExists = io.exists;
 
   function pathToId(filePath: string): string {
     let rel = filePath.startsWith(basePath) ? filePath.slice(basePath.length) : filePath;
@@ -127,6 +143,28 @@ export async function importOkfBundle(basePath: string): Promise<ArchModel> {
       .filter((r): r is ArchRelation => r !== null);
   }
 
+  /**
+   * `# Links` bullets are operational links (repo, runbook, dashboard), not
+   * navigation — only absolute URLs are accepted; relative `.md` links (which
+   * would belong in `# Relations` instead) are silently skipped.
+   */
+  function parseLinksSection(body: string): { label: string; url: string }[] {
+    const section = extractSection(body, "Links");
+    if (!section) return [];
+    return section
+      .split("\n")
+      .map((l) => l.trim())
+      .filter(Boolean)
+      .map((line) => {
+        const linkMatch = line.match(/\[([^\]]+)\]\(([^)]+)\)/);
+        if (!linkMatch) return null;
+        const [, label, url] = linkMatch;
+        if (!/^https?:\/\//i.test(url)) return null;
+        return { label, url };
+      })
+      .filter((l): l is { label: string; url: string } => l !== null);
+  }
+
   async function loadConcept(dirPath: string, fileName: string, parentId: string | null): Promise<void> {
     const filePath = `${dirPath}/${fileName}.md`;
     const { data, content } = parseFrontmatter(await fetchText(filePath));
@@ -136,6 +174,8 @@ export async function importOkfBundle(basePath: string): Promise<ArchModel> {
     const explicitIcon = typeof data.icon === "string" ? data.icon : undefined;
     const groupLink = typeof data.group === "string" ? data.group : undefined;
     const awsResourceType = typeof data.aws_resource_type === "string" ? data.aws_resource_type : undefined;
+    const owner = typeof data.owner === "string" ? data.owner : undefined;
+    const links = parseLinksSection(content);
 
     nodes.push({
       id,
@@ -148,6 +188,8 @@ export async function importOkfBundle(basePath: string): Promise<ArchModel> {
       icon: explicitIcon ?? (type ? findAwsIcon(type) : undefined),
       groupId: groupLink ? pathToId(resolveRelativePath(dirPath, groupLink)) : undefined,
       aws: awsResourceType ? { resourceType: awsResourceType, properties: parseSchemaSection(content) } : undefined,
+      owner,
+      links: links.length > 0 ? links : undefined,
     });
 
     relations.push(...parseRelationsSection(content, id, dirPath));

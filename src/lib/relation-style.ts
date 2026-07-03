@@ -5,6 +5,7 @@ export interface RelationStyle {
   label: string;
   stroke: string;
   dash?: string;
+  opacity?: number;
 }
 
 export const RELATION_STYLES: Record<RelationKind, RelationStyle> = {
@@ -13,6 +14,16 @@ export const RELATION_STYLES: Record<RelationKind, RelationStyle> = {
   compensation: { kind: "compensation", label: "Compensating transaction", stroke: "#c0392b", dash: "2,3" },
 };
 
+/** Fixed legend descriptor for rolled-up edges (see getRelationsForViewWithRollup in model.ts). */
+export const AGGREGATED_RELATION_LEGEND = {
+  label: "Relação agregada (nível inferior)",
+  stroke: "#5a6b82",
+  opacity: 0.55,
+};
+
+/** Opacity applied to aggregated edges, layered on top of their kind's color/dash. */
+const AGGREGATED_OPACITY = 0.55;
+
 /** Falls back through the legacy `async` boolean when `kind` isn't set. */
 export function resolveRelationKind(rel: ArchRelation): RelationKind {
   if (rel.kind) return rel.kind;
@@ -20,7 +31,13 @@ export function resolveRelationKind(rel: ArchRelation): RelationKind {
 }
 
 export function getRelationStyle(rel: ArchRelation): RelationStyle {
-  return RELATION_STYLES[resolveRelationKind(rel)];
+  const base = RELATION_STYLES[resolveRelationKind(rel)];
+  return rel.aggregated ? { ...base, opacity: AGGREGATED_OPACITY } : base;
+}
+
+/** Whether any relation in the current view was synthesized by getRelationsForViewWithRollup. */
+export function hasAggregatedRelations(relations: ArchRelation[]): boolean {
+  return relations.some((r) => r.aggregated);
 }
 
 /** Distinct kinds present in the given relations, in a stable (sync, async-event, compensation) order. */
