@@ -196,6 +196,15 @@ export async function importOkfBundle(basePath: string): Promise<ArchModel> {
   }
 
   const { data: rootData, content: rootContent } = parseFrontmatter(await fetchText(`${basePath}/index.md`));
+  const boundary: ArchModel["boundary"] =
+    rootData.boundary === false
+      ? false
+      : typeof rootData.boundary_label === "string"
+        ? {
+            label: rootData.boundary_label,
+            icon: typeof rootData.boundary_icon === "string" ? rootData.boundary_icon : undefined,
+          }
+        : undefined;
   const rootLinks = extractLinks(rootContent);
   for (const link of rootLinks) {
     const normalizedHref = link.href.replace(/^\.\//, "");
@@ -214,5 +223,6 @@ export async function importOkfBundle(basePath: string): Promise<ArchModel> {
     groups,
     title: typeof rootData.title === "string" ? rootData.title : undefined,
     description: typeof rootData.description === "string" ? rootData.description : undefined,
+    boundary,
   };
 }

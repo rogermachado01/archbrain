@@ -13,6 +13,8 @@ const H_GAP = 130;
 const V_GAP = 90;
 const BOUNDARY_PADDING = 48;
 const BOUNDARY_ID = "__aws-cloud-boundary__";
+const DEFAULT_BOUNDARY_LABEL = "AWS Cloud";
+const DEFAULT_BOUNDARY_ICON = "aws-cloud-badge.svg";
 // Detour lane below the whole diagram for edges that skip more than one
 // layer — drawing them straight would cut across unrelated nodes sitting
 // in the layers in between.
@@ -112,7 +114,7 @@ function registerShapes() {
           rx: 12,
           ry: 12,
         },
-        icon: { x: 16, y: 14, width: 20, height: 20, "xlink:href": "/aws-icons/aws-cloud-badge.svg" },
+        icon: { x: 16, y: 14, width: 20, height: 20 },
         label: {
           refX: 44,
           refY: 14,
@@ -121,7 +123,6 @@ function registerShapes() {
           fontSize: 12,
           fontWeight: 700,
           fill: "#232f3e",
-          text: "AWS Cloud",
         },
       },
     },
@@ -160,6 +161,8 @@ interface ArchitectureGraphProps {
   nodes: ArchNode[];
   relations: ArchRelation[];
   groups: AwsGroup[];
+  /** custom boundary box; omit for the default "AWS Cloud" box, false to disable it */
+  boundary?: { label: string; icon?: string } | false;
   selectedNodeId: string | null;
   onSelectNode: (id: string) => void;
   onDrillInto: (id: string) => void;
@@ -170,6 +173,7 @@ export default function ArchitectureGraph({
   nodes,
   relations,
   groups,
+  boundary,
   selectedNodeId,
   onSelectNode,
   onDrillInto,
@@ -228,8 +232,14 @@ export default function ArchitectureGraph({
     });
     const maxDetourY = detourLaneYByRelationId.size > 0 ? Math.max(...detourLaneYByRelationId.values()) : maxContentY;
 
+    const boundaryConfig =
+      boundary === false
+        ? null
+        : { label: boundary?.label ?? DEFAULT_BOUNDARY_LABEL, icon: boundary?.icon ?? DEFAULT_BOUNDARY_ICON };
+
     // A view is "inside AWS" once every visible node is a container-level AWS resource.
-    const isAwsBoundaryView = positions.length > 0 && positions.every(({ node }) => node.level === "container");
+    const isAwsBoundaryView =
+      boundaryConfig !== null && positions.length > 0 && positions.every(({ node }) => node.level === "container");
     const groupBoxes = isAwsBoundaryView
       ? computeGroupBoxes(nodes, positions, groups, {
           nodeWidth: NODE_WIDTH,
@@ -239,7 +249,7 @@ export default function ArchitectureGraph({
         })
       : [];
 
-    if (isAwsBoundaryView) {
+    if (isAwsBoundaryView && boundaryConfig) {
       const minX = Math.min(...positions.map((p) => p.x), ...groupBoxes.map((b) => b.x));
       const minY = Math.min(...positions.map((p) => p.y), ...groupBoxes.map((b) => b.y));
       const maxX = Math.max(...positions.map((p) => p.x + NODE_WIDTH), ...groupBoxes.map((b) => b.x + b.width));
@@ -259,6 +269,10 @@ export default function ArchitectureGraph({
           width: maxX - minX + BOUNDARY_PADDING * 2,
           height: boundaryMaxY - minY + BOUNDARY_PADDING * 2,
           zIndex: -(maxGroupDepth + 2),
+          attrs: {
+            icon: { "xlink:href": `/aws-icons/${boundaryConfig.icon}` },
+            label: { text: boundaryConfig.label },
+          },
         })
       );
 
@@ -426,7 +440,7 @@ export default function ArchitectureGraph({
       graph.off("node:click", clickHandler);
       graph.off("node:dblclick", dblClickHandler);
     };
-  }, [nodes, relations, groups, selectedNodeId, onSelectNode, onDrillInto, isDrillable]);
+  }, [nodes, relations, groups, boundary, selectedNodeId, onSelectNode, onDrillInto, isDrillable]);
 
   return <div ref={containerRef} style={{ width: "100%", height: "100%" }} />;
 }

@@ -131,6 +131,7 @@ export default function Home() {
                     nodes={visibleNodes}
                     relations={visibleRelations}
                     groups={archModel.groups ?? []}
+                    boundary={archModel.boundary}
                     selectedNodeId={selectedNodeId}
                     onSelectNode={setSelectedNodeId}
                     onDrillInto={handleDrillInto}

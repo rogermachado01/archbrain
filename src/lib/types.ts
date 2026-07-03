@@ -58,4 +58,6 @@ export interface ArchModel {
   title?: string;
   /** description shown in the per-view header when at the root Context view */
   description?: string;
+  /** custom boundary box; omit for the default "AWS Cloud" box, false to disable it */
+  boundary?: { label: string; icon?: string } | false;
 }

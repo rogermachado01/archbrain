@@ -1,0 +1,59 @@
+{
+  "title": "Loja Web — Frontend",
+  "description": "SPA React que consome a API E-commerce: catálogo, carrinho e checkout.",
+  "boundary": { "label": "Browser — Loja Web (SPA)", "icon": "generic-application.svg" },
+  "nodes": [
+    { "id": "customer", "name": "Cliente", "description": "Pessoa navegando e comprando produtos.", "level": "context", "external": true, "parentId": null, "icon": "user.svg" },
+    { "id": "webapp-system", "name": "Loja Web (SPA)", "description": "SPA React que consome a API E-commerce: catálogo, carrinho e checkout.", "level": "context", "technology": "React 19", "parentId": null },
+    { "id": "api-ecommerce", "name": "API E-commerce", "description": "Backend que atende a loja (mesmo sistema do modelo backend).", "level": "context", "external": true, "parentId": null, "icon": "generic-application.svg" },
+    { "id": "cognito", "name": "Amazon Cognito", "description": "Provedor de identidade e autenticação.", "level": "context", "external": true, "parentId": null, "icon": "amazon-cognito.svg" },
+    { "id": "analytics", "name": "Analytics", "description": "Coleta eventos de uso do produto.", "level": "context", "external": true, "parentId": null, "icon": "generic-application.svg" },
+
+    { "id": "screen-catalog", "name": "Catálogo", "description": "Lista e busca produtos.", "level": "container", "technology": "React Route", "parentId": "webapp-system", "icon": "fe-screen.svg" },
+    { "id": "screen-cart", "name": "Carrinho", "description": "Revisão dos itens antes do checkout.", "level": "container", "technology": "React Route", "parentId": "webapp-system", "icon": "fe-screen.svg" },
+    { "id": "screen-checkout", "name": "Checkout", "description": "Formulário de pagamento e confirmação do pedido.", "level": "container", "technology": "React Route", "parentId": "webapp-system", "icon": "fe-screen.svg" },
+
+    { "id": "store-cart", "name": "Cart Slice", "level": "container", "technology": "Redux Toolkit", "parentId": "webapp-system", "icon": "fe-store.svg",
+      "aws": { "resourceType": "Redux Slice", "properties": { "actions": "addItem, removeItem, clear, applyCoupon", "persistence": "localStorage (redux-persist)", "middleware": "listenerMiddleware (analytics)" } } },
+
+    { "id": "store-session", "name": "Session Store", "level": "container", "technology": "React Context", "parentId": "webapp-system", "icon": "fe-store.svg",
+      "aws": { "resourceType": "React Context", "properties": { "state": "user, accessToken, expiresAt", "refreshStrategy": "silent refresh on 401" } } },
+
+    { "id": "svc-catalog", "name": "Catalog Service", "level": "container", "technology": "API Client", "parentId": "webapp-system", "icon": "fe-service.svg",
+      "aws": { "resourceType": "API Client", "properties": { "baseUrl": "/api/catalog", "cache": "TanStack Query" } } },
+
+    { "id": "svc-orders", "name": "Orders Service", "level": "container", "technology": "API Client", "parentId": "webapp-system", "icon": "fe-service.svg",
+      "aws": { "resourceType": "API Client", "properties": { "baseUrl": "/api/orders", "cache": "TanStack Query" } } },
+
+    { "id": "ds-components", "name": "Design System", "level": "container", "technology": "Component Library", "parentId": "webapp-system", "icon": "fe-design-system.svg",
+      "aws": { "resourceType": "Design System Package", "properties": { "package": "@loja/ui-kit", "components": "Button, Card, FormField, PriceTag" } } },
+
+    { "id": "cmp-checkout-form", "name": "CheckoutForm", "level": "component", "technology": "React Hook Form", "parentId": "screen-checkout", "icon": "fe-component.svg", "description": "Formulário de endereço e pagamento." },
+    { "id": "cmp-payment-section", "name": "PaymentSection", "level": "component", "technology": "React component", "parentId": "screen-checkout", "icon": "fe-component.svg", "description": "Seleção de método de pagamento." },
+    { "id": "hook-use-checkout", "name": "useCheckout", "level": "component", "technology": "Custom Hook", "parentId": "screen-checkout", "icon": "fe-hook.svg", "description": "Orquestra submit do checkout: valida, despacha e chama o serviço de pedidos." },
+    { "id": "sel-cart-total", "name": "selectCartTotal", "level": "component", "technology": "Reselect selector", "parentId": "screen-checkout", "icon": "fe-component.svg", "description": "Deriva o total do carrinho a partir do estado normalizado." }
+  ],
+  "relations": [
+    { "id": "fr1", "source": "customer", "target": "webapp-system", "label": "Usa no navegador", "kind": "sync" },
+    { "id": "fr2", "source": "webapp-system", "target": "api-ecommerce", "label": "Busca dados e envia pedidos", "kind": "sync" },
+    { "id": "fr3", "source": "webapp-system", "target": "cognito", "label": "Autentica e renova sessão", "kind": "sync" },
+    { "id": "fr4", "source": "webapp-system", "target": "analytics", "label": "Envia eventos de uso", "kind": "async-event" },
+
+    { "id": "fr5", "source": "screen-catalog", "target": "svc-catalog", "label": "busca produtos", "kind": "sync" },
+    { "id": "fr6", "source": "store-cart", "target": "screen-cart", "label": "selector cartItems (re-render)", "kind": "async-event" },
+    { "id": "fr7", "source": "screen-checkout", "target": "store-cart", "label": "dispatch checkout", "kind": "async-event" },
+    { "id": "fr8", "source": "screen-checkout", "target": "svc-orders", "label": "envia pedido", "kind": "sync" },
+    { "id": "fr9", "source": "screen-checkout", "target": "store-cart", "label": "rollback optimistic update (pedido falhou)", "kind": "compensation" },
+    { "id": "fr10", "source": "svc-catalog", "target": "api-ecommerce", "label": "GET /products", "kind": "sync" },
+    { "id": "fr11", "source": "svc-orders", "target": "api-ecommerce", "label": "POST /orders", "kind": "sync" },
+    { "id": "fr12", "source": "store-session", "target": "cognito", "label": "refresh token", "kind": "sync" },
+    { "id": "fr13", "source": "screen-catalog", "target": "ds-components", "label": "compõe UI", "kind": "sync" },
+    { "id": "fr14", "source": "screen-cart", "target": "ds-components", "label": "compõe UI", "kind": "sync" },
+    { "id": "fr15", "source": "screen-checkout", "target": "ds-components", "label": "compõe UI", "kind": "sync" },
+
+    { "id": "fr16", "source": "cmp-checkout-form", "target": "hook-use-checkout", "label": "aciona submit", "kind": "sync" },
+    { "id": "fr17", "source": "cmp-payment-section", "target": "hook-use-checkout", "label": "aciona submit", "kind": "sync" },
+    { "id": "fr18", "source": "hook-use-checkout", "target": "sel-cart-total", "label": "lê total", "kind": "sync" },
+    { "id": "fr19", "source": "hook-use-checkout", "target": "store-cart", "label": "dispatch checkout", "kind": "async-event" }
+  ]
+}

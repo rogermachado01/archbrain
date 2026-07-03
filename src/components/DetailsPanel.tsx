@@ -25,7 +25,7 @@ export default function DetailsPanel({ node }: DetailsPanelProps) {
 
       {node.aws && (
         <>
-          <h3>AWS Resource</h3>
+          <h3>Configuration</h3>
           <p className="details-meta">{node.aws.resourceType}</p>
           <dl className="details-config">
             {Object.entries(node.aws.properties).map(([key, value]) => (

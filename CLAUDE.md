@@ -112,10 +112,19 @@ navigation mechanism with a couple of conventions layered on top, in the spirit 
   runs in the browser (`importOkfBundle` fetches each `.md` file at runtime, no build step or
   server route involved), and it avoids pulling in a YAML library whose Node-oriented internals
   might not be browser-bundle-safe.
+- **Boundary override**: the bundle root `index.md` frontmatter may set `boundary: false` (disable
+  the boundary box entirely) or `boundary_label` + optional `boundary_icon` (custom label/icon,
+  same `ArchModel.boundary` shape described in "AWS visual style" above). Omit both for the
+  default "AWS Cloud" box. `boundary: false` relies on `parseFrontmatter` coercing the literal
+  string `false` to a boolean — no special-casing needed in the importer beyond reading the field.
 
 `public/okf-bundles/order-system/` is a complete, working example bundle (context → container →
 component hierarchy, all 3 relation kinds, one nested region/VPC/AZ/subnet group) — read it
 alongside `okf-import.ts` before changing the conventions above, and keep both in sync if you do.
+`public/okf-bundles/webapp/` is a second example bundle, for a non-AWS frontend dataset (React
+screens, Redux slices, service clients) — demonstrates the `boundary_label`/`boundary_icon`
+override and that `aws_resource_type`/`# Schema` work fine for non-AWS resource kinds too (e.g.
+`aws_resource_type: Redux Slice`).
 
 ### Browsing raw OKF docs (`src/components/OkfWikiViewer.tsx`)
 
@@ -266,7 +275,13 @@ Don't guess kebab-case filenames by hand — use `findAwsIcon("Amazon DynamoDB")
 
 A dashed "AWS Cloud" boundary box (`arch-boundary` shape) is drawn automatically whenever every
 visible node is `level: "container"`, matching AWS's own diagramming recommendation to always
-show the cloud/account boundary explicitly.
+show the cloud/account boundary explicitly. `ArchModel.boundary` lets non-AWS datasets override
+or disable this: omit the field for today's default ("AWS Cloud" + `aws-cloud-badge.svg`), set it
+to `{ label, icon? }` for a custom label/icon (e.g. a frontend dataset using `{ "label": "Browser
+— Loja Web (SPA)", "icon": "generic-application.svg" }`), or `false` to skip the box entirely.
+`icon` is a filename under `/aws-icons`, same convention as `node.icon`. For OKF bundles the same
+override is expressed as root `index.md` frontmatter (`boundary: false`, or `boundary_label` +
+optional `boundary_icon`) — see "Importing OKF bundles" below.
 
 When adding new node types or AWS resource kinds, you generally only need to touch the JSON
 data and reference an icon filename (via `findAwsIcon`) under `node.icon` — the drill-down,

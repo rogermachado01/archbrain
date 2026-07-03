@@ -28,4 +28,15 @@ export const DATA_SOURCES: DataSource[] = [
     load: () => importOkfBundle("/okf-bundles/order-system"),
     okfBasePath: "/okf-bundles/order-system",
   },
+  {
+    id: "frontend-ecommerce-json",
+    label: "Loja Web — Frontend (JSON)",
+    load: () => import("@/data/frontend-ecommerce.json").then((m) => m.default as ArchModel),
+  },
+  {
+    id: "webapp-frontend-okf",
+    label: "Loja Web — Frontend (OKF bundle)",
+    load: () => importOkfBundle("/okf-bundles/webapp"),
+    okfBasePath: "/okf-bundles/webapp",
+  },
 ];
