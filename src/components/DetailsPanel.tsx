@@ -4,17 +4,14 @@ interface DetailsPanelProps {
   node: ArchNode | null;
 }
 
+/** Just the "Resource" tab's content — SidePanel owns the surrounding <aside>/tabs. */
 export default function DetailsPanel({ node }: DetailsPanelProps) {
   if (!node) {
-    return (
-      <aside className="details-panel">
-        <p className="details-empty">Select a resource to see its configuration.</p>
-      </aside>
-    );
+    return <p className="details-empty">Select a resource to see its configuration.</p>;
   }
 
   return (
-    <aside className="details-panel">
+    <>
       <h2>{node.name}</h2>
       <p className="details-meta">
         {node.level.toUpperCase()}
@@ -55,6 +52,6 @@ export default function DetailsPanel({ node }: DetailsPanelProps) {
           )}
         </>
       )}
-    </aside>
+    </>
   );
 }

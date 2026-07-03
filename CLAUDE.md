@@ -61,7 +61,7 @@ more than one is wired in.
 
 ### Data sources (`src/lib/data-sources.ts`)
 
-`page.tsx` no longer imports `sample-architecture.json` directly. `DATA_SOURCES` is a registry of
+`ArchVizApp.tsx` no longer imports `sample-architecture.json` directly. `DATA_SOURCES` is a registry of
 `{ id, label, load(): Promise<ArchModel> }` entries rendered as a `<select>`
 (`DataSourceSelector`) in the header; add an entry to add another architecture the user can pick,
 whether it's another plain JSON file (`load: () => import("@/data/foo.json").then(m => m.default
@@ -72,7 +72,7 @@ as ArchModel)`, deferred via dynamic import so it's only fetched once selected) 
 rejects the promise instead of silently rendering an incomplete graph; the same validator runs
 standalone via `npm run validate` (`scripts/validate-model.ts`) in CI.
 
-Because loading is async (OKF bundles fetch several files), `page.tsx` tracks the *last completed*
+Because loading is async (OKF bundles fetch several files), `ArchVizApp.tsx` tracks the *last completed*
 load as `{ sourceId, model }`/`{ sourceId, message }` state and derives `archModel`/`loadError` by
 comparing that stored `sourceId` against the currently-selected one, rather than resetting state
 to `null` synchronously inside the load effect. **Keep it this way** — clearing state directly in
@@ -140,25 +140,38 @@ screens, Redux slices, service clients) — demonstrates the `boundary_label`/`b
 override and that `aws_resource_type`/`# Schema` work fine for non-AWS resource kinds too (e.g.
 `aws_resource_type: Redux Slice`).
 
-### Browsing raw OKF docs (`src/components/OkfWikiViewer.tsx`)
+### Browsing raw OKF docs (`src/components/SidePanel.tsx`, `OkfWikiViewer.tsx`)
 
 `okf-import.ts` extracts structured data for the diagram; `OkfWikiViewer` is a completely separate
 concern that renders a bundle's actual markdown files for *reading*, via
 [`marked`](https://www.npmjs.com/package/marked) — the same library OKF's own reference viewer
-(`viz.html` in the real bundles) uses. `page.tsx` toggles between the two with `ViewModeToggle`
-("Diagram" / "OKF Wiki"), shown in the header next to the data-source selector; the Wiki option is
-disabled unless the active `DataSource` has `okfBasePath` set (plain JSON sources have no markdown
-to browse).
+(`viz.html` in the real bundles) uses. It lives inside `SidePanel`, the right-hand sidebar's
+"Resource" / "Wiki" tab switcher (replacing the `DetailsPanel` config view when the "Wiki" tab is
+active) — not a full-page mode, so the diagram stays visible and interactive while browsing docs.
+The "Wiki" tab is disabled unless the active `DataSource` has `okfBasePath` set (plain JSON
+sources have no markdown to browse); `SidePanel` derives the *effective* tab as `activeTab ===
+"wiki" && wikiAvailable ? "wiki" : "resource"` so switching to a source without a bundle can't
+leave the UI stuck showing a dead Wiki tab.
 
-Clicking "OKF Wiki" always jumps to the doc page matching whatever the diagram currently has in
-focus — `selectedNodeId` if a resource is selected, else `currentParentId` (the drilled-into
-container), else the bundle root `index.md` — computed once in `page.tsx`'s
-`handleChangeViewMode` and passed down as both the `initialPath` prop *and* the `key` on
-`OkfWikiViewer`. That `key` is what lets the component reset its own in-viewer navigation
+The Wiki tab always shows the doc page matching whatever the diagram currently has in focus —
+`selectedNodeId` if a resource is selected, else `currentParentId` (the drilled-into container),
+else the bundle root `index.md`. Unlike the DetailsPanel it's replacing, this isn't computed once
+on a mode-switch click: `ArchVizApp` derives `wikiEntryPath` from `selectedNodeId`/`currentParentId`
+on every render, so the Wiki tab's content **tracks the diagram selection live** even while the
+tab is already open — click a different node with Wiki open and its doc swaps in immediately, no
+need to re-click the tab. `wikiEntryPath` is passed down as both the `initialPath` prop *and* the
+`key` on `OkfWikiViewer`; that `key` is what lets the component reset its own in-viewer navigation
 history on a fresh jump without needing an effect to do it (same
 `react-hooks/set-state-in-effect`-driven design as `data-sources.ts`: the fetch effect only calls
 setState from inside its `.then`/`.catch`, and `html`/`meta`/`error` are derived by comparing the
-loaded page's path against the current one, not reset directly).
+loaded page's path against the current one, not reset directly). Which tab is active is itself a
+URL param (`?panel=wiki`, omitted for the default "resource" tab) via the same `updateUrl` helper
+everything else in `ArchVizApp` uses — so a Wiki-tab deep link is shareable too.
+
+`SidePanel` widens from the default 320px to ~520px (`.side-panel--wiki` in `globals.css`) only
+while the Wiki tab is active, since markdown needs more breathing room than the key/value config
+list the Resource tab shows — don't remove that width bump without checking prose readability at
+320px first.
 
 Inside the viewer, clicking a relative `.md` link re-fetches and re-renders in place (intercepted
 in `handleContentClick`, resolved with the same `resolveRelativePath` helper `okf-import.ts`
@@ -230,13 +243,15 @@ requires a Suspense boundary above in production builds. `ArchVizApp` derives
   MINIMAP_NODE_THRESHOLD`) rather than conditionally mounted, since the `MiniMap` plugin is
   registered once at graph creation and needs a live container ref at that point.
 - **`DetailsPanel`** renders whatever node is currently selected, including its full
-  `aws.properties` map. Pure presentational, no X6 dependency.
+  `aws.properties` map. Pure presentational, no X6 dependency — just the "Resource" tab's
+  content; `SidePanel` (see "Browsing raw OKF docs" below) owns the surrounding `<aside>`
+  and the Resource/Wiki tab switcher around it.
 - **`Breadcrumb`** renders the ancestor chain of `currentParentId` (via `getBreadcrumb`) so
   users can jump back to any ancestor level, not just one step up.
 - **`ViewHeader`** renders a persistent title+description banner above the canvas — the
   drilled-into node's own `name`/`description` when `currentParentId` is set, else
-  `ArchModel.title`/`description` at the root Context view (`page.tsx` resolves which to use via
-  `findNode`, no new helper needed).
+  `ArchModel.title`/`description` at the root Context view (`ArchVizApp.tsx` resolves which to
+  use via `findNode`, no new helper needed).
 - **`RelationLegend`** is a plain absolutely-positioned HTML overlay (not an X6 cell) inside
   `.graph-area`, showing only the relation kinds actually present in the current view (via
   `getVisibleRelationKinds` in `src/lib/relation-style.ts`). It needs `pointer-events: none`
@@ -244,18 +259,18 @@ requires a Suspense boundary above in production builds. `ArchVizApp` derives
 
 ### Deep links, search & path highlight (`src/components/ArchVizApp.tsx`)
 
-Navigation state (`source`/`parent`/`node`/`view` query params) lives **only** in the URL,
+Navigation state (`source`/`parent`/`node`/`panel` query params) lives **only** in the URL,
 read via `useSearchParams()` — there is no `useState` mirroring it, so there's nothing to
-resync: `sourceId`/`rawParentId`/`rawSelectedId`/`viewMode` are plain derived reads each
+resync: `sourceId`/`rawParentId`/`rawSelectedId`/`activeTab` are plain derived reads each
 render, and `currentParentId`/`selectedNodeId` are further validated against the loaded
 `archModel` (`findNode` must find the id) before use, falling back to `null`/root when a
 URL id is stale or invalid. All navigation (`handleDrillInto`, `handleNavigate`, node
-selection, search results, view-mode toggle) goes through a single `updateUrl(patch, push?)`
-helper that merges the patch into a new `URLSearchParams` and calls `router.replace` (or
-`router.push` only when switching data source, so drill-in clicks don't spam browser
-history). **Keep it this way** — the project already avoids `setState`-in-effect
-resyncing (see "Data sources" above); adding a `useState` layer here would reintroduce
-exactly that problem for four fields instead of one.
+selection, search results, the sidebar's Resource/Wiki tab switch) goes through a single
+`updateUrl(patch, push?)` helper that merges the patch into a new `URLSearchParams` and
+calls `router.replace` (or `router.push` only when switching data source, so drill-in
+clicks don't spam browser history). **Keep it this way** — the project already avoids
+`setState`-in-effect resyncing (see "Data sources" above); adding a `useState` layer here
+would reintroduce exactly that problem for four fields instead of one.
 
 `SearchPalette` (Ctrl+K/Cmd+K, listened for in `ArchVizApp`) filters `archModel.nodes` — a
 flat list, so no tree traversal — by `name`/`technology`/`aws.resourceType`, and navigates

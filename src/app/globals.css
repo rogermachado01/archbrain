@@ -88,40 +88,6 @@ a {
   font-size: 14px;
 }
 
-.view-mode-toggle {
-  display: flex;
-  border: 1px solid #d8dee6;
-  border-radius: 6px;
-  overflow: hidden;
-}
-
-.view-mode-toggle button {
-  font: inherit;
-  font-size: 13px;
-  padding: 4px 10px;
-  border: none;
-  background: #ffffff;
-  color: #5a6b82;
-  cursor: pointer;
-}
-
-.view-mode-toggle button + button {
-  border-left: 1px solid #d8dee6;
-}
-
-.view-mode-toggle button.active {
-  background: #1168bd;
-  color: #ffffff;
-}
-
-.view-mode-toggle button:disabled {
-  color: #c3ccd6;
-  cursor: not-allowed;
-}
-
-.app-body--wiki {
-  overflow-y: auto;
-}
 
 .okf-wiki {
   max-width: 780px;
@@ -291,12 +257,63 @@ a {
   padding: 2px 0;
 }
 
-.details-panel {
+.side-panel {
   width: 320px;
   flex-shrink: 0;
   border-left: 1px solid #e5e5e5;
-  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.side-panel--wiki {
+  width: 520px;
+}
+
+.side-panel-tabs {
+  display: flex;
+  flex-shrink: 0;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.side-panel-tabs button {
+  flex: 1;
+  font: inherit;
+  font-size: 13px;
+  padding: 10px;
+  border: none;
+  background: #ffffff;
+  color: #5a6b82;
+  cursor: pointer;
+}
+
+.side-panel-tabs button + button {
+  border-left: 1px solid #e5e5e5;
+}
+
+.side-panel-tabs button.active {
+  background: #1168bd;
+  color: #ffffff;
+}
+
+.side-panel-tabs button:disabled {
+  color: #c3ccd6;
+  cursor: not-allowed;
+}
+
+.side-panel-body {
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
+}
+
+.side-panel-body .okf-wiki {
+  max-width: none;
+  margin: 0;
+}
+
+.details-panel {
+  padding: 20px;
 }
 
 .details-panel h2 {

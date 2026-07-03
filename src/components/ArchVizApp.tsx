@@ -3,13 +3,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import ArchitectureGraph from "@/components/ArchitectureGraph";
-import DetailsPanel from "@/components/DetailsPanel";
+import SidePanel, { type SidePanelTab } from "@/components/SidePanel";
 import Breadcrumb from "@/components/Breadcrumb";
 import ViewHeader from "@/components/ViewHeader";
 import RelationLegend from "@/components/RelationLegend";
 import DataSourceSelector from "@/components/DataSourceSelector";
-import ViewModeToggle, { type ViewMode } from "@/components/ViewModeToggle";
-import OkfWikiViewer from "@/components/OkfWikiViewer";
 import SearchPalette from "@/components/SearchPalette";
 import PathModeControl, { type PathMode } from "@/components/PathModeControl";
 import {
@@ -52,11 +50,10 @@ export default function ArchVizApp() {
     sourceIdParam && DATA_SOURCES.some((s) => s.id === sourceIdParam) ? sourceIdParam : DATA_SOURCES[0].id;
   const rawParentId = searchParams.get("parent");
   const rawSelectedId = searchParams.get("node");
-  const viewMode: ViewMode = searchParams.get("view") === "wiki" ? "wiki" : "diagram";
+  const activeTab: SidePanelTab = searchParams.get("panel") === "wiki" ? "wiki" : "resource";
 
   const [loaded, setLoaded] = useState<Loaded | null>(null);
   const [loadFailed, setLoadFailed] = useState<LoadFailed | null>(null);
-  const [wikiEntryPath, setWikiEntryPath] = useState("index.md");
   const [searchOpen, setSearchOpen] = useState(false);
   const [pathMode, setPathMode] = useState<PathMode>("off");
   const [kindFilter, setKindFilter] = useState<RelationKind | null>(null);
@@ -108,6 +105,13 @@ export default function ArchVizApp() {
   const headerTitle = currentContextNode?.name ?? archModel?.title ?? "System Context";
   const headerDescription = currentContextNode?.description ?? archModel?.description;
 
+  // Whatever the diagram currently has in focus — the selected resource if one is
+  // selected, else the container we've drilled into, else the bundle root — kept live
+  // (not computed only when switching to the Wiki tab) so it tracks the diagram selection
+  // even while the tab is already open.
+  const wikiFocusId = selectedNodeId ?? currentParentId;
+  const wikiEntryPath = wikiFocusId ? `${wikiFocusId}.md` : "index.md";
+
   const { highlightedNodeIds, highlightedRelationIds } = useMemo(() => {
     if (pathMode === "off" || !selectedNodeId) {
       return { highlightedNodeIds: null as Set<string> | null, highlightedRelationIds: null as Set<string> | null };
@@ -124,7 +128,7 @@ export default function ArchVizApp() {
   }, [pathMode, selectedNodeId, visibleRelations, kindFilter]);
 
   function updateUrl(
-    patch: { source?: string; parent?: string | null; node?: string | null; view?: ViewMode },
+    patch: { source?: string; parent?: string | null; node?: string | null; panel?: SidePanelTab | null },
     push = false
   ) {
     const params = new URLSearchParams(searchParams.toString());
@@ -137,9 +141,9 @@ export default function ArchVizApp() {
       if (patch.node === null) params.delete("node");
       else params.set("node", patch.node);
     }
-    if (patch.view !== undefined) {
-      if (patch.view === "diagram") params.delete("view");
-      else params.set("view", patch.view);
+    if (patch.panel !== undefined) {
+      if (patch.panel === null || patch.panel === "resource") params.delete("panel");
+      else params.set("panel", patch.panel);
     }
     const qs = params.toString();
     const url = qs ? `${pathname}?${qs}` : pathname;
@@ -147,7 +151,7 @@ export default function ArchVizApp() {
   }
 
   function handleSelectSource(id: string) {
-    updateUrl({ source: id, parent: null, node: null, view: "diagram" }, true);
+    updateUrl({ source: id, parent: null, node: null, panel: null }, true);
   }
 
   function handleDrillInto(id: string) {
@@ -163,18 +167,11 @@ export default function ArchVizApp() {
   }
 
   function handleSearchNavigate(node: ArchNode) {
-    updateUrl({ parent: node.parentId ?? null, node: node.id, view: "diagram" });
+    updateUrl({ parent: node.parentId ?? null, node: node.id });
   }
 
-  // Jumping to the wiki always opens the doc page matching whatever the
-  // diagram is currently focused on — the selected resource if one is
-  // selected, else the container we've drilled into, else the bundle root.
-  function handleChangeViewMode(mode: ViewMode) {
-    if (mode === "wiki") {
-      const focusId = rawSelectedId ?? rawParentId;
-      setWikiEntryPath(focusId ? `${focusId}.md` : "index.md");
-    }
-    updateUrl({ view: mode });
+  function handleTabChange(tab: SidePanelTab) {
+    updateUrl({ panel: tab });
   }
 
   useEffect(() => {
@@ -193,12 +190,7 @@ export default function ArchVizApp() {
       <header className="app-header">
         <h1>ArchViz</h1>
         <DataSourceSelector sources={DATA_SOURCES} selectedId={sourceId} onSelect={handleSelectSource} />
-        {viewMode === "diagram" && <Breadcrumb trail={breadcrumbTrail} onNavigate={handleNavigate} />}
-        <ViewModeToggle
-          mode={viewMode}
-          onChange={handleChangeViewMode}
-          wikiAvailable={Boolean(activeSource?.okfBasePath)}
-        />
+        <Breadcrumb trail={breadcrumbTrail} onNavigate={handleNavigate} />
         <button className="search-trigger" onClick={() => setSearchOpen(true)}>
           Search <kbd>Ctrl K</kbd>
         </button>
@@ -210,49 +202,50 @@ export default function ArchVizApp() {
         onClose={() => setSearchOpen(false)}
         onNavigate={handleSearchNavigate}
       />
-      {viewMode === "wiki" && activeSource?.okfBasePath ? (
-        <main className="app-body app-body--wiki">
-          <OkfWikiViewer key={wikiEntryPath} basePath={activeSource.okfBasePath} initialPath={wikiEntryPath} />
-        </main>
-      ) : (
-        <main className="app-body">
-          <div className="graph-column">
-            {archModel ? (
-              <>
-                <ViewHeader title={headerTitle} description={headerDescription} />
-                <div className="graph-area">
-                  <ArchitectureGraph
-                    nodes={visibleNodes}
-                    relations={visibleRelations}
-                    groups={archModel.groups ?? []}
-                    boundary={archModel.boundary}
-                    selectedNodeId={selectedNodeId}
-                    onSelectNode={handleSelectNode}
-                    onDrillInto={handleDrillInto}
-                    isDrillable={(id) => hasChildren(archModel, id)}
-                    exportFileName={`${sourceId}-${currentParentId ?? "context"}`}
-                    highlightedNodeIds={highlightedNodeIds}
-                    highlightedRelationIds={highlightedRelationIds}
-                  />
-                  <RelationLegend relations={visibleRelations} />
-                  <PathModeControl
-                    mode={pathMode}
-                    onModeChange={setPathMode}
-                    kindFilter={kindFilter}
-                    onKindFilterChange={setKindFilter}
-                    disabled={!selectedNodeId}
-                  />
-                </div>
-              </>
-            ) : (
-              <div className="app-loading">
-                {loadError ? `Failed to load architecture: ${loadError}` : "Loading architecture…"}
+      <main className="app-body">
+        <div className="graph-column">
+          {archModel ? (
+            <>
+              <ViewHeader title={headerTitle} description={headerDescription} />
+              <div className="graph-area">
+                <ArchitectureGraph
+                  nodes={visibleNodes}
+                  relations={visibleRelations}
+                  groups={archModel.groups ?? []}
+                  boundary={archModel.boundary}
+                  selectedNodeId={selectedNodeId}
+                  onSelectNode={handleSelectNode}
+                  onDrillInto={handleDrillInto}
+                  isDrillable={(id) => hasChildren(archModel, id)}
+                  exportFileName={`${sourceId}-${currentParentId ?? "context"}`}
+                  highlightedNodeIds={highlightedNodeIds}
+                  highlightedRelationIds={highlightedRelationIds}
+                />
+                <RelationLegend relations={visibleRelations} />
+                <PathModeControl
+                  mode={pathMode}
+                  onModeChange={setPathMode}
+                  kindFilter={kindFilter}
+                  onKindFilterChange={setKindFilter}
+                  disabled={!selectedNodeId}
+                />
               </div>
-            )}
-          </div>
-          <DetailsPanel node={selectedNode} />
-        </main>
-      )}
+            </>
+          ) : (
+            <div className="app-loading">
+              {loadError ? `Failed to load architecture: ${loadError}` : "Loading architecture…"}
+            </div>
+          )}
+        </div>
+        <SidePanel
+          node={selectedNode}
+          wikiAvailable={Boolean(activeSource?.okfBasePath)}
+          wikiBasePath={activeSource?.okfBasePath}
+          wikiEntryPath={wikiEntryPath}
+          activeTab={activeTab}
+          onTabChange={handleTabChange}
+        />
+      </main>
     </div>
   );
 }

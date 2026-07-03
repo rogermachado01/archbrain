@@ -233,7 +233,16 @@ export default function ArchitectureGraph({
     }
     graphRef.current = graph;
 
+    // autoResize keeps the SVG viewport in sync with the container's on-screen
+    // size (e.g. the sidebar widening for the Wiki tab, or the window itself
+    // resizing), but doesn't re-fit the zoom/pan on its own — without this the
+    // previously-fit diagram can end up partially outside the now-narrower
+    // graph area.
+    const resizeHandler = () => graph.zoomToFit({ padding: 40, maxScale: 1 });
+    graph.on("resize", resizeHandler);
+
     return () => {
+      graph.off("resize", resizeHandler);
       graph.dispose();
       graphRef.current = null;
     };
