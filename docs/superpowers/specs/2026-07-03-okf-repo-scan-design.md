@@ -16,10 +16,11 @@ bundle conforming to the conventions already established in `CLAUDE.md`
 
 The pipeline has to be re-run repeatedly over the application's life as the
 underlying code and infrastructure keep changing — not a one-shot import —
-so two concerns shape this design as much as the extraction logic itself:
-avoiding wasted reprocessing of unchanged inputs, and producing a bundle
-scoped to the right environment (dev/hml/prd), since the same services exist
-independently in each one.
+so three concerns shape this design as much as the extraction logic itself:
+avoiding wasted reprocessing of unchanged inputs, producing a bundle scoped
+to the right environment (dev/hml/prd), and — because the real deployment
+spans 50+ repos — doing all of the above efficiently enough that a routine
+re-scan doesn't take hours.
 
 ## Non-goals
 
@@ -76,18 +77,21 @@ is a standalone TypeScript tool inside this repo.
 repo-map.yaml (maps TF resources/frontend dirs to local paths + per-env branch/file)
         │
         ▼ --env dev|hml|prd
-resolve-worktrees.ts (git worktree add/checkout the right branch per repo, per env)
+check-repo-freshness.ts   (parallel git ls-remote / file-hash per repo vs manifest → changed-repo set)
+        │
+        ▼  (only repos in the changed set proceed)
+resolve-worktrees.ts (git worktree add/checkout the right branch, changed repos only, parallel)
         │
         ▼
 scan-terraform.ts ──┐   (reads dev.tf/hml.tf/prd.tf per --env)
-scan-lambda-repo.ts ─┼─► structured "facts" (JSON): per-concept
+scan-lambda-repo.ts ─┼─► structured "facts" (JSON): per-concept, parallel across changed repos
 scan-frontend-repo.ts┘   { resourceType, schema, relations[], owner, evidence }
         │
-        ▼
+        ▼  (facts for unchanged repos reused from the manifest's cached facts)
 synthesize.ts
   - hash each concept's inputs, compare to .scan-manifest.json → skip unchanged concepts entirely
   - deterministic: frontmatter (type/aws_resource_type), # Schema, # Relations, groups/, owner, # Links
-  - LLM call (Claude): 1-3 paragraph prose description, grounded in the facts above (changed concepts only)
+  - LLM call (Claude): 1-3 paragraph prose description, grounded in the facts above (changed concepts only, parallel with a low cap)
         │
         ▼
 public/okf-bundles/<name>-<env>/   (OKF bundle + .scan-manifest.json, committed together)
@@ -181,6 +185,61 @@ configurations (names, sizes, even topology), not just different data, so
 merging them into one `ArchModel` would misrepresent what's actually
 deployed where.
 
+## Scaling to 50+ repos: repo-level short-circuit & parallelism
+
+At real scale (50+ repos), fetching + checking out a worktree + AST-parsing
+every repo on every run would dominate wall-clock time even though the
+existing concept-level incremental check (see "Incremental scanning" below)
+still saves the LLM cost. Most repos, on most runs, haven't changed at all —
+so the design adds a cheaper check *before* any of that expensive work runs.
+
+**`check-repo-freshness.ts` runs first, before `resolve-worktrees.ts`,**
+against every repo in `repo-map.yaml` in parallel:
+
+- Branch-based repos (Lambda/frontend): `git ls-remote <repo> <branch>` —
+  no clone, no worktree, just asks the remote for the branch's current
+  commit SHA.
+- Terraform: a content hash of the shared `.tf` files plus the `--env`-
+  selected env file.
+
+Each result is compared against a **per-repo** entry now also tracked in
+`.scan-manifest.json` (alongside the existing per-concept entries):
+
+```json
+{
+  "_repos": {
+    "orders-service":   { "lastScannedRef": "a1b2c3d (develop)", "env": "dev" },
+    "infra-terraform":  { "lastScannedRef": "sha256:9f8e7d..." }
+  },
+  "orders-service/handler": { "inputHash": "...", "lastScannedAt": "..." }
+}
+```
+
+**A repo whose ref/hash is unchanged is dropped from this run entirely** —
+no worktree sync, no parsing. Its concepts' facts are reused as-is from the
+previous run (cached in the manifest alongside the input hash — see
+"Incremental scanning"), so `synthesize.ts` still sees a complete fact set
+for every concept without having rescanned most of them. Only repos whose
+ref/hash changed proceed to `resolve-worktrees.ts` and the scanners.
+
+**Parallelism, capped per bottleneck type** rather than one global
+concurrency number, since each stage is bound by a different resource:
+
+| Stage                                    | Bottleneck    | Default cap | Flag                  |
+|-------------------------------------------|---------------|-------------:|-----------------------|
+| `check-repo-freshness.ts` (`ls-remote`)    | network        | 20           | `--concurrency-git`   |
+| `resolve-worktrees.ts` + AST scanning       | CPU            | # of cores   | `--concurrency-scan`  |
+| `synthesize.ts` LLM prose calls             | API rate limit | 6            | `--concurrency-llm`   |
+
+The LLM stage additionally retries on `429`/rate-limit responses with
+exponential backoff, since even a capped concurrency can still occasionally
+hit a provider-side limit under load.
+
+Net effect at 50+ repos: a routine re-scan where only a handful of repos
+changed since last run does ~50 fast `ls-remote` calls (parallel, seconds
+total), then does real work only for the changed subset — turning "hours"
+into a runtime proportional to *what changed*, not to the total repo count.
+
 ## Scanners
 
 ### `scan-terraform.ts`
@@ -255,30 +314,39 @@ attached to each concept scanned from that repo as its `owner` field.
 ## Incremental scanning
 
 `public/okf-bundles/<name>-<env>/.scan-manifest.json` is committed alongside
-the bundle, mapping each concept id to a hash of its *inputs* — its source
-file(s) plus whatever Terraform facts feed it (e.g. an env-var-to-resource
-binding). Example:
+the bundle. Besides the per-repo `_repos` entries used by the freshness
+check above, it stores one entry per concept with **both** a hash of that
+concept's *inputs* (source file(s) plus whatever Terraform facts feed it,
+e.g. an env-var-to-resource binding) **and the facts themselves**, so a
+concept from a repo the freshness check skipped still has something for
+`synthesize.ts` to read without having been rescanned this run:
 
 ```json
 {
-  "orders-service": { "inputHash": "a1b2c3...", "lastScannedAt": "2026-07-03T10:00:00Z" },
-  "orders-table":   { "inputHash": "d4e5f6...", "lastScannedAt": "2026-07-03T10:00:00Z" }
+  "orders-service/handler": {
+    "inputHash": "a1b2c3...",
+    "facts": { "resourceType": "AWS Lambda Function", "relations": [ /* ... */ ] },
+    "lastScannedAt": "2026-07-03T10:00:00Z"
+  }
 }
 ```
 
-Scanners always run in full on every invocation — they're cheap, static, and
-their output is exactly what feeds the hash comparison. The skip happens one
-level up, in `synthesize.ts`: for each concept, it hashes the freshly
-produced facts and compares against the manifest entry. **Unchanged
-concepts are skipped entirely — no LLM call, and the existing `.md` file is
-left byte-for-byte untouched** (not rewritten with identical content), so a
-`git diff` after a scan shows exactly, and only, what actually changed. This
-is the primary cost/time saver, since the LLM prose call is by far the
-most expensive step per concept.
+For repos the freshness check flagged as changed, scanners run and produce
+fresh facts for every concept in that repo. For repos it skipped, that
+repo's concepts' facts are read straight from the manifest instead — either
+way, `synthesize.ts` ends up with a complete fact set for every concept in
+the bundle. It then hashes each concept's (fresh-or-cached) facts and
+compares against the manifest entry. **Unchanged concepts are skipped
+entirely — no LLM call, and the existing `.md` file is left byte-for-byte
+untouched** (not rewritten with identical content), so a `git diff` after a
+scan shows exactly, and only, what actually changed. This is the primary
+cost/time saver for concepts within a repo that did change, layered on top
+of the repo-level short-circuit that avoids rescanning repos that didn't.
 
-A `--force` flag bypasses the manifest and regenerates every concept
-regardless of hash — needed after a prompt or synthesis-logic change, where
-the *inputs* didn't change but the desired *output* did.
+A `--force` flag bypasses the manifest and freshness check entirely,
+rescanning every repo and regenerating every concept — needed after a
+prompt or synthesis-logic change, where the *inputs* didn't change but the
+desired *output* did.
 
 ## Synthesis: `synthesize.ts`
 
@@ -331,10 +399,18 @@ bundle would today.
   facts and assert the second run makes zero LLM calls and leaves every
   `.md` file's mtime/content untouched; then change one fixture's facts and
   assert only that one concept's file and manifest entry updated.
+- A repo-freshness test: given a manifest with a stale ref for one repo out
+  of several fixture repos, assert `check-repo-freshness.ts` returns exactly
+  that one repo as changed, and that a full run only invokes
+  `resolve-worktrees.ts`/scanners for it, reusing cached facts for the rest.
 - A worktree-resolution test against a local throwaway git fixture repo with
   two branches, asserting `resolve-worktrees.ts` checks out the right branch
   per environment into the cache path and never touches the configured repo
   path's current branch/working tree.
+- A concurrency-cap test asserting no more than `--concurrency-git` /
+  `--concurrency-llm` operations of each kind run at once against a fixture
+  set larger than the cap, and that a simulated LLM 429 response is retried
+  rather than failing the whole run.
 - An end-to-end fixture run (small fixture repo set → generated bundle →
   `validateArchModel`) to catch integration gaps between scanners and the
   validator's expectations.
