@@ -61,4 +61,43 @@ describe("syncWorktree", () => {
     const localContent = (await readFile(path.join(localDir, "app.txt"), "utf-8")).replace(/\r\n/g, "\n");
     expect(localContent).toBe("main content\n");
   });
+
+  it("succeeds on a second call for the same repo/env, reusing the existing worktree instead of re-adding it", async () => {
+    // Simulates the ordinary "re-run the pipeline" case: the first call
+    // creates the worktree via `git worktree add`; without the path-separator
+    // fix, `worktreeExists`'s raw substring match never matches on Windows
+    // (porcelain output is forward-slash, `worktreePath` is backslash-separated
+    // there), so this second call would take the `add` branch again and throw
+    // "... already exists" instead of reusing it via checkout+pull.
+    const first = await syncWorktree(localDir, "orders-service", "develop", "dev");
+    expect(first).toBe(worktreePath("orders-service", "dev"));
+
+    // Advance "develop" upstream between the two syncs, so the reuse path's
+    // `pull` has something to actually pull — proving it's a real
+    // checkout+pull, not a no-op that happens to leave stale content behind.
+    const upstreamGit = simpleGit(upstreamDir);
+    await upstreamGit.checkout("develop");
+    await writeFile(path.join(upstreamDir, "app.txt"), "develop content v2\n");
+    await upstreamGit.add("./*");
+    await upstreamGit.commit("second commit on develop");
+    await upstreamGit.checkout("main");
+
+    const second = await syncWorktree(localDir, "orders-service", "develop", "dev");
+    expect(second).toBe(first);
+
+    // Only one worktree should ever be registered for this (repoKey, env) —
+    // if the reuse path weren't taken, `git worktree add` would either throw
+    // "already exists" (directory still present) or register a duplicate.
+    const worktreeList = await simpleGit(localDir).raw(["worktree", "list", "--porcelain"]);
+    const registeredCount = worktreeList
+      .split("\n")
+      .filter((line) => line.startsWith("worktree ") && line.replace(/\\/g, "/").includes(second.replace(/\\/g, "/"))).length;
+    expect(registeredCount).toBe(1);
+
+    const worktreeBranch = (await simpleGit(second).branch()).current;
+    expect(worktreeBranch).toBe("develop");
+
+    const worktreeContent = (await readFile(path.join(second, "app.txt"), "utf-8")).replace(/\r\n/g, "\n");
+    expect(worktreeContent).toBe("develop content v2\n");
+  });
 });
