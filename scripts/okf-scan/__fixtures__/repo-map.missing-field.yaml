@@ -1,0 +1,13 @@
+terraform:
+  path: ../infra-terraform
+  envFiles:
+    dev: dev.tf
+    hml: hml.tf
+    prd: prd.tf
+
+resources:
+  aws_lambda_function.orders:
+    repo: ../orders-service
+    # branch intentionally omitted
+
+frontend: []

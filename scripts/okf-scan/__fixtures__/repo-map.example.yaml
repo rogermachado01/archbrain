@@ -1,0 +1,18 @@
+terraform:
+  path: ../infra-terraform
+  envFiles:
+    dev: dev.tf
+    hml: hml.tf
+    prd: prd.tf
+
+resources:
+  aws_lambda_function.orders:
+    repo: ../orders-service
+    branch: { dev: develop, hml: staging, prd: main }
+  aws_lambda_function.payments:
+    repo: ../payments-service
+    branch: { dev: develop, hml: staging, prd: main }
+
+frontend:
+  - repo: ../web-storefront
+    branch: { dev: develop, hml: staging, prd: main }
