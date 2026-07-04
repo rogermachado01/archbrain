@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "validate": "tsx scripts/validate-model.ts",
+    "okf-scan": "tsx scripts/okf-scan/index.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
