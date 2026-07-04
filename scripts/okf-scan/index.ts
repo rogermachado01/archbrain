@@ -123,11 +123,18 @@ async function main(): Promise<void> {
     concurrency: args.concurrencyLlm,
   });
 
+  // synthesize() loads its own copy of the manifest (from an empty one when
+  // `force` is set, same as above), updates `concepts` with fresh per-concept
+  // hash/facts entries, and unconditionally saves that to disk itself before
+  // returning. Reload here rather than reusing this function's pre-synthesis
+  // `manifest` var — otherwise the save below would overwrite synthesize()'s
+  // concept updates with the stale pre-synthesis copy.
+  const postSynthesizeManifest = await loadManifest(args.out);
   for (const result of freshness) {
-    manifest._repos[result.ref.key] = { lastScannedRef: result.currentRef, env: args.env };
+    postSynthesizeManifest._repos[result.ref.key] = { lastScannedRef: result.currentRef, env: args.env };
   }
-  manifest.lambdaEnvVarBindings = lambdaEnvVarBindings;
-  await saveManifest(args.out, manifest);
+  postSynthesizeManifest.lambdaEnvVarBindings = lambdaEnvVarBindings;
+  await saveManifest(args.out, postSynthesizeManifest);
 
   console.log(`okf-scan: wrote ${summary.written.length}, skipped ${summary.skipped.length} concept(s) into ${args.out}`);
   if (summary.needsReview.length > 0) {
