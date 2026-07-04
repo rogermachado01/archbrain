@@ -1,5 +1,6 @@
 import path from "node:path/posix";
 import { parseFrontmatter, type Frontmatter } from "../../../src/lib/frontmatter";
+import { parseLinksSection } from "../../../src/lib/okf-sections";
 import type { ConceptFacts, GroupFact } from "../types";
 
 /** Leaf-segment id -> Title Case, e.g. "orders/handler" -> "Handler". */
@@ -30,9 +31,20 @@ export function relativeLinkFromTo(sourceId: string, targetId: string): string {
  */
 export function groupBundlePath(groups: GroupFact[], groupId: string): string {
   const byId = new Map(groups.map((g) => [g.id, g]));
+  const start = byId.get(groupId);
+  if (!start) {
+    throw new Error(`groupBundlePath: no group with id "${groupId}" found`);
+  }
   const segments: string[] = [];
-  let current = byId.get(groupId);
+  const visited = new Set<string>();
+  let current: GroupFact | undefined = start;
   while (current) {
+    if (visited.has(current.id)) {
+      throw new Error(
+        `groupBundlePath: cycle detected in parentGroupId chain (revisited "${current.id}")`,
+      );
+    }
+    visited.add(current.id);
     segments.unshift(current.id);
     current = current.parentGroupId ? byId.get(current.parentGroupId) : undefined;
   }
@@ -43,15 +55,52 @@ export function relativeGroupLink(sourceId: string, groups: GroupFact[], groupId
   return relativeLinkToPath(sourceId, groupBundlePath(groups, groupId));
 }
 
+/**
+ * `src/lib/frontmatter.ts`'s `parseFrontmatter` is a minimal, line-oriented
+ * parser: a bare `key: value` line captures everything after the first colon
+ * as the value verbatim, an *empty* value falls into its block-list branch
+ * (misreading unrelated following `- item` lines as this key's list), and
+ * `coerceScalar` turns a literal `"true"`/`"false"`/numeric-looking string
+ * into a boolean/number instead of leaving it a string. None of that copes
+ * with an embedded newline, stray leading/trailing whitespace, or a `": "`
+ * sequence either. This mirrors the hand-authored bundles' own convention
+ * (see e.g. `okf_version: "0.1"` in public/okf-bundles' index.md files, quoted
+ * so it round-trips as a string rather than the number 0.1) by double-quoting
+ * (with internal `\`/`"` escaped and real newlines escaped to literal `\n`)
+ * whenever a value wouldn't otherwise round-trip correctly.
+ */
+function needsFrontmatterQuoting(value: string): boolean {
+  if (value === "") return true;
+  if (/\n/.test(value)) return true;
+  if (/^\s|\s$/.test(value)) return true;
+  if (value.includes(": ")) return true;
+  if (value === "true" || value === "false") return true;
+  if (!Number.isNaN(Number(value))) return true;
+  return false;
+}
+
+function quoteFrontmatterValue(value: string): string {
+  const escaped = value
+    .replace(/\\/g, "\\\\")
+    .replace(/"/g, '\\"')
+    .replace(/\r?\n/g, "\\n");
+  return `"${escaped}"`;
+}
+
+function formatFrontmatterScalar(value: string | number | boolean): string {
+  if (typeof value !== "string") return String(value);
+  return needsFrontmatterQuoting(value) ? quoteFrontmatterValue(value) : value;
+}
+
 function stringifyFrontmatter(data: Frontmatter): string {
   const lines: string[] = ["---"];
   for (const [key, value] of Object.entries(data)) {
     if (value === undefined) continue;
     if (Array.isArray(value)) {
       lines.push(`${key}:`);
-      value.forEach((item) => lines.push(`  - ${item}`));
+      value.forEach((item) => lines.push(`  - ${formatFrontmatterScalar(item)}`));
     } else {
-      lines.push(`${key}: ${value}`);
+      lines.push(`${key}: ${formatFrontmatterScalar(value)}`);
     }
   }
   lines.push("---");
@@ -91,18 +140,11 @@ export interface ExistingConceptFile {
 export function readPreserved(existingRaw: string | null): ExistingConceptFile {
   if (!existingRaw) return { links: [] };
   const { data, content } = parseFrontmatter(existingRaw);
-  const linksSection = content.split(/\n(?=# )/).find((s) => s.trim().startsWith("# Links"));
-  const links: { label: string; url: string }[] = [];
-  if (linksSection) {
-    const re = /\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g;
-    let m: RegExpExecArray | null;
-    while ((m = re.exec(linksSection))) links.push({ label: m[1], url: m[2] });
-  }
   return {
     ddd_subdomain: typeof data.ddd_subdomain === "string" ? data.ddd_subdomain : undefined,
     ddd_context: typeof data.ddd_context === "string" ? data.ddd_context : undefined,
     ddd_role: typeof data.ddd_role === "string" ? data.ddd_role : undefined,
-    links,
+    links: parseLinksSection(content),
   };
 }
 

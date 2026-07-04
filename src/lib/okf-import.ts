@@ -1,5 +1,6 @@
 import { parseFrontmatter } from "./frontmatter";
 import { findAwsIcon } from "./aws-icons";
+import { extractSection, parseLinksSection } from "./okf-sections";
 import { resolveRelativePath } from "./paths";
 import type { ArchModel, ArchNode, ArchRelation, AwsGroup, AwsGroupKind, C4Level, RelationKind } from "./types";
 
@@ -81,16 +82,6 @@ export async function importOkfBundle(basePath: string, io: OkfIo = browserIo): 
     return links;
   }
 
-  /** Body text of a `# Heading` section, up to (not including) the next `# Heading`. */
-  function extractSection(body: string, heading: string): string | null {
-    const lines = body.split("\n");
-    const startIdx = lines.findIndex((l) => l.trim().toLowerCase() === `# ${heading}`.toLowerCase());
-    if (startIdx === -1) return null;
-    const rest = lines.slice(startIdx + 1);
-    const endIdx = rest.findIndex((l) => /^#\s+/.test(l));
-    return (endIdx === -1 ? rest : rest.slice(0, endIdx)).join("\n").trim();
-  }
-
   function parseSchemaSection(body: string): Record<string, string | number | boolean> {
     const section = extractSection(body, "Schema");
     if (!section) return {};
@@ -141,28 +132,6 @@ export async function importOkfBundle(basePath: string, io: OkfIo = browserIo): 
         return relation;
       })
       .filter((r): r is ArchRelation => r !== null);
-  }
-
-  /**
-   * `# Links` bullets are operational links (repo, runbook, dashboard), not
-   * navigation — only absolute URLs are accepted; relative `.md` links (which
-   * would belong in `# Relations` instead) are silently skipped.
-   */
-  function parseLinksSection(body: string): { label: string; url: string }[] {
-    const section = extractSection(body, "Links");
-    if (!section) return [];
-    return section
-      .split("\n")
-      .map((l) => l.trim())
-      .filter(Boolean)
-      .map((line) => {
-        const linkMatch = line.match(/\[([^\]]+)\]\(([^)]+)\)/);
-        if (!linkMatch) return null;
-        const [, label, url] = linkMatch;
-        if (!/^https?:\/\//i.test(url)) return null;
-        return { label, url };
-      })
-      .filter((l): l is { label: string; url: string } => l !== null);
   }
 
   async function loadConcept(dirPath: string, fileName: string, parentId: string | null): Promise<void> {
