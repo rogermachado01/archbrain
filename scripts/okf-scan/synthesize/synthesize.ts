@@ -21,7 +21,12 @@ export interface SynthesizeSummary {
   written: string[];
   skipped: string[];
   needsReview: { id: string; notes: string[] }[];
+  /** Concepts whose LLM call or markdown write failed; these are neither written nor recorded in the manifest, so they're retried on the next run. */
+  failed: { id: string; error: string }[];
 }
+
+/** Directory name `writeGroupFiles` reserves for AWS network groups (`bundleDir/groups/`). */
+const RESERVED_GROUPS_DIR = "groups";
 
 async function readIfExists(filePath: string): Promise<string | null> {
   try {
@@ -36,10 +41,72 @@ function conceptFilePath(bundleDir: string, id: string): string {
   return path.join(bundleDir, `${id}.md`);
 }
 
+/**
+ * Mirrors groupBundlePath's (markdown.ts) cycle-detection walk over
+ * parentGroupId chains, but additionally treats a dangling parentGroupId
+ * (pointing at an id absent from `groups`) as an error instead of silently
+ * treating it as "reached the root" — both are validated up front, before any
+ * LLM calls or file writes, so a bad `groups` array fails fast with a clear
+ * message rather than surfacing later as a confusing throw deep inside
+ * buildConceptMarkdown (via a concept's groupId) for one arbitrary concept.
+ */
+function validateGroups(groups: GroupFact[]): void {
+  const byId = new Map(groups.map((g) => [g.id, g]));
+  for (const group of groups) {
+    const visited = new Set<string>();
+    let current: GroupFact | undefined = group;
+    while (current) {
+      if (visited.has(current.id)) {
+        throw new Error(
+          `synthesize: cycle detected in group "${group.id}"'s parentGroupId chain (revisited "${current.id}")`
+        );
+      }
+      visited.add(current.id);
+      if (!current.parentGroupId) break;
+      const parent = byId.get(current.parentGroupId);
+      if (!parent) {
+        throw new Error(
+          `synthesize: group "${current.id}" has parentGroupId "${current.parentGroupId}", which does not match any group id`
+        );
+      }
+      current = parent;
+    }
+  }
+}
+
+/**
+ * `writeGroupFiles` always writes AWS network groups under
+ * `bundleDir/groups/`. If a scanned concept's parentId is literally "groups",
+ * `writeChildIndexes` would later write that concept's own child index.md to
+ * the same path, silently destroying the AWS-groups listing writeGroupFiles
+ * already wrote (see writeRootFiles -> writeGroupFiles, called before
+ * writeChildIndexes). Fail fast instead of allowing that silent overwrite.
+ */
+function assertNoReservedGroupsCollision(concepts: ConceptFacts[]): void {
+  const offender = concepts.find((c) => c.parentId === RESERVED_GROUPS_DIR);
+  if (offender) {
+    throw new Error(
+      `synthesize: concept "${offender.id}" has parentId "${RESERVED_GROUPS_DIR}", which collides with the reserved directory ` +
+        `writeGroupFiles uses for AWS network groups (bundleDir/${RESERVED_GROUPS_DIR}/) — rename this concept's container.`
+    );
+  }
+}
+
+type RegenerateResult =
+  | { status: "ok"; id: string; inputHash: string; facts: ConceptFacts }
+  | { status: "error"; id: string; error: string };
+
 export async function synthesize(options: SynthesizeOptions): Promise<SynthesizeSummary> {
   const { scanResult, bundleDir, llm, force = false, concurrency = 6, now = () => new Date().toISOString() } = options;
+
+  // Validate up front, before any LLM calls or file writes: a bad `groups`
+  // array or a reserved-name collision should fail fast with a clear message
+  // rather than aborting mid-run (or silently corrupting output).
+  validateGroups(scanResult.groups);
+  assertNoReservedGroupsCollision(scanResult.concepts);
+
   const manifest: ScanManifest = force ? emptyManifest() : await loadManifest(bundleDir);
-  const summary: SynthesizeSummary = { written: [], skipped: [], needsReview: [] };
+  const summary: SynthesizeSummary = { written: [], skipped: [], needsReview: [], failed: [] };
 
   const conceptTitles: Record<string, string> = {};
   for (const concept of scanResult.concepts) conceptTitles[concept.id] = titleize(concept.id);
@@ -59,17 +126,32 @@ export async function synthesize(options: SynthesizeOptions): Promise<Synthesize
 
   // The LLM prose call is the expensive, rate-limit-bound step, so only this
   // part runs with bounded concurrency — everything else here is local fs I/O.
-  const regenerated = await mapWithConcurrency(toRegenerate, concurrency, async ({ facts, inputHash }) => {
-    const filePath = conceptFilePath(bundleDir, facts.id);
-    const preserved = readPreserved(await readIfExists(filePath));
-    const prose = await llm.describeConcept(facts);
-    const markdown = buildConceptMarkdown({ facts, prose, preserved, conceptTitles, groups: scanResult.groups });
-    await mkdir(path.dirname(filePath), { recursive: true });
-    await writeFile(filePath, markdown, "utf-8");
-    return { id: facts.id, inputHash, facts };
-  });
+  // Each concept's work is isolated in its own try/catch so one concept's LLM
+  // failure doesn't reject the whole batch and discard already-completed work
+  // (mapWithConcurrency has no built-in per-item error isolation).
+  const regenerated = await mapWithConcurrency<{ facts: ConceptFacts; inputHash: string }, RegenerateResult>(
+    toRegenerate,
+    concurrency,
+    async ({ facts, inputHash }) => {
+      try {
+        const filePath = conceptFilePath(bundleDir, facts.id);
+        const preserved = readPreserved(await readIfExists(filePath));
+        const prose = await llm.describeConcept(facts);
+        const markdown = buildConceptMarkdown({ facts, prose, preserved, conceptTitles, groups: scanResult.groups });
+        await mkdir(path.dirname(filePath), { recursive: true });
+        await writeFile(filePath, markdown, "utf-8");
+        return { status: "ok", id: facts.id, inputHash, facts };
+      } catch (err) {
+        return { status: "error", id: facts.id, error: err instanceof Error ? err.message : String(err) };
+      }
+    }
+  );
 
   for (const result of regenerated) {
+    if (result.status === "error") {
+      summary.failed.push({ id: result.id, error: result.error });
+      continue;
+    }
     manifest.concepts[result.id] = { inputHash: result.inputHash, facts: result.facts, lastScannedAt: now() };
     summary.written.push(result.id);
   }
@@ -91,8 +173,13 @@ export async function synthesize(options: SynthesizeOptions): Promise<Synthesize
 async function writeChildIndexes(bundleDir: string, scanResult: ScanResult, conceptTitles: Record<string, string>): Promise<void> {
   const childrenByContainer = new Map<string, ConceptFacts[]>();
   for (const facts of scanResult.concepts) {
-    if (!facts.id.includes("/")) continue;
-    const containerId = facts.id.slice(0, facts.id.lastIndexOf("/"));
+    // parentId (not facts.id's shape) is the authoritative link to a
+    // concept's container — see writeRootFiles, which filters top-level
+    // concepts by parentId === ROOT_CONTEXT_ID, not by id shape. A concept
+    // whose id doesn't mirror its parentId chain (e.g. "handler" with
+    // parentId "orders") must still land in its real container's index.md.
+    if (facts.parentId === null || facts.parentId === ROOT_CONTEXT_ID) continue;
+    const containerId = facts.parentId;
     childrenByContainer.set(containerId, [...(childrenByContainer.get(containerId) ?? []), facts]);
   }
 
