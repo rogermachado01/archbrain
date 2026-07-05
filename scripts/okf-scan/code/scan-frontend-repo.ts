@@ -1,7 +1,8 @@
 import path from "node:path";
 import ts from "typescript";
-import type { ConceptFacts, FactRelation } from "../types";
+import { ROOT_CONTEXT_ID, type ConceptFacts, type FactRelation } from "../types";
 import { findDescendants, listSourceFiles, parseSourceFile } from "./ts-source";
+import { isReservedPageFile, pagesRelativePath } from "./next-routes";
 
 function isExportedComponent(node: ts.Node): node is ts.FunctionDeclaration | ts.VariableStatement {
   if (ts.isFunctionDeclaration(node) && node.name && /^[A-Z]/.test(node.name.text)) {
@@ -10,6 +11,38 @@ function isExportedComponent(node: ts.Node): node is ts.FunctionDeclaration | ts
   if (ts.isVariableStatement(node)) {
     const isExported = node.modifiers?.some((m) => m.kind === ts.SyntaxKind.ExportKeyword) ?? false;
     return isExported && node.declarationList.declarations.some((d) => ts.isIdentifier(d.name) && /^[A-Z]/.test(d.name.text));
+  }
+  return false;
+}
+
+/**
+ * Matches Next.js's default-export page convention: `export default function Foo() {}`,
+ * or `const Foo = () => {...}; export default Foo;` (the shape actual Next.js pages use
+ * — see e.g. `pages/index.tsx` in `template-marketing-webapp-nextjs` — which
+ * `isExportedComponent` above deliberately does not match, since that page-specific
+ * shape would also match ordinary default-exported non-component modules).
+ */
+function isDefaultExportedComponent(source: ts.SourceFile): boolean {
+  for (const fn of findDescendants(source, ts.isFunctionDeclaration)) {
+    const isDefaultExport =
+      (fn.modifiers?.some((m) => m.kind === ts.SyntaxKind.ExportKeyword) ?? false) &&
+      (fn.modifiers?.some((m) => m.kind === ts.SyntaxKind.DefaultKeyword) ?? false);
+    if (isDefaultExport && fn.name && /^[A-Z]/.test(fn.name.text)) return true;
+  }
+
+  const defaultExportedNames = new Set<string>();
+  for (const exportAssignment of findDescendants(source, ts.isExportAssignment)) {
+    if (exportAssignment.isExportEquals) continue;
+    if (ts.isIdentifier(exportAssignment.expression)) defaultExportedNames.add(exportAssignment.expression.text);
+  }
+  if (defaultExportedNames.size === 0) return false;
+
+  for (const varStmt of findDescendants(source, ts.isVariableStatement)) {
+    for (const decl of varStmt.declarationList.declarations) {
+      if (ts.isIdentifier(decl.name) && /^[A-Z]/.test(decl.name.text) && defaultExportedNames.has(decl.name.text)) {
+        return true;
+      }
+    }
   }
   return false;
 }
@@ -31,18 +64,51 @@ export interface FrontendScanContext {
   apiBaseUrls: Record<string, string>;
 }
 
+interface ParsedFile {
+  file: string;
+  source: ts.SourceFile;
+  conceptId: string;
+  isPage: boolean;
+}
+
 export async function scanFrontendRepo(ctx: FrontendScanContext): Promise<ConceptFacts[]> {
   const files = await listSourceFiles(ctx.repoDir);
-  const concepts: ConceptFacts[] = [];
 
+  // Pass 1: discover every concept file (page or component) before computing any
+  // relations, so pass 2 can tell whether an import/link target is actually one of
+  // this repo's own scanned concepts.
+  const parsedFiles: ParsedFile[] = [];
   for (const file of files) {
     const source = await parseSourceFile(file);
-    if (findDescendants(source, isExportedComponent).length === 0) continue;
+    const pagesRelative = pagesRelativePath(file, ctx.repoDir);
+    const isReservedPage = pagesRelative !== undefined && isReservedPageFile(pagesRelative);
+    const isPage = pagesRelative !== undefined && !isReservedPage && isDefaultExportedComponent(source);
+    const isComponent = !isPage && findDescendants(source, isExportedComponent).length > 0;
+    if (!isPage && !isComponent) continue;
 
+    parsedFiles.push({
+      file,
+      source,
+      conceptId: `${ctx.containerId}/${path.basename(file, path.extname(file))}`,
+      isPage,
+    });
+  }
+
+  // Unlike a Lambda repo (whose container concept comes from the matching Terraform
+  // resource, see scan-terraform.ts), a frontend repo has no backing AWS resource to
+  // synthesize this from — without it, the components below would all declare a
+  // parentId that no concept ever defines, leaving them unreachable from the bundle's
+  // index.md link graph (okf-import.ts only discovers concepts by walking index.md
+  // links, never by listing a directory directly).
+  const concepts: ConceptFacts[] = [
+    { id: ctx.containerId, type: "Frontend Application", level: "container", parentId: ROOT_CONTEXT_ID, sourceFiles: [ctx.repoDir] },
+  ];
+
+  for (const parsed of parsedFiles) {
     const relations: FactRelation[] = [];
     const needsReview: string[] = [];
 
-    for (const url of findFetchUrls(source)) {
+    for (const url of findFetchUrls(parsed.source)) {
       const baseUrl = Object.keys(ctx.apiBaseUrls).find((prefix) => url.startsWith(prefix));
       if (!baseUrl) {
         needsReview.push(`fetch("${url}") does not match any known API base URL`);
@@ -56,12 +122,12 @@ export async function scanFrontendRepo(ctx: FrontendScanContext): Promise<Concep
     }
 
     concepts.push({
-      id: `${ctx.containerId}/${path.basename(file, path.extname(file))}`,
-      type: "React Component",
+      id: parsed.conceptId,
+      type: parsed.isPage ? "Next.js Page" : "React Component",
       level: "component",
       parentId: ctx.containerId,
       relations,
-      sourceFiles: [file],
+      sourceFiles: [parsed.file],
       needsReview: needsReview.length > 0 ? needsReview : undefined,
     });
   }
