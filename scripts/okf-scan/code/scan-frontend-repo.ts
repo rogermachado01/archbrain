@@ -48,6 +48,20 @@ function isDefaultExportedComponent(source: ts.SourceFile): boolean {
   return false;
 }
 
+/**
+ * A concept id ending in "/index" would collide with okf-import.ts's own reserved
+ * meaning for that suffix: `pathToId` strips a trailing "/index" segment, treating
+ * "<dir>/index.md" as that directory's own child-listing navigation file (written by
+ * synthesize.ts's writeChildIndexes), never a real concept — so a page literally named
+ * "index.tsx" (the home page of virtually every Next.js repo) needs a different file
+ * name to avoid silently colliding with, and being overwritten by, that listing file.
+ */
+function conceptIdForFile(containerId: string, file: string): string {
+  const base = path.basename(file, path.extname(file));
+  const safeBase = base === "index" ? "index-page" : base;
+  return `${containerId}/${safeBase}`;
+}
+
 function findFetchUrls(root: ts.Node): string[] {
   const urls: string[] = [];
   for (const call of findDescendants(root, ts.isCallExpression)) {
@@ -175,7 +189,7 @@ export async function scanFrontendRepo(ctx: FrontendScanContext): Promise<Concep
     parsedFiles.push({
       file,
       source,
-      conceptId: `${ctx.containerId}/${path.basename(file, path.extname(file))}`,
+      conceptId: conceptIdForFile(ctx.containerId, file),
       isPage,
     });
   }

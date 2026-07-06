@@ -53,8 +53,19 @@ describe("scanFrontendRepo — page detection", () => {
       apiBaseUrls: {},
     });
 
-    const homePage = concepts.find((c) => c.id === "web-storefront/index");
+    const homePage = concepts.find((c) => c.id === "web-storefront/index-page");
     expect(homePage).toMatchObject({ type: "Next.js Page", level: "component" });
+  });
+
+  it("does not derive a concept id ending in \"/index\" for a page literally named index.tsx, since okf-import.ts reserves that suffix for a directory's own child-listing navigation file (writeChildIndexes writes the container's own children to <containerId>/index.md, which would silently collide with — and be overwritten by — a same-named concept file)", async () => {
+    const concepts = await scanFrontendRepo({
+      repoDir: NEXTJS_FIXTURE_DIR,
+      containerId: "web-storefront",
+      apiBaseUrls: {},
+    });
+
+    expect(concepts.some((c) => c.id === "web-storefront/index")).toBe(false);
+    expect(concepts.some((c) => c.id === "web-storefront/index-page")).toBe(true);
   });
 
   it("does not scan a reserved page file (_app.tsx) as a concept at all", async () => {
@@ -100,7 +111,7 @@ describe("scanFrontendRepo — composition relations", () => {
       apiBaseUrls: {},
     });
 
-    const homePage = concepts.find((c) => c.id === "web-storefront/index")!;
+    const homePage = concepts.find((c) => c.id === "web-storefront/index-page")!;
     expect(homePage.relations).toContainEqual(
       expect.objectContaining({ targetId: "web-storefront/layout", kind: "sync" }),
     );
