@@ -90,10 +90,14 @@ the current `parent`, show only members whose `ddd.context` matches this cluster
 - Double-clicking a cluster node sets `cluster=<name>` via the existing `updateUrl` helper.
   Clicking a breadcrumb segment for the cluster (see below) or navigating to a different `parent`
   clears it.
-- Search results and any other direct navigation to a specific node (`?node=<id>`) must
-  auto-derive and set `cluster=<that node's ddd.context>` if its parent container currently
-  clusters — otherwise the target node would be deep-linked into a view that doesn't render it
-  (it's collapsed inside a cluster pseudo-node instead).
+- **Refinement found while tracing the actual code:** rather than requiring every navigation path
+  (search, deep links) to remember to explicitly set `cluster`, the effective cluster is a computed
+  fallback: `explicit ?cluster= param` if present and valid, **else** the selected node's own
+  cluster membership (looked up in `membershipByChildId`). This means `handleSearchNavigate` needs
+  no changes at all — setting `?node=<id>` alone already resolves to the right expanded cluster on
+  every render, since it's derived, not written once. The explicit param is still needed for
+  double-click-drill (no node is "selected" yet at that point) and for the breadcrumb's cluster
+  segment to be able to clear it distinctly from clearing `node`.
 
 ## Breadcrumb
 
@@ -123,12 +127,15 @@ simultaneously in the cluster-list view — not a general "always find some visi
 ## Rendering (`ArchitectureGraph.tsx`)
 
 Cluster pseudo-nodes go through the exact same `computeLayeredPositions` call as real nodes — no
-new layout code. They need a distinct visual treatment (a stack/group icon instead of an
-AWS/frontend icon, sublabel showing member count instead of `technology`) but reuse the existing
-`arch-node` X6 shape. `structuralIds` (used today to make AWS/BC group boxes non-interactive)
-must NOT include cluster ids — cluster nodes are fully interactive (single-click selects,
-double-click drills in, exactly like real nodes), just gated by `node.synthetic?.kind ===
-"bounded-context-cluster"` wherever the app currently branches on "is this a real resource."
+new layout code, and (confirmed by reading the actual click-handling code) **no changes to
+`ArchitectureGraph.tsx`'s click/drill handlers or `structuralIds` at all** — `structuralIds` is
+built purely from the boundary/group-box ids, never real `ArchNode` ids, so a cluster pseudo-node
+flows through as an ordinary, fully-interactive node automatically. The only `ArchitectureGraph.tsx`
+change needed is a new icon asset for cluster nodes (via the existing `node.icon` field — no
+sublabel/rendering code change either, since the existing sublabel fallback to `node.level.toUpperCase()`
+already conveys "these are components/containers" once `technology` is left unset). The member
+count is baked directly into `node.name` (e.g. `"Navigation Content (6)"`) rather than a separate
+field, so no new label-rendering logic is needed anywhere.
 
 **Single-click on a cluster** shows a lightweight synthetic summary in `DetailsPanel` (member
 count and the list of member names/types) rather than a real `aws.properties` block — it has no
@@ -136,15 +143,18 @@ AWS config to show. The Wiki tab is disabled for a cluster selection (no underly
 file), same disabled-state pattern already used today when the active `DataSource` has no
 `okfBasePath`.
 
-## Interaction with the existing "Bounded Context" box overlay
+## Interaction with the existing "Bounded Context" box overlay — actual fix required
 
-`computeBoundedContextBoxes`/the dashed box rendering (shipped in the prior DDD-organizer plan)
-stays as-is — no code removal. In practice it becomes dormant on the common path: once clustering
-is the default view for any tagged container, you rarely see two different `ddd_context` values
-rendered flat and simultaneously anymore (the one remaining case is two clusters' worth of nodes
-being visible at once, which no longer happens since clusters collapse first). It remains
-correct, harmless fallback code for any future scenario where multiple contexts do appear in the
-same flat view.
+**Correction from initial brainstorming:** this isn't a dormant edge case, it's a guaranteed
+regression. Once you drill into one specific cluster, every visible node shares the *same*
+`ddd_context` (that's the definition of being in that cluster) — so today's gate,
+`positions.some(({ node }) => node.ddd?.context)` (`ArchitectureGraph.tsx`), evaluates true on
+literally every cluster-drill-in and draws one dashed box around the *entire visible canvas*,
+duplicating the `ViewHeader` title with zero grouping information conveyed (a box needs ≥2 groups
+to mean anything). This must change to require **at least 2 distinct `ddd.context` values** among
+currently visible real nodes, not just "at least 1" — a small, generally-correct fix (not
+cluster-specific: a box conveying no contrast is always noise), needed as part of this plan
+rather than deferred.
 
 ## Testing
 
