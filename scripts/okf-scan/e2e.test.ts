@@ -106,4 +106,35 @@ describe("okf-scan end-to-end", () => {
     const orders = model.nodes.find((n) => n.id === "orders")!;
     expect(orders.groupId).toBe("groups/vpc-main/subnet-private_a");
   });
+
+  it("produces a valid bundle for a frontend route-hierarchy scan (context app → route containers → components)", async () => {
+    const scanResult: ScanResult = {
+      lambdaEnvVarBindings: {},
+      groups: [],
+      concepts: [
+        { id: "shop", type: "Frontend Application", level: "context", parentId: null, sourceFiles: [] },
+        { id: "shop/index-page", type: "Next.js Page", level: "container", parentId: "shop", routePath: "/", sourceFiles: [] },
+        {
+          id: "shop/index-page/hero", type: "React Component", level: "component", parentId: "shop/index-page",
+          usedByRoutes: ["/"], sourceFiles: [],
+        },
+        { id: "shop/shared-ui", type: "Shared UI & Utilities", level: "container", parentId: "shop", sourceFiles: [] },
+        { id: "shop/shared-ui/button", type: "React Component", level: "component", parentId: "shop/shared-ui", sourceFiles: [] },
+      ],
+    };
+
+    await synthesize({ scanResult, bundleDir, llm: fakeLlm });
+
+    const model = await importOkfBundle(BUNDLE_VIRTUAL_ROOT, makeFsIo(bundleDir)).then(validateArchModel);
+
+    expect(model.nodes.map((n) => n.id).sort()).toEqual([
+      "shop", "shop/index-page", "shop/index-page/hero", "shop/shared-ui", "shop/shared-ui/button",
+    ]);
+    expect(model.nodes.find((n) => n.id === "shop")).toMatchObject({ level: "context", parentId: null });
+    expect(model.nodes.find((n) => n.id === "shop/index-page")).toMatchObject({ level: "container", parentId: "shop" });
+    expect(model.nodes.find((n) => n.id === "shop/index-page/hero")).toMatchObject({ parentId: "shop/index-page" });
+    // frontend-only bundle: no platform node, no default AWS Cloud boundary
+    expect(model.nodes.some((n) => n.id === "platform")).toBe(false);
+    expect(model.boundary).toBe(false);
+  });
 });
