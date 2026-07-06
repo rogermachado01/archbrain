@@ -122,7 +122,10 @@ async function main(): Promise<void> {
   const frontendResults = freshness.filter((f) => f.ref.kind === "frontend");
   const frontendConceptLists = await mapWithConcurrency(frontendResults, args.concurrencyScan, async (result) => {
     if (!result.changed) {
-      return cachedConceptsFor(manifest, (f) => f.id === result.ref.key || f.parentId === result.ref.key);
+      // Nested route hierarchy: components' parentId is a route/shared-ui id, not
+      // the repo key — but every concept in this repo's tree has an id under the
+      // repo key's path (ids double as bundle paths).
+      return cachedConceptsFor(manifest, (f) => f.id === result.ref.key || f.id.startsWith(`${result.ref.key}/`));
     }
     const entry = config.frontend!.find((f) => basename(f.repo) === result.ref.key)!;
     return withContext(`scan frontend repo "${result.ref.key}" (path "${entry.repo}")`, async () => {

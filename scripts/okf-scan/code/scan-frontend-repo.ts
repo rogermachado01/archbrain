@@ -4,6 +4,8 @@ import { ROOT_CONTEXT_ID, type ConceptFacts, type FactRelation } from "../types"
 import { findDescendants, listSourceFiles, parseSourceFile } from "./ts-source";
 import { buildRouteTable, isReservedPageFile, matchRoute, pagesRelativePath } from "./next-routes";
 import { loadCompilerOptions, resolveImportedFile } from "./module-resolution";
+import { mergeGeneratedSatellites } from "./merge-generated";
+import { buildRouteHierarchy } from "./route-hierarchy";
 
 function isExportedComponent(node: ts.Node): node is ts.FunctionDeclaration | ts.VariableStatement {
   if (ts.isFunctionDeclaration(node) && node.name && /^[A-Z]/.test(node.name.text)) {
@@ -60,6 +62,14 @@ function conceptIdForFile(containerId: string, file: string): string {
   const base = path.basename(file, path.extname(file));
   const safeBase = base === "index" ? "index-page" : base;
   return `${containerId}/${safeBase}`;
+}
+
+/** "index" -> "/", "[slug]" -> "/[slug]", "blog/[slug]" -> "/blog/[slug]". */
+function routePathForPageFile(pagesRelative: string): string {
+  const withoutExt = pagesRelative.replace(/\.(tsx?|jsx?)$/, "");
+  const segments = withoutExt.split("/").filter(Boolean);
+  if (segments[segments.length - 1] === "index") segments.pop();
+  return `/${segments.join("/")}`;
 }
 
 function findFetchUrls(root: ts.Node): string[] {
@@ -265,11 +275,12 @@ export async function scanFrontendRepo(ctx: FrontendScanContext): Promise<Concep
       type: parsed.isPage ? "Next.js Page" : "React Component",
       level: "component",
       parentId: ctx.containerId,
+      routePath: parsed.isPage ? routePathForPageFile(pagesRelativePath(parsed.file, ctx.repoDir)!) : undefined,
       relations,
       sourceFiles: [parsed.file],
       needsReview: needsReview.length > 0 ? needsReview : undefined,
     });
   }
 
-  return concepts;
+  return buildRouteHierarchy(mergeGeneratedSatellites(concepts), ctx.containerId);
 }

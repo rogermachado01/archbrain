@@ -54,7 +54,7 @@ describe("scanFrontendRepo — page detection", () => {
     });
 
     const homePage = concepts.find((c) => c.id === "web-storefront/index-page");
-    expect(homePage).toMatchObject({ type: "Next.js Page", level: "component" });
+    expect(homePage).toMatchObject({ type: "Next.js Page", level: "container", parentId: "web-storefront", routePath: "/" });
   });
 
   it("does not derive a concept id ending in \"/index\" for a page literally named index.tsx, since okf-import.ts reserves that suffix for a directory's own child-listing navigation file (writeChildIndexes writes the container's own children to <containerId>/index.md, which would silently collide with — and be overwritten by — a same-named concept file)", async () => {
@@ -85,8 +85,8 @@ describe("scanFrontendRepo — page detection", () => {
       apiBaseUrls: {},
     });
 
-    const layout = concepts.find((c) => c.id === "web-storefront/layout");
-    expect(layout).toMatchObject({ type: "React Component", level: "component" });
+    const layout = concepts.find((c) => c.id === "web-storefront/index-page/layout");
+    expect(layout).toMatchObject({ type: "React Component", level: "component", parentId: "web-storefront/index-page" });
   });
 });
 
@@ -98,9 +98,9 @@ describe("scanFrontendRepo — composition relations", () => {
       apiBaseUrls: {},
     });
 
-    const layout = concepts.find((c) => c.id === "web-storefront/layout")!;
+    const layout = concepts.find((c) => c.id === "web-storefront/index-page/layout")!;
     expect(layout.relations).toContainEqual(
-      expect.objectContaining({ targetId: "web-storefront/header", kind: "sync" }),
+      expect.objectContaining({ targetId: "web-storefront/index-page/header", kind: "sync" }),
     );
   });
 
@@ -113,7 +113,7 @@ describe("scanFrontendRepo — composition relations", () => {
 
     const homePage = concepts.find((c) => c.id === "web-storefront/index-page")!;
     expect(homePage.relations).toContainEqual(
-      expect.objectContaining({ targetId: "web-storefront/layout", kind: "sync" }),
+      expect.objectContaining({ targetId: "web-storefront/index-page/layout", kind: "sync" }),
     );
   });
 
@@ -124,8 +124,8 @@ describe("scanFrontendRepo — composition relations", () => {
       apiBaseUrls: {},
     });
 
-    const layout = concepts.find((c) => c.id === "web-storefront/layout")!;
-    expect(layout.relations?.some((r) => r.targetId === "web-storefront/footer")).toBe(false);
+    const layout = concepts.find((c) => c.id === "web-storefront/index-page/layout")!;
+    expect(layout.relations?.some((r) => r.targetId === "web-storefront/shared-ui/footer")).toBe(false);
   });
 
   it("merges two separate import statements resolving to the same concept into a single relation", async () => {
@@ -135,8 +135,8 @@ describe("scanFrontendRepo — composition relations", () => {
       apiBaseUrls: {},
     });
 
-    const layout = concepts.find((c) => c.id === "web-storefront/layout")!;
-    const headerRelations = layout.relations?.filter((r) => r.targetId === "web-storefront/header") ?? [];
+    const layout = concepts.find((c) => c.id === "web-storefront/index-page/layout")!;
+    const headerRelations = layout.relations?.filter((r) => r.targetId === "web-storefront/index-page/header") ?? [];
     expect(headerRelations).toHaveLength(1);
     expect(headerRelations[0].evidence).toContain("Header");
     expect(headerRelations[0].evidence).toContain("HeaderProps");
@@ -149,7 +149,7 @@ describe("scanFrontendRepo — composition relations", () => {
       apiBaseUrls: {},
     });
 
-    const layout = concepts.find((c) => c.id === "web-storefront/layout")!;
+    const layout = concepts.find((c) => c.id === "web-storefront/index-page/layout")!;
     expect(layout.relations?.some((r) => r.evidence.includes("helpers"))).toBe(false);
     expect(layout.needsReview?.some((n) => n.includes("helpers"))).toBeFalsy();
   });
@@ -161,7 +161,7 @@ describe("scanFrontendRepo — composition relations", () => {
       apiBaseUrls: {},
     });
 
-    const layout = concepts.find((c) => c.id === "web-storefront/layout")!;
+    const layout = concepts.find((c) => c.id === "web-storefront/index-page/layout")!;
     expect(layout.relations?.some((r) => r.evidence.includes("SomeWidget"))).toBe(false);
     expect(layout.needsReview?.some((n) => n.includes("some-external-ui-lib"))).toBeFalsy();
   });
@@ -175,7 +175,7 @@ describe("scanFrontendRepo — navigation relations", () => {
       apiBaseUrls: {},
     });
 
-    const layout = concepts.find((c) => c.id === "web-storefront/layout")!;
+    const layout = concepts.find((c) => c.id === "web-storefront/index-page/layout")!;
     expect(layout.relations).toContainEqual(
       expect.objectContaining({ targetId: "web-storefront/about", kind: "sync" }),
     );
@@ -188,7 +188,7 @@ describe("scanFrontendRepo — navigation relations", () => {
       apiBaseUrls: {},
     });
 
-    const layout = concepts.find((c) => c.id === "web-storefront/layout")!;
+    const layout = concepts.find((c) => c.id === "web-storefront/index-page/layout")!;
     expect(layout.relations).toContainEqual(
       expect.objectContaining({ targetId: "web-storefront/[slug]", kind: "sync" }),
     );
@@ -201,7 +201,7 @@ describe("scanFrontendRepo — navigation relations", () => {
       apiBaseUrls: {},
     });
 
-    const layout = concepts.find((c) => c.id === "web-storefront/layout")!;
+    const layout = concepts.find((c) => c.id === "web-storefront/index-page/layout")!;
     expect(layout.needsReview).toContainEqual(
       expect.stringContaining("/deeply/nested/missing"),
     );
@@ -214,9 +214,40 @@ describe("scanFrontendRepo — navigation relations", () => {
       apiBaseUrls: {},
     });
 
-    const layout = concepts.find((c) => c.id === "web-storefront/layout")!;
+    const layout = concepts.find((c) => c.id === "web-storefront/index-page/layout")!;
     expect(layout.needsReview).toContainEqual(
       expect.stringContaining("non-literal"),
     );
+  });
+});
+
+describe("scanFrontendRepo — route hierarchy & satellite merge", () => {
+  it("promotes the app to a context-level system when the repo has pages", async () => {
+    const concepts = await scanFrontendRepo({ repoDir: NEXTJS_FIXTURE_DIR, containerId: "web-storefront", apiBaseUrls: {} });
+    expect(concepts.find((c) => c.id === "web-storefront")).toMatchObject({ level: "context", parentId: null });
+  });
+
+  it("parents a component no page reaches under a synthetic shared-ui container", async () => {
+    const concepts = await scanFrontendRepo({ repoDir: NEXTJS_FIXTURE_DIR, containerId: "web-storefront", apiBaseUrls: {} });
+    expect(concepts.find((c) => c.id === "web-storefront/shared-ui/footer")).toMatchObject({
+      parentId: "web-storefront/shared-ui",
+    });
+    expect(concepts.find((c) => c.id === "web-storefront/shared-ui")).toMatchObject({
+      type: "Shared UI & Utilities", level: "container", parentId: "web-storefront",
+    });
+  });
+
+  it("merges -gql/.generated satellites into one concept with all three source files", async () => {
+    const concepts = await scanFrontendRepo({ repoDir: NEXTJS_FIXTURE_DIR, containerId: "web-storefront", apiBaseUrls: {} });
+    const widget = concepts.find((c) => c.id === "web-storefront/shared-ui/widget")!;
+    expect(widget).toBeDefined();
+    expect(widget.sourceFiles).toHaveLength(3);
+    expect(concepts.some((c) => c.id.includes("widget-gql") || c.id.includes("widget.generated"))).toBe(false);
+    expect(widget.relations ?? []).toHaveLength(0); // intra-triplet imports became self-loops and were dropped
+  });
+
+  it("sets routePath on dynamic pages", async () => {
+    const concepts = await scanFrontendRepo({ repoDir: NEXTJS_FIXTURE_DIR, containerId: "web-storefront", apiBaseUrls: {} });
+    expect(concepts.find((c) => c.id === "web-storefront/[slug]")).toMatchObject({ routePath: "/[slug]" });
   });
 });
