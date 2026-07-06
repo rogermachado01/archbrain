@@ -132,14 +132,25 @@ function importedNameFor(importClause: ts.ImportClause | undefined, specifier: s
   return specifier;
 }
 
-/** Static import → "composition" relation: does file A import a component/page that's also a scanned concept in this same repo? Type-only imports and imports that don't resolve to another scanned concept (external packages, non-component files) are silently skipped — see the design doc's "Composition relations" section. */
+/**
+ * Static import → "composition" relation: does file A import a component/page that's
+ * also a scanned concept in this same repo? Type-only imports and imports that don't
+ * resolve to another scanned concept (external packages, non-component files) are
+ * silently skipped — see the design doc's "Composition relations" section.
+ *
+ * Two separate import declarations can resolve to the same target concept (e.g.
+ * GraphQL-codegen files commonly get imported once for a value binding and once more
+ * for a type-only or differently-named binding) — those are merged into a single
+ * relation per targetId, combining the imported names into one evidence string,
+ * rather than emitting duplicate overlapping edges for the same (source, target) pair.
+ */
 function findCompositionRelations(
   source: ts.SourceFile,
   containingFile: string,
   compilerOptions: ts.CompilerOptions,
   fileToConceptId: Map<string, string>
 ): FactRelation[] {
-  const relations: FactRelation[] = [];
+  const byTarget = new Map<string, { specifier: string; names: string[] }>();
   for (const imp of findDescendants(source, ts.isImportDeclaration)) {
     if (imp.importClause?.isTypeOnly) continue;
     if (!ts.isStringLiteral(imp.moduleSpecifier)) continue;
@@ -148,13 +159,16 @@ function findCompositionRelations(
     if (!resolved) continue;
     const targetId = fileToConceptId.get(path.resolve(resolved));
     if (!targetId) continue;
-    relations.push({
-      targetId,
-      kind: "sync",
-      evidence: `imports ${importedNameFor(imp.importClause, specifier)} from "${specifier}"`,
-    });
+    const name = importedNameFor(imp.importClause, specifier);
+    const existing = byTarget.get(targetId);
+    if (existing) existing.names.push(name);
+    else byTarget.set(targetId, { specifier, names: [name] });
   }
-  return relations;
+  return Array.from(byTarget, ([targetId, { specifier, names }]) => ({
+    targetId,
+    kind: "sync" as const,
+    evidence: `imports ${names.join(", ")} from "${specifier}"`,
+  }));
 }
 
 export interface FrontendScanContext {

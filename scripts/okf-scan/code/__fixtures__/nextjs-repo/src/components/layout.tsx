@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { Footer } from './footer';
 import { Header } from './header';
+import { HeaderProps } from './header';
 import { formatDate } from '../lib/helpers';
 import { SomeWidget } from 'some-external-ui-lib';
 

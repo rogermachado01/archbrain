@@ -128,6 +128,20 @@ describe("scanFrontendRepo — composition relations", () => {
     expect(layout.relations?.some((r) => r.targetId === "web-storefront/footer")).toBe(false);
   });
 
+  it("merges two separate import statements resolving to the same concept into a single relation", async () => {
+    const concepts = await scanFrontendRepo({
+      repoDir: NEXTJS_FIXTURE_DIR,
+      containerId: "web-storefront",
+      apiBaseUrls: {},
+    });
+
+    const layout = concepts.find((c) => c.id === "web-storefront/layout")!;
+    const headerRelations = layout.relations?.filter((r) => r.targetId === "web-storefront/header") ?? [];
+    expect(headerRelations).toHaveLength(1);
+    expect(headerRelations[0].evidence).toContain("Header");
+    expect(headerRelations[0].evidence).toContain("HeaderProps");
+  });
+
   it("does not create a relation or a needsReview note for an import that resolves but isn't a scanned concept", async () => {
     const concepts = await scanFrontendRepo({
       repoDir: NEXTJS_FIXTURE_DIR,
