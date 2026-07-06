@@ -8,6 +8,7 @@ import { syncWorktree } from "./git/worktree";
 import { loadManifest, saveManifest } from "./manifest";
 import { loadRepoMap } from "./repo-map";
 import { createAnthropicLlmClient } from "./synthesize/llm";
+import { createAnthropicOrganizerClient } from "./synthesize/organize";
 import { synthesize } from "./synthesize/synthesize";
 import { scanTerraform } from "./terraform/scan-terraform";
 import { emptyManifest, ROOT_CONTEXT_ID, type ConceptFacts, type Environment, type GroupFact, type ScanManifest } from "./types";
@@ -63,6 +64,16 @@ async function withOwners(concepts: ConceptFacts[], repoDir: string): Promise<Co
   );
 }
 
+/** Rethrows any error from `fn` prefixed with what step was running, so the CLI's final error message says why it failed, not just the raw git/fs error. */
+async function withContext<T>(step: string, fn: () => Promise<T>): Promise<T> {
+  try {
+    return await fn();
+  } catch (err) {
+    const reason = err instanceof Error ? err.message : String(err);
+    throw new Error(`okf-scan: failed to ${step}: ${reason}`);
+  }
+}
+
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   const config = await loadRepoMap(args.repoMap);
@@ -71,20 +82,23 @@ async function main(): Promise<void> {
   const freshness = await checkRepoFreshness(config, args.env, manifest, args.concurrencyGit);
   const freshByKey = new Map(freshness.map((f) => [f.ref.key, f]));
 
-  const terraformChanged = args.force || freshByKey.get("terraform")!.changed;
-  let concepts: ConceptFacts[];
-  let groups: GroupFact[];
-  let lambdaEnvVarBindings: Record<string, Record<string, string>>;
+  const terraformChanged = args.force || (freshByKey.get("terraform")?.changed ?? false);
+  let concepts: ConceptFacts[] = [];
+  let groups: GroupFact[] = [];
+  let lambdaEnvVarBindings: Record<string, Record<string, string>> = {};
 
-  if (terraformChanged) {
-    const tfResult = await scanTerraform(config.terraform, args.env);
-    concepts = tfResult.concepts;
-    groups = tfResult.groups;
-    lambdaEnvVarBindings = tfResult.lambdaEnvVarBindings;
-  } else {
-    concepts = cachedConceptsFor(manifest, (f) => f.parentId === ROOT_CONTEXT_ID);
-    groups = [];
-    lambdaEnvVarBindings = manifest.lambdaEnvVarBindings ?? {};
+  if (config.terraform) {
+    if (terraformChanged) {
+      const tfResult = await withContext(`scan terraform at "${config.terraform.path}"`, () =>
+        scanTerraform(config.terraform!, args.env)
+      );
+      concepts = tfResult.concepts;
+      groups = tfResult.groups;
+      lambdaEnvVarBindings = tfResult.lambdaEnvVarBindings;
+    } else {
+      concepts = cachedConceptsFor(manifest, (f) => f.parentId === ROOT_CONTEXT_ID);
+      lambdaEnvVarBindings = manifest.lambdaEnvVarBindings ?? {};
+    }
   }
 
   const lambdaResults = freshness.filter((f) => f.ref.kind === "lambda");
@@ -93,32 +107,40 @@ async function main(): Promise<void> {
     if (!result.changed && !terraformChanged) {
       return cachedConceptsFor(manifest, (f) => f.parentId === resourceName);
     }
-    const entry = config.resources[result.ref.key];
-    const worktreeDir = await syncWorktree(entry.repo, result.ref.key, entry.branch[args.env], args.env);
-    const scanned = await scanLambdaRepo({
-      repoDir: worktreeDir,
-      containerId: resourceName,
-      envVarBindings: lambdaEnvVarBindings[resourceName] ?? {},
+    const entry = config.resources![result.ref.key];
+    return withContext(`scan lambda repo "${result.ref.key}" (path "${entry.repo}")`, async () => {
+      const worktreeDir = await syncWorktree(entry.repo, result.ref.key, entry.branch[args.env], args.env);
+      const scanned = await scanLambdaRepo({
+        repoDir: worktreeDir,
+        containerId: resourceName,
+        envVarBindings: lambdaEnvVarBindings[resourceName] ?? {},
+      });
+      return withOwners(scanned, worktreeDir);
     });
-    return withOwners(scanned, worktreeDir);
   });
 
   const frontendResults = freshness.filter((f) => f.ref.kind === "frontend");
   const frontendConceptLists = await mapWithConcurrency(frontendResults, args.concurrencyScan, async (result) => {
-    if (!result.changed) return cachedConceptsFor(manifest, (f) => f.parentId === result.ref.key);
-    const entry = config.frontend.find((f) => basename(f.repo) === result.ref.key)!;
-    const worktreeDir = await syncWorktree(entry.repo, result.ref.key, entry.branch[args.env], args.env);
-    const scanned = await scanFrontendRepo({ repoDir: worktreeDir, containerId: result.ref.key, apiBaseUrls: {} });
-    return withOwners(scanned, worktreeDir);
+    if (!result.changed) {
+      return cachedConceptsFor(manifest, (f) => f.id === result.ref.key || f.parentId === result.ref.key);
+    }
+    const entry = config.frontend!.find((f) => basename(f.repo) === result.ref.key)!;
+    return withContext(`scan frontend repo "${result.ref.key}" (path "${entry.repo}")`, async () => {
+      const worktreeDir = await syncWorktree(entry.repo, result.ref.key, entry.branch[args.env], args.env);
+      const scanned = await scanFrontendRepo({ repoDir: worktreeDir, containerId: result.ref.key, apiBaseUrls: {} });
+      return withOwners(scanned, worktreeDir);
+    });
   });
 
   concepts = concepts.concat(lambdaConceptLists.flat(), frontendConceptLists.flat());
 
   const llm = createAnthropicLlmClient();
+  const organizer = createAnthropicOrganizerClient();
   const summary = await synthesize({
     scanResult: { concepts, groups, lambdaEnvVarBindings },
     bundleDir: args.out,
     llm,
+    organizer,
     force: args.force,
     concurrency: args.concurrencyLlm,
   });
