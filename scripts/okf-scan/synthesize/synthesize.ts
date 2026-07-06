@@ -95,6 +95,11 @@ function assertNoReservedGroupsCollision(concepts: ConceptFacts[]): void {
   }
 }
 
+/** Containers at or below this many children skip the organizer entirely — a
+ *  view this small is already scannable, and grouping it adds noise. Matches
+ *  the layout renderer's maxRowsPerLayer default plus headroom. */
+const ORGANIZE_MIN_CHILDREN = 9;
+
 type RegenerateResult =
   | { status: "ok"; id: string; inputHash: string; facts: ConceptFacts }
   | { status: "error"; id: string; error: string };
@@ -172,8 +177,8 @@ export async function synthesize(options: SynthesizeOptions): Promise<Synthesize
   // (and thus all skipped, byte-for-byte) would just be a wasted LLM call whose
   // output is never used.
   const regeneratingIds = new Set(toRegenerate.map((r) => r.facts.id));
-  const containersNeedingOrganizing = Array.from(childrenByParent.entries()).filter(([, children]) =>
-    children.some((c) => regeneratingIds.has(c.id)),
+  const containersNeedingOrganizing = Array.from(childrenByParent.entries()).filter(
+    ([, children]) => children.length >= ORGANIZE_MIN_CHILDREN && children.some((c) => regeneratingIds.has(c.id)),
   );
 
   const organizedByConceptId = new Map<string, ContextAssignment>();

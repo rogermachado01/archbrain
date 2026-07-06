@@ -316,6 +316,12 @@ describe("synthesize", () => {
   });
 
   it("never overwrites a concept's hand-set ddd_context with the organizer's assignment, but fills it in for a sibling with none", async () => {
+    // The organizer only runs for containers with > ORGANIZE_MIN_CHILDREN children (see
+    // synthesize.ts), so this container needs enough filler siblings to clear that bar —
+    // only "orders/handler" and "orders/validator" are asserted on below.
+    const filler = Array.from({ length: 7 }, (_, i) => ({
+      id: `orders/filler${i}`, type: "AWS Lambda Handler", level: "component" as const, parentId: "orders", sourceFiles: [],
+    }));
     const scanResult: ScanResult = {
       groups: [],
       lambdaEnvVarBindings: {},
@@ -323,6 +329,7 @@ describe("synthesize", () => {
         { id: "orders", type: "AWS Lambda Function", level: "container", parentId: "platform", sourceFiles: [] },
         { id: "orders/handler", type: "AWS Lambda Handler", level: "component", parentId: "orders", sourceFiles: [] },
         { id: "orders/validator", type: "AWS Lambda Handler", level: "component", parentId: "orders", sourceFiles: [] },
+        ...filler,
       ],
     };
 
@@ -356,5 +363,55 @@ describe("synthesize", () => {
 
     const validatorContent = await readFile(path.join(bundleDir, "orders", "validator.md"), "utf-8");
     expect(validatorContent).toContain("ddd_context: LLM Suggested Group");
+  });
+
+  it("does not call the organizer for a container with 8 or fewer children", async () => {
+    const organizedContainers: string[] = [];
+    const recordingOrganizer: OrganizerClient = {
+      async organizeChildren(containerId) {
+        organizedContainers.push(containerId);
+        return {};
+      },
+    };
+    const children = Array.from({ length: 8 }, (_, i) => ({
+      id: `small/c${i}`, type: "React Component", level: "component" as const, parentId: "small", sourceFiles: [],
+    }));
+    const scanResult: ScanResult = {
+      lambdaEnvVarBindings: {},
+      groups: [],
+      concepts: [
+        { id: "small", type: "Frontend Application", level: "container", parentId: "platform", sourceFiles: [] },
+        ...children,
+      ],
+    };
+
+    await synthesize({ scanResult, bundleDir, llm: fakeLlm().client, organizer: recordingOrganizer });
+
+    expect(organizedContainers).toEqual([]);
+  });
+
+  it("still calls the organizer for a container with 9 or more children", async () => {
+    const organizedContainers: string[] = [];
+    const recordingOrganizer: OrganizerClient = {
+      async organizeChildren(containerId) {
+        organizedContainers.push(containerId);
+        return {};
+      },
+    };
+    const children = Array.from({ length: 9 }, (_, i) => ({
+      id: `big/c${i}`, type: "React Component", level: "component" as const, parentId: "big", sourceFiles: [],
+    }));
+    const scanResult: ScanResult = {
+      lambdaEnvVarBindings: {},
+      groups: [],
+      concepts: [
+        { id: "big", type: "Frontend Application", level: "container", parentId: "platform", sourceFiles: [] },
+        ...children,
+      ],
+    };
+
+    await synthesize({ scanResult, bundleDir, llm: fakeLlm().client, organizer: recordingOrganizer });
+
+    expect(organizedContainers).toEqual(["big"]);
   });
 });

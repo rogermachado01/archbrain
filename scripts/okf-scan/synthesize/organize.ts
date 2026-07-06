@@ -34,7 +34,7 @@ export interface OrganizerClient {
 
 function buildPrompt(containerId: string, children: OrganizerChild[]): string {
   const lines = [
-    "You are grouping the components of one software container into a small number of named, coherent conceptual groups (bounded contexts) for an architecture diagram — the goal is to make a large flat list of components easy for a human to scan by clustering related ones together.",
+    "You are grouping the components of one software container into a small number of named, coherent conceptual groups (bounded contexts) for an architecture diagram — the goal is to make a large flat list of components easy for a human to scan by clustering related ones together. Create at most 8 groups in total (aim for 3-6), and never create a group with fewer than 3 members — fold what would be a tiny group into the most closely related larger one instead.",
     `Container: ${containerId}`,
     `Components (${children.length}):`,
     ...children.map((c) => {
