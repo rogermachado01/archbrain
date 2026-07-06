@@ -21,10 +21,13 @@ npm run build    # production build (also runs the TypeScript check)
 npm run start    # serve the production build
 npm run lint     # ESLint (flat config, eslint.config.mjs)
 npm run validate # validates every DATA_SOURCES entry (see "Data sources" below)
-npx tsc --noEmit -p .   # type-check only, no test runner is configured yet
+npx vitest run          # unit tests (scripts/okf-scan/**, src/lib/**)
+npx tsc --noEmit -p .   # type-check only
 ```
 
-There is no test suite yet — do not assume a `test` script exists.
+`npm run test` runs the full Vitest suite (`scripts/okf-scan/**/*.test.ts` and
+`src/lib/**/*.test.ts`). There is still no automated test coverage for React components
+(`src/components/**`) — those are verified manually in a browser; see "Rendering pipeline" below.
 
 ## Important: Next.js version is newer than training data
 

@@ -13,6 +13,6 @@ export default defineConfig({
     },
   },
   test: {
-    include: ["scripts/**/*.test.ts"],
+    include: ["scripts/**/*.test.ts", "src/**/*.test.ts"],
   },
 });
