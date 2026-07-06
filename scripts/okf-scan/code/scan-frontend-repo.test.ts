@@ -141,3 +141,57 @@ describe("scanFrontendRepo — composition relations", () => {
     expect(layout.needsReview?.some((n) => n.includes("some-external-ui-lib"))).toBeFalsy();
   });
 });
+
+describe("scanFrontendRepo — navigation relations", () => {
+  it("creates a relation for a <Link href> matching a static page route", async () => {
+    const concepts = await scanFrontendRepo({
+      repoDir: NEXTJS_FIXTURE_DIR,
+      containerId: "web-storefront",
+      apiBaseUrls: {},
+    });
+
+    const layout = concepts.find((c) => c.id === "web-storefront/layout")!;
+    expect(layout.relations).toContainEqual(
+      expect.objectContaining({ targetId: "web-storefront/about", kind: "sync" }),
+    );
+  });
+
+  it("creates a relation for a router.push(...) literal matching a dynamic page route", async () => {
+    const concepts = await scanFrontendRepo({
+      repoDir: NEXTJS_FIXTURE_DIR,
+      containerId: "web-storefront",
+      apiBaseUrls: {},
+    });
+
+    const layout = concepts.find((c) => c.id === "web-storefront/layout")!;
+    expect(layout.relations).toContainEqual(
+      expect.objectContaining({ targetId: "web-storefront/[slug]", kind: "sync" }),
+    );
+  });
+
+  it("adds a needsReview note for a <Link href> that matches no known page route", async () => {
+    const concepts = await scanFrontendRepo({
+      repoDir: NEXTJS_FIXTURE_DIR,
+      containerId: "web-storefront",
+      apiBaseUrls: {},
+    });
+
+    const layout = concepts.find((c) => c.id === "web-storefront/layout")!;
+    expect(layout.needsReview).toContainEqual(
+      expect.stringContaining("/deeply/nested/missing"),
+    );
+  });
+
+  it("adds a needsReview note for a router.push(...) with an interpolated (non-literal) target", async () => {
+    const concepts = await scanFrontendRepo({
+      repoDir: NEXTJS_FIXTURE_DIR,
+      containerId: "web-storefront",
+      apiBaseUrls: {},
+    });
+
+    const layout = concepts.find((c) => c.id === "web-storefront/layout")!;
+    expect(layout.needsReview).toContainEqual(
+      expect.stringContaining("non-literal"),
+    );
+  });
+});

@@ -2,7 +2,7 @@ import path from "node:path";
 import ts from "typescript";
 import { ROOT_CONTEXT_ID, type ConceptFacts, type FactRelation } from "../types";
 import { findDescendants, listSourceFiles, parseSourceFile } from "./ts-source";
-import { isReservedPageFile, pagesRelativePath } from "./next-routes";
+import { buildRouteTable, isReservedPageFile, matchRoute, pagesRelativePath } from "./next-routes";
 import { loadCompilerOptions, resolveImportedFile } from "./module-resolution";
 
 function isExportedComponent(node: ts.Node): node is ts.FunctionDeclaration | ts.VariableStatement {
@@ -56,6 +56,54 @@ function findFetchUrls(root: ts.Node): string[] {
     if (arg && ts.isStringLiteral(arg)) urls.push(arg.text);
   }
   return urls;
+}
+
+function extractStringLiteral(node: ts.Node | undefined): string | null {
+  if (!node) return null;
+  if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) return node.text;
+  if (ts.isJsxExpression(node) && node.expression) return extractStringLiteral(node.expression);
+  return null;
+}
+
+interface NavigationTarget {
+  /** The literal path, or null when a Link/router.push was found but its target isn't a static string (e.g. a template literal with interpolation). */
+  literal: string | null;
+  description: string;
+}
+
+/** Finds `<Link href="...">` and `router.push("...")`/`Router.push("...")` call sites. Matches purely on tag/identifier name, not import provenance — see the design doc's "Navigation relations" section for why that's an acceptable simplification. */
+function findNavigationTargets(root: ts.Node): NavigationTarget[] {
+  const targets: NavigationTarget[] = [];
+
+  for (const jsx of findDescendants(
+    root,
+    (n): n is ts.JsxOpeningElement | ts.JsxSelfClosingElement => ts.isJsxOpeningElement(n) || ts.isJsxSelfClosingElement(n),
+  )) {
+    if (!ts.isIdentifier(jsx.tagName) || jsx.tagName.text !== "Link") continue;
+    const hrefAttr = jsx.attributes.properties.find(
+      (p): p is ts.JsxAttribute => ts.isJsxAttribute(p) && p.name.getText() === "href",
+    );
+    if (!hrefAttr) continue;
+    const literal = extractStringLiteral(hrefAttr.initializer);
+    targets.push({
+      literal,
+      description: literal ? `<Link href="${literal}">` : `<Link href={...}> with a non-literal value`,
+    });
+  }
+
+  for (const call of findDescendants(root, ts.isCallExpression)) {
+    if (!ts.isPropertyAccessExpression(call.expression) || call.expression.name.text !== "push") continue;
+    if (!ts.isIdentifier(call.expression.expression)) continue;
+    if (!["router", "Router"].includes(call.expression.expression.text)) continue;
+    const [arg] = call.arguments;
+    const literal = extractStringLiteral(arg);
+    targets.push({
+      literal,
+      description: literal ? `router.push("${literal}")` : "router.push(...) with a non-literal value",
+    });
+  }
+
+  return targets;
 }
 
 function importedNameFor(importClause: ts.ImportClause | undefined, specifier: string): string {
@@ -142,6 +190,17 @@ export async function scanFrontendRepo(ctx: FrontendScanContext): Promise<Concep
   const fileToConceptId = new Map<string, string>(
     parsedFiles.map((p) => [path.resolve(p.file), p.conceptId]),
   );
+  const routeTable = buildRouteTable(
+    parsedFiles
+      .filter((p) => p.isPage)
+      .map((p) => ({ conceptId: p.conceptId, pagesRelative: pagesRelativePath(p.file, ctx.repoDir)! }))
+      // `matchRoute` returns the first match in table order, so literal routes (e.g.
+      // "about.tsx") must be listed ahead of dynamic ones (e.g. "[slug].tsx") — otherwise
+      // a dynamic segment greedily matches a literal href that has an equally-specific
+      // literal page of its own. `listSourceFiles`' alphabetical sort puts "[slug].tsx"
+      // before "about.tsx" (ASCII "[" < "a"), so without this the wrong page would win.
+      .sort((a, b) => Number(a.pagesRelative.includes("[")) - Number(b.pagesRelative.includes("["))),
+  );
 
   const concepts: ConceptFacts[] = [
     { id: ctx.containerId, type: "Frontend Application", level: "container", parentId: ROOT_CONTEXT_ID, sourceFiles: [ctx.repoDir] },
@@ -165,6 +224,19 @@ export async function scanFrontendRepo(ctx: FrontendScanContext): Promise<Concep
     }
 
     relations.push(...findCompositionRelations(parsed.source, parsed.file, compilerOptions, fileToConceptId));
+
+    for (const nav of findNavigationTargets(parsed.source)) {
+      if (nav.literal === null) {
+        needsReview.push(`${nav.description} does not resolve to a static path`);
+        continue;
+      }
+      const targetId = matchRoute(nav.literal, routeTable);
+      if (!targetId) {
+        needsReview.push(`${nav.description} does not match any known page route`);
+        continue;
+      }
+      relations.push({ targetId, kind: "sync", evidence: `${nav.description} resolves to page "${targetId}"` });
+    }
 
     concepts.push({
       id: parsed.conceptId,
