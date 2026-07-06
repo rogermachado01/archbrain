@@ -3,6 +3,7 @@ import ts from "typescript";
 import { ROOT_CONTEXT_ID, type ConceptFacts, type FactRelation } from "../types";
 import { findDescendants, listSourceFiles, parseSourceFile } from "./ts-source";
 import { isReservedPageFile, pagesRelativePath } from "./next-routes";
+import { loadCompilerOptions, resolveImportedFile } from "./module-resolution";
 
 function isExportedComponent(node: ts.Node): node is ts.FunctionDeclaration | ts.VariableStatement {
   if (ts.isFunctionDeclaration(node) && node.name && /^[A-Z]/.test(node.name.text)) {
@@ -57,6 +58,43 @@ function findFetchUrls(root: ts.Node): string[] {
   return urls;
 }
 
+function importedNameFor(importClause: ts.ImportClause | undefined, specifier: string): string {
+  if (!importClause) return specifier;
+  if (importClause.name) return importClause.name.text;
+  if (importClause.namedBindings && ts.isNamedImports(importClause.namedBindings)) {
+    return importClause.namedBindings.elements.map((e) => e.name.text).join(", ");
+  }
+  if (importClause.namedBindings && ts.isNamespaceImport(importClause.namedBindings)) {
+    return importClause.namedBindings.name.text;
+  }
+  return specifier;
+}
+
+/** Static import → "composition" relation: does file A import a component/page that's also a scanned concept in this same repo? Type-only imports and imports that don't resolve to another scanned concept (external packages, non-component files) are silently skipped — see the design doc's "Composition relations" section. */
+function findCompositionRelations(
+  source: ts.SourceFile,
+  containingFile: string,
+  compilerOptions: ts.CompilerOptions,
+  fileToConceptId: Map<string, string>
+): FactRelation[] {
+  const relations: FactRelation[] = [];
+  for (const imp of findDescendants(source, ts.isImportDeclaration)) {
+    if (imp.importClause?.isTypeOnly) continue;
+    if (!ts.isStringLiteral(imp.moduleSpecifier)) continue;
+    const specifier = imp.moduleSpecifier.text;
+    const resolved = resolveImportedFile(specifier, containingFile, compilerOptions);
+    if (!resolved) continue;
+    const targetId = fileToConceptId.get(path.resolve(resolved));
+    if (!targetId) continue;
+    relations.push({
+      targetId,
+      kind: "sync",
+      evidence: `imports ${importedNameFor(imp.importClause, specifier)} from "${specifier}"`,
+    });
+  }
+  return relations;
+}
+
 export interface FrontendScanContext {
   repoDir: string;
   containerId: string;
@@ -100,6 +138,11 @@ export async function scanFrontendRepo(ctx: FrontendScanContext): Promise<Concep
   // parentId that no concept ever defines, leaving them unreachable from the bundle's
   // index.md link graph (okf-import.ts only discovers concepts by walking index.md
   // links, never by listing a directory directly).
+  const compilerOptions = loadCompilerOptions(ctx.repoDir);
+  const fileToConceptId = new Map<string, string>(
+    parsedFiles.map((p) => [path.resolve(p.file), p.conceptId]),
+  );
+
   const concepts: ConceptFacts[] = [
     { id: ctx.containerId, type: "Frontend Application", level: "container", parentId: ROOT_CONTEXT_ID, sourceFiles: [ctx.repoDir] },
   ];
@@ -120,6 +163,8 @@ export async function scanFrontendRepo(ctx: FrontendScanContext): Promise<Concep
         evidence: `fetch("${url}") matches configured API base URL "${baseUrl}"`,
       });
     }
+
+    relations.push(...findCompositionRelations(parsed.source, parsed.file, compilerOptions, fileToConceptId));
 
     concepts.push({
       id: parsed.conceptId,

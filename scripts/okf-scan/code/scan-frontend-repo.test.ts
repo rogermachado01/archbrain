@@ -78,3 +78,66 @@ describe("scanFrontendRepo — page detection", () => {
     expect(layout).toMatchObject({ type: "React Component", level: "component" });
   });
 });
+
+describe("scanFrontendRepo — composition relations", () => {
+  it("creates a relation for a relative import of another scanned component", async () => {
+    const concepts = await scanFrontendRepo({
+      repoDir: NEXTJS_FIXTURE_DIR,
+      containerId: "web-storefront",
+      apiBaseUrls: {},
+    });
+
+    const layout = concepts.find((c) => c.id === "web-storefront/layout")!;
+    expect(layout.relations).toContainEqual(
+      expect.objectContaining({ targetId: "web-storefront/header", kind: "sync" }),
+    );
+  });
+
+  it("creates a relation for a tsconfig path-aliased import of another scanned component", async () => {
+    const concepts = await scanFrontendRepo({
+      repoDir: NEXTJS_FIXTURE_DIR,
+      containerId: "web-storefront",
+      apiBaseUrls: {},
+    });
+
+    const homePage = concepts.find((c) => c.id === "web-storefront/index")!;
+    expect(homePage.relations).toContainEqual(
+      expect.objectContaining({ targetId: "web-storefront/layout", kind: "sync" }),
+    );
+  });
+
+  it("does not create a relation for a type-only import, even of a real scanned component", async () => {
+    const concepts = await scanFrontendRepo({
+      repoDir: NEXTJS_FIXTURE_DIR,
+      containerId: "web-storefront",
+      apiBaseUrls: {},
+    });
+
+    const layout = concepts.find((c) => c.id === "web-storefront/layout")!;
+    expect(layout.relations?.some((r) => r.targetId === "web-storefront/footer")).toBe(false);
+  });
+
+  it("does not create a relation or a needsReview note for an import that resolves but isn't a scanned concept", async () => {
+    const concepts = await scanFrontendRepo({
+      repoDir: NEXTJS_FIXTURE_DIR,
+      containerId: "web-storefront",
+      apiBaseUrls: {},
+    });
+
+    const layout = concepts.find((c) => c.id === "web-storefront/layout")!;
+    expect(layout.relations?.some((r) => r.evidence.includes("helpers"))).toBe(false);
+    expect(layout.needsReview?.some((n) => n.includes("helpers"))).toBeFalsy();
+  });
+
+  it("does not create a relation or a needsReview note for an import that can't be resolved at all (external package)", async () => {
+    const concepts = await scanFrontendRepo({
+      repoDir: NEXTJS_FIXTURE_DIR,
+      containerId: "web-storefront",
+      apiBaseUrls: {},
+    });
+
+    const layout = concepts.find((c) => c.id === "web-storefront/layout")!;
+    expect(layout.relations?.some((r) => r.evidence.includes("SomeWidget"))).toBe(false);
+    expect(layout.needsReview?.some((n) => n.includes("some-external-ui-lib"))).toBeFalsy();
+  });
+});
