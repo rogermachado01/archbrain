@@ -94,4 +94,13 @@ describe("buildRouteHierarchy", () => {
       buildRouteHierarchy([app(), page("index-page", "/"), comp("shared-ui"), comp("x")], APP),
     ).toThrow(/shared-ui/);
   });
+
+  it("throws when two components with the same leaf name would collide under the same new parent", () => {
+    expect(() =>
+      buildRouteHierarchy(
+        [app(), page("index-page", "/"), comp("feature-a/header"), comp("feature-b/header")],
+        APP,
+      ),
+    ).toThrow(/would both become/);
+  });
 });

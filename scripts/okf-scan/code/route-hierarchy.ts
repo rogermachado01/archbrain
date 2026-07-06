@@ -55,7 +55,18 @@ export function buildRouteHierarchy(concepts: ConceptFacts[], containerId: strin
   };
 
   const idMap = new Map<string, string>();
-  for (const id of componentIds) idMap.set(id, `${parentFor(id)}/${id.split("/").pop()}`);
+  const newIdOwners = new Map<string, string>();
+  for (const id of componentIds) {
+    const newId = `${parentFor(id)}/${id.split("/").pop()}`;
+    const existingOwner = newIdOwners.get(newId);
+    if (existingOwner !== undefined) {
+      throw new Error(
+        `buildRouteHierarchy: components "${existingOwner}" and "${id}" would both become "${newId}" — rename one of the source files to avoid an id collision.`,
+      );
+    }
+    newIdOwners.set(newId, id);
+    idMap.set(id, newId);
+  }
 
   const rewriteRelations = (c: ConceptFacts): ConceptFacts =>
     c.relations
