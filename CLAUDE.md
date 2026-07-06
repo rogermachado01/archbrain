@@ -398,6 +398,30 @@ in `ArchitectureGraph.tsx`'s `GROUP_STYLE` map, deliberately **not** looked up v
 *service* icons; group/boundary icons are a closed, structural set of 4). There is no official
 icon for "Availability Zone" — its box is dashed with no icon, matching AWS's own convention.
 
+### Bounded-context cluster navigation (`src/lib/clusters.ts`)
+
+A container whose children have `ddd.context` set doesn't render all of them flat — `ArchVizApp`
+derives a `ClusterView` (`computeClusterView` in `src/lib/clusters.ts`) that collapses each
+distinct context into one synthetic, clickable `ArchNode` (id-prefixed `__cluster__:`, flagged via
+`ArchNode.synthetic`), plus an "Outros" cluster for any untagged sibling. Double-clicking a
+cluster behaves exactly like drilling into a real container (`ArchitectureGraph.tsx` needs no
+special-casing for this — a cluster pseudo-node is just an ordinary drillable `ArchNode` to it),
+setting a `?cluster=` URL param scoped to the current `?parent=`. The **effective** cluster shown
+is that explicit param, or — if unset — whatever cluster the currently-selected node
+(`?node=`) belongs to; this fallback is what lets search/deep-links to a specific tagged node work
+with no special-casing at all, since `?node=<id>` alone resolves to the right expanded cluster on
+every render. Relations between two different clusters of the same container roll up to edges
+between the cluster ids via `getRelationsForViewWithRollup`'s optional `clusterOverride` parameter
+(`src/lib/model.ts`) — scoped only to siblings of one container's cluster list, not a general
+"always find some visible node" search; drilling into one specific cluster drops relations to a
+sibling cluster's member, matching the pre-existing sibling-container rollup behavior. Selecting a
+cluster (single click) shows a member-count summary in `DetailsPanel` instead of a real
+`aws.properties` block, and disables the Wiki tab (no underlying markdown file for a synthetic
+node). The existing "Bounded Context" box overlay (`computeBoundedContextBoxes`) requires **at
+least 2** distinct `ddd.context` values among visible nodes to draw a box, not just 1 — otherwise
+every single-cluster drill-in (where all visible nodes share one context by definition) would draw
+a pointless box around the entire view.
+
 ### AWS visual style (`public/aws-icons/`, `src/data/aws-icon-manifest.json`)
 
 Node icons are the official **AWS Architecture Icons** (square, category-colored SVGs — the
