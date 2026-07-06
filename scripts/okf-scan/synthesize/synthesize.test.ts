@@ -1,9 +1,10 @@
-import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { ConceptFacts, GroupFact, ScanResult } from "../types";
 import type { LlmClient } from "./llm";
+import type { ContextAssignment, OrganizerClient } from "./organize";
 import { synthesize } from "./synthesize";
 
 function fakeLlm(): { client: LlmClient; calls: ConceptFacts[] } {
@@ -312,5 +313,48 @@ describe("synthesize", () => {
     const ordersContent = await readFile(path.join(bundleDir, "orders.md"), "utf-8");
     expect(ordersContent).toContain("[Orders Table](orders_table.md) — Writes new orders to the table {kind: sync}");
     expect(ordersContent).not.toContain("PutItemCommand");
+  });
+
+  it("never overwrites a concept's hand-set ddd_context with the organizer's assignment, but fills it in for a sibling with none", async () => {
+    const scanResult: ScanResult = {
+      groups: [],
+      lambdaEnvVarBindings: {},
+      concepts: [
+        { id: "orders", type: "AWS Lambda Function", level: "container", parentId: "platform", sourceFiles: [] },
+        { id: "orders/handler", type: "AWS Lambda Handler", level: "component", parentId: "orders", sourceFiles: [] },
+        { id: "orders/validator", type: "AWS Lambda Handler", level: "component", parentId: "orders", sourceFiles: [] },
+      ],
+    };
+
+    // Pre-seed orders/handler.md with a hand-set ddd_context, as if a human already
+    // curated it before this run.
+    await mkdir(path.join(bundleDir, "orders"), { recursive: true });
+    await writeFile(
+      path.join(bundleDir, "orders", "handler.md"),
+      ["---", "type: AWS Lambda Handler", "title: Handler", "ddd_context: Hand Curated Group", "---", "", "Old prose."].join(
+        "\n",
+      ),
+    );
+
+    const { client } = fakeLlm();
+    const organizer: OrganizerClient = {
+      async organizeChildren(containerId) {
+        if (containerId !== "orders") return {};
+        const assignments: Record<string, ContextAssignment> = {};
+        for (const childId of ["orders/handler", "orders/validator"]) {
+          assignments[childId] = { context: "LLM Suggested Group" };
+        }
+        return assignments;
+      },
+    };
+
+    await synthesize({ scanResult, bundleDir, llm: client, organizer });
+
+    const handlerContent = await readFile(path.join(bundleDir, "orders", "handler.md"), "utf-8");
+    expect(handlerContent).toContain("ddd_context: Hand Curated Group");
+    expect(handlerContent).not.toContain("LLM Suggested Group");
+
+    const validatorContent = await readFile(path.join(bundleDir, "orders", "validator.md"), "utf-8");
+    expect(validatorContent).toContain("ddd_context: LLM Suggested Group");
   });
 });

@@ -4,13 +4,16 @@ import { mapWithConcurrency } from "../concurrency";
 import { hashJson } from "../hash";
 import { loadManifest, saveManifest } from "../manifest";
 import { emptyManifest, ROOT_CONTEXT_ID, type ConceptFacts, type GroupFact, type ScanManifest, type ScanResult } from "../types";
-import { buildConceptMarkdown, readPreserved, titleize } from "./markdown";
+import { buildConceptMarkdown, readPreserved, titleize, type ExistingConceptFile } from "./markdown";
 import type { LlmClient } from "./llm";
+import type { ContextAssignment, OrganizerClient } from "./organize";
 
 export interface SynthesizeOptions {
   scanResult: ScanResult;
   bundleDir: string;
   llm: LlmClient;
+  /** Assigns ddd_context/subdomain/role per container. Defaults to a no-op (no auto-assignment) when omitted, so existing callers/tests are unaffected. */
+  organizer?: OrganizerClient;
   force?: boolean;
   /** max concurrent LLM prose calls; the rate-limit-bound stage, so this stays low by default */
   concurrency?: number;
@@ -96,8 +99,31 @@ type RegenerateResult =
   | { status: "ok"; id: string; inputHash: string; facts: ConceptFacts }
   | { status: "error"; id: string; error: string };
 
+/**
+ * Default `organizer` when `SynthesizeOptions.organizer` is omitted — returns no
+ * assignments for any container, so behavior is unchanged for existing callers/tests.
+ * Declared as a standalone, explicitly-typed constant (rather than inlined in the
+ * destructuring default below) so `organizeChildren`'s return type is checked against
+ * `OrganizerClient` instead of being inferred as `Promise<{}>` from the empty-object
+ * literal, which would otherwise make every downstream consumer of its result type as
+ * `unknown`.
+ */
+const NOOP_ORGANIZER: OrganizerClient = {
+  async organizeChildren() {
+    return {};
+  },
+};
+
 export async function synthesize(options: SynthesizeOptions): Promise<SynthesizeSummary> {
-  const { scanResult, bundleDir, llm, force = false, concurrency = 6, now = () => new Date().toISOString() } = options;
+  const {
+    scanResult,
+    bundleDir,
+    llm,
+    organizer = NOOP_ORGANIZER,
+    force = false,
+    concurrency = 6,
+    now = () => new Date().toISOString(),
+  } = options;
 
   // Validate up front, before any LLM calls or file writes: a bad `groups`
   // array or a reserved-name collision should fail fast with a clear message
@@ -124,6 +150,50 @@ export async function synthesize(options: SynthesizeOptions): Promise<Synthesize
     toRegenerate.push({ facts, inputHash });
   }
 
+  // Read every concept's currently-preserved ddd_* fields upfront (not just
+  // regenerating ones) — the organizer needs a complete, container-by-container
+  // sibling picture, including concepts that aren't changing this run, and any of
+  // them might carry a hand-set ddd_context to anchor the organizer's naming
+  // choices around.
+  const preservedByConceptId = new Map<string, ExistingConceptFile>();
+  for (const facts of scanResult.concepts) {
+    preservedByConceptId.set(facts.id, readPreserved(await readIfExists(conceptFilePath(bundleDir, facts.id))));
+  }
+
+  const childrenByParent = new Map<string, ConceptFacts[]>();
+  for (const facts of scanResult.concepts) {
+    if (facts.parentId === null) continue;
+    childrenByParent.set(facts.parentId, [...(childrenByParent.get(facts.parentId) ?? []), facts]);
+  }
+
+  // Only organize containers that actually have a regenerating child this run — an
+  // organizer assignment is only ever consumed by a concept that's being (re)written
+  // below, so calling the organizer for a container whose children are all unchanged
+  // (and thus all skipped, byte-for-byte) would just be a wasted LLM call whose
+  // output is never used.
+  const regeneratingIds = new Set(toRegenerate.map((r) => r.facts.id));
+  const containersNeedingOrganizing = Array.from(childrenByParent.entries()).filter(([, children]) =>
+    children.some((c) => regeneratingIds.has(c.id)),
+  );
+
+  const organizedByConceptId = new Map<string, ContextAssignment>();
+  await mapWithConcurrency(containersNeedingOrganizing, concurrency, async ([parentId, children]) => {
+    try {
+      const assignments = await organizer.organizeChildren(
+        parentId,
+        children.map((c) => ({ facts: c, existingContext: preservedByConceptId.get(c.id)?.ddd_context })),
+      );
+      for (const [childId, assignment] of Object.entries(assignments)) {
+        organizedByConceptId.set(childId, assignment);
+      }
+    } catch {
+      // Soft-degrade: this container's children simply get no auto-assignment this
+      // run, same philosophy as the relation-label enrichment fallback — an
+      // organizer hiccup for one container must never block synthesis for any
+      // concept, in this container or any other.
+    }
+  });
+
   // The LLM prose call is the expensive, rate-limit-bound step, so only this
   // part runs with bounded concurrency — everything else here is local fs I/O.
   // Each concept's work is isolated in its own try/catch so one concept's LLM
@@ -135,7 +205,14 @@ export async function synthesize(options: SynthesizeOptions): Promise<Synthesize
     async ({ facts, inputHash }) => {
       try {
         const filePath = conceptFilePath(bundleDir, facts.id);
-        const preserved = readPreserved(await readIfExists(filePath));
+        const preserved = preservedByConceptId.get(facts.id)!;
+        const organized = organizedByConceptId.get(facts.id);
+        const preservedWithOrganizer: ExistingConceptFile = {
+          ...preserved,
+          ddd_context: preserved.ddd_context ?? organized?.context,
+          ddd_subdomain: preserved.ddd_subdomain ?? organized?.subdomain,
+          ddd_role: preserved.ddd_role ?? organized?.role,
+        };
         const description = await llm.describeConcept(facts);
         // factsForMarkdown is a scratch copy carrying the LLM's relation labels,
         // used only for this concept's markdown output — the manifest still stores
@@ -152,7 +229,7 @@ export async function synthesize(options: SynthesizeOptions): Promise<Synthesize
         const markdown = buildConceptMarkdown({
           facts: factsForMarkdown,
           prose: description.prose,
-          preserved,
+          preserved: preservedWithOrganizer,
           conceptTitles,
           groups: scanResult.groups,
         });
