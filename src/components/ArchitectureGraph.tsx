@@ -356,11 +356,19 @@ export default function ArchitectureGraph({
     // Bounded-context boxes are a linguistic grouping (from node.ddd.context),
     // computed independently of the AWS network groups above. Unlike AWS groups,
     // they are NOT gated to the "every visible node is a container" AWS view —
-    // they render whenever any visible node has a ddd.context, including inside a
-    // drilled-into container, since the okf-scan pipeline's organizer stage now
-    // assigns ddd_context at the component level too (see
+    // they render whenever the view has *at least 2 distinct* ddd.context values
+    // among visible nodes, including inside a drilled-into container, since the
+    // okf-scan pipeline's organizer stage now assigns ddd_context at the
+    // component level too (see
     // docs/superpowers/specs/2026-07-06-ddd-organizer-agent-design.md).
-    const showBoundedContextBoxes = positions.some(({ node }) => node.ddd?.context);
+    // Requiring >=2 (not just >=1) matters once bounded-context clustering
+    // (src/lib/clusters.ts) is in play: drilling into one specific cluster means
+    // every visible node shares that one context by definition, and a box with
+    // nothing to contrast against would just outline the entire view, duplicating
+    // the ViewHeader title for no reason — see
+    // docs/superpowers/specs/2026-07-06-bounded-context-clusters-design.md.
+    const distinctContexts = new Set(positions.map(({ node }) => node.ddd?.context).filter(Boolean));
+    const showBoundedContextBoxes = distinctContexts.size >= 2;
     const bcBoxes = showBoundedContextBoxes
       ? computeBoundedContextBoxes(nodes, positions, {
           nodeWidth: NODE_WIDTH,
