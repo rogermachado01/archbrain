@@ -18,7 +18,7 @@ vi.mock("@anthropic-ai/sdk", () => {
   return { default: FakeAnthropic };
 });
 
-const { createAnthropicLlmClient } = await import("./llm");
+const { createAnthropicLlmClient, buildPrompt } = await import("./llm");
 const AnthropicModule = (await import("@anthropic-ai/sdk")).default as unknown as {
   APIError: new (status: number, message: string) => Error;
 };
@@ -287,5 +287,23 @@ describe("createAnthropicLlmClient", () => {
 
     const sentPrompt = createMock.mock.calls[0][0].messages[0].content as string;
     expect(sentPrompt).not.toContain("RELATION LABELS");
+  });
+});
+
+describe("buildPrompt — route anchoring", () => {
+  const base = { id: "app/hero", type: "React Component", level: "component" as const, parentId: "app", sourceFiles: [] };
+
+  it("includes the page's route when routePath is set", () => {
+    expect(buildPrompt({ ...base, routePath: "/blog/[slug]" })).toContain('serving route "/blog/[slug]"');
+  });
+
+  it("includes usedByRoutes when set", () => {
+    expect(buildPrompt({ ...base, usedByRoutes: ["/", "/about"] })).toContain("used on route(s): /, /about");
+  });
+
+  it("forbids generic boilerplate openers and description restating", () => {
+    const prompt = buildPrompt(base);
+    expect(prompt).toContain('never open with generic filler like "This concept represents"');
+    expect(prompt).toContain("must add new information rather than restating");
   });
 });

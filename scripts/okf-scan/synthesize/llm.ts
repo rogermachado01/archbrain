@@ -4,7 +4,7 @@ import type { ConceptFacts } from "../types";
 const MODEL = "claude-sonnet-5";
 const MAX_ATTEMPTS = 3;
 
-function buildPrompt(facts: ConceptFacts): string {
+export function buildPrompt(facts: ConceptFacts): string {
   const requiredLines = [
     "You are writing one OKF concept document body for an architecture diagram tool.",
     `Concept id: ${facts.id}`,
@@ -13,6 +13,8 @@ function buildPrompt(facts: ConceptFacts): string {
 
   const optionalLines = [
     facts.awsResourceType ? `AWS resource type: ${facts.awsResourceType}` : "",
+    facts.routePath ? `This concept is the page serving route "${facts.routePath}" in the application.` : "",
+    facts.usedByRoutes?.length ? `This component is used on route(s): ${facts.usedByRoutes.join(", ")}.` : "",
     facts.schema ? `Schema:\n${JSON.stringify(facts.schema, null, 2)}` : "",
     facts.relations?.length
       ? `Known relations (already extracted — do not invent any others):\n${facts.relations
@@ -23,7 +25,7 @@ function buildPrompt(facts: ConceptFacts): string {
 
   const relationCount = facts.relations?.length ?? 0;
   const instructionLines = [
-    "Write 1-3 short paragraphs of plain prose describing what this concept is and how it's used, grounded only in the facts above. Do not invent fields, relations, or capabilities not listed. Do not include a heading or any markdown section markers — just the prose paragraphs.",
+    'Write 1-3 short paragraphs of plain prose describing what this concept is and how it\'s used, grounded only in the facts above. Do not invent fields, relations, or capabilities not listed. Do not include a heading or any markdown section markers — just the prose paragraphs. Write for a developer reading an architecture map: never open with generic filler like "This concept represents"; when a route is given, anchor the description in where the concept appears in the user\'s journey through the app. The first paragraph doubles as a short standalone summary shown separately in the diagram, so any following paragraphs must add new information rather than restating it.',
   ];
   if (relationCount > 0) {
     instructionLines.push(
