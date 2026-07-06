@@ -228,7 +228,7 @@ export default function ArchVizApp() {
   }
 
   function handleSearchNavigate(node: ArchNode) {
-    updateUrl({ parent: node.parentId ?? null, node: node.id });
+    updateUrl({ parent: node.parentId ?? null, node: node.id, cluster: null });
   }
 
   function handleTabChange(tab: SidePanelTab) {
