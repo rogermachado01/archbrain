@@ -193,13 +193,7 @@ export async function scanFrontendRepo(ctx: FrontendScanContext): Promise<Concep
   const routeTable = buildRouteTable(
     parsedFiles
       .filter((p) => p.isPage)
-      .map((p) => ({ conceptId: p.conceptId, pagesRelative: pagesRelativePath(p.file, ctx.repoDir)! }))
-      // `matchRoute` returns the first match in table order, so literal routes (e.g.
-      // "about.tsx") must be listed ahead of dynamic ones (e.g. "[slug].tsx") — otherwise
-      // a dynamic segment greedily matches a literal href that has an equally-specific
-      // literal page of its own. `listSourceFiles`' alphabetical sort puts "[slug].tsx"
-      // before "about.tsx" (ASCII "[" < "a"), so without this the wrong page would win.
-      .sort((a, b) => Number(a.pagesRelative.includes("[")) - Number(b.pagesRelative.includes("["))),
+      .map((p) => ({ conceptId: p.conceptId, pagesRelative: pagesRelativePath(p.file, ctx.repoDir)! })),
   );
 
   const concepts: ConceptFacts[] = [

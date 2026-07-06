@@ -51,8 +51,21 @@ export function routeSegmentsForPageFile(pagesRelative: string): RouteSegment[] 
   return rawSegments.map(parseRouteSegment);
 }
 
+function hasNonLiteralSegment(entry: RouteTableEntry): boolean {
+  return entry.segments.some((s) => s.type !== "literal");
+}
+
+/**
+ * A literal segment and a dynamic one can both structurally match the same href
+ * (e.g. "/about" matches both a literal "about" page and a dynamic "[slug]" page), and
+ * `matchRoute` returns the first structural match in table order — so entries are
+ * sorted purely-literal-first here, at build time, rather than leaving it up to
+ * whatever order `pages` happens to arrive in (e.g. an alphabetical file listing sorts
+ * "[slug].tsx" before "about.tsx", which would otherwise make the dynamic page win).
+ */
 export function buildRouteTable(pages: { conceptId: string; pagesRelative: string }[]): RouteTableEntry[] {
-  return pages.map((p) => ({ conceptId: p.conceptId, segments: routeSegmentsForPageFile(p.pagesRelative) }));
+  const entries = pages.map((p) => ({ conceptId: p.conceptId, segments: routeSegmentsForPageFile(p.pagesRelative) }));
+  return entries.sort((a, b) => Number(hasNonLiteralSegment(a)) - Number(hasNonLiteralSegment(b)));
 }
 
 function matchesRoute(hrefSegments: string[], segments: RouteSegment[]): boolean {

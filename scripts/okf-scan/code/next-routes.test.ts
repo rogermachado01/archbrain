@@ -87,4 +87,16 @@ describe("matchRoute", () => {
   it("returns undefined when no route matches (too many segments for any pattern)", () => {
     expect(matchRoute("/deeply/nested/missing", routeTable)).toBeUndefined();
   });
+
+  it("prefers a literal route over an equally-matching dynamic route, regardless of input order", () => {
+    // Deliberately built with the dynamic route listed first — an alphabetical file
+    // listing sorts "[slug].tsx" before "about.tsx" (ASCII "[" < "a"), so
+    // buildRouteTable must not depend on the caller passing literal routes first.
+    const dynamicFirstTable = buildRouteTable([
+      { conceptId: "web-storefront/[slug]", pagesRelative: "[slug].tsx" },
+      { conceptId: "web-storefront/about", pagesRelative: "about.tsx" },
+    ]);
+
+    expect(matchRoute("/about", dynamicFirstTable)).toBe("web-storefront/about");
+  });
 });
