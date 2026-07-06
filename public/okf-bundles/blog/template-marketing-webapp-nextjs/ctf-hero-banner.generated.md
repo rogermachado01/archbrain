@@ -1,18 +1,19 @@
 ---
 type: React Component
 title: Ctf Hero Banner.Generated
-description: ctf-hero-banner.generated is a generated GraphQL artifact supporting the Hero Banner component within the Next.js marketing template. It exists to make typed fragment data available to the component that renders the hero banner section of a page, pulling in the necessary fragment types and document definitions rather than defining them inline.
+description: ctf-hero-banner.generated is a generated GraphQL artifact supporting the hero banner component in the marketing web app template. It defines the generated types and document nodes needed for the hero banner to consume content fields fetched from Contentful, allowing the component to render banner content in a type-safe way.
 level: component
 owner: contentful/team-workflows
+ddd_subdomain: core
+ddd_context: Hero Banner Content
+ddd_role: Generated Type/Fragment
 ---
 
-ctf-hero-banner.generated is a generated GraphQL artifact supporting the Hero Banner component within the Next.js marketing template. It exists to make typed fragment data available to the component that renders the hero banner section of a page, pulling in the necessary fragment types and document definitions rather than defining them inline.
+ctf-hero-banner.generated is a generated GraphQL artifact supporting the hero banner component in the marketing web app template. It defines the generated types and document nodes needed for the hero banner to consume content fields fetched from Contentful, allowing the component to render banner content in a type-safe way.
 
-This module draws on two related generated fragments. It imports PageLinkFieldsFragment and PageLinkFieldsFragmentDoc from the page-link fragment module, which supplies the shape and query document for link data — likely used for any call-to-action or navigation link displayed within the hero banner. It also imports AssetFieldsFragment and AssetFieldsFragmentDoc from the ctf-asset fragment module, providing the typed structure and document for asset data such as images or media referenced by the hero banner.
-
-By composing these imported fragments, ctf-hero-banner.generated ensures the Hero Banner component has consistent, reusable access to link and asset data shapes as defined elsewhere in the codebase, keeping the generated typings in sync with the underlying Contentful schema.
+This artifact depends on two other generated fragments. It pulls in page link fields, which allow the hero banner to render a call-to-action or navigational link as part of its content. It also pulls in asset fields, which allow the hero banner to render an associated image or media asset, such as a background or featured graphic.
 
 # Relations
 
-- [Page Link.Generated](page-link.generated.md) — Supplies the link data used for the hero banner's call-to-action {kind: sync}
-- [Ctf Asset.Generated](ctf-asset.generated.md) — Supplies the asset data used for the hero banner's image or media {kind: sync}
+- [Page Link.Generated](page-link.generated.md) — Supplies the call-to-action link shown in the hero banner {kind: sync}
+- [Ctf Asset.Generated](ctf-asset.generated.md) — Supplies the image or media asset displayed in the hero banner {kind: sync}

@@ -1,16 +1,19 @@
 ---
 type: React Component
 title: Layout
-description: The Layout component serves as a structural wrapper for pages within the marketing webapp template, assembling shared page chrome around the main content. It draws on two feature components to provide consistent navigation and footer elements across the site.
+description: The `layout` component is a React component in the Next.js marketing web app template that provides the overall page structure for the site. It brings together shared, cross-page UI elements so that individual page templates don't need to redefine them, wrapping page content with consistent chrome across the application.
 level: component
 owner: contentful/team-workflows
+ddd_subdomain: core
+ddd_context: Site Shell
+ddd_role: Layout Component
 ---
 
-The Layout component serves as a structural wrapper for pages within the marketing webapp template, assembling shared page chrome around the main content. It draws on two feature components to provide consistent navigation and footer elements across the site.
+The `layout` component is a React component in the Next.js marketing web app template that provides the overall page structure for the site. It brings together shared, cross-page UI elements so that individual page templates don't need to redefine them, wrapping page content with consistent chrome across the application.
 
-Specifically, Layout imports CtfFooterGql to render the site's footer content and CtfMobileMenuGql to provide mobile navigation. By composing these pieces together, Layout ensures that every page using it presents a consistent header/navigation and footer experience without each page needing to reimplement that structure.
+To do this, it imports `CtfFooterGql` for the site footer and `CtfMobileMenuGql` for the mobile navigation menu. These imported components are rendered as part of the layout's structure, giving pages that use `layout` a consistent footer and mobile menu experience without each page needing to assemble those pieces itself.
 
 # Relations
 
 - [Ctf Footer Gql](ctf-footer-gql.md) — Renders the site footer {kind: sync}
-- [Ctf Mobile Menu Gql](ctf-mobile-menu-gql.md) — Provides mobile navigation menu {kind: sync}
+- [Ctf Mobile Menu Gql](ctf-mobile-menu-gql.md) — Renders the mobile navigation menu {kind: sync}

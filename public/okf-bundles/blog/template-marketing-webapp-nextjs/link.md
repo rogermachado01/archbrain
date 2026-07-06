@@ -1,11 +1,14 @@
 ---
 type: React Component
 title: Link
-description: The `link` concept represents a React Component within the template-marketing-webapp-nextjs template, intended to serve as the standard navigational element used throughout the marketing web application. It provides a consistent way to render links across pages and components in the architecture, functioning as a reusable building block wherever navigation or hyperlinking is required.
+description: `Link` is a React Component belonging to the `template-marketing-webapp-nextjs` template, identified as `template-marketing-webapp-nextjs/link`. As a component within this marketing web app template, it is used to render navigable links within the application's pages and sections.
 level: component
 owner: contentful/team-workflows
+ddd_subdomain: supporting
+ddd_context: Linking & Navigation
+ddd_role: Presentational Component
 ---
 
-The `link` concept represents a React Component within the template-marketing-webapp-nextjs template, intended to serve as the standard navigational element used throughout the marketing web application. It provides a consistent way to render links across pages and components in the architecture, functioning as a reusable building block wherever navigation or hyperlinking is required.
+`Link` is a React Component belonging to the `template-marketing-webapp-nextjs` template, identified as `template-marketing-webapp-nextjs/link`. As a component within this marketing web app template, it is used to render navigable links within the application's pages and sections.
 
-As a component-level concept within this Next.js-based marketing template, it fits into the broader set of shared UI elements that the template relies on to maintain consistency and reduce duplication across the application. Its role is scoped specifically to link rendering, distinguishing it from other components in the template that handle different concerns.
+Given its role in a Next.js-based marketing site template, `Link` is intended to be used wherever internal or external navigation is required, providing a consistent, reusable way to handle linking throughout the app's UI.

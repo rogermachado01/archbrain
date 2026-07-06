@@ -1,16 +1,19 @@
 ---
 type: React Component
 title: Card Person
-description: card-person is a React component in the marketing web app template responsible for rendering a person's card, likely as part of a team or contributor listing. It relies on generated types to know the shape of the person data it receives, and it delegates rendering of any rich text content associated with the person—such as a bio or description—to a dedicated rich text component.
+description: card-person is a React component used to render a person's profile information within the marketing web app. It relies on the `PersonFieldsFragment` type to type-check the shape of person data it receives, ensuring the component works with the fields defined for a person entry from the content source.
 level: component
 owner: contentful/team-workflows
+ddd_subdomain: core
+ddd_context: People Content
+ddd_role: Presentational Component
 ---
 
-card-person is a React component in the marketing web app template responsible for rendering a person's card, likely as part of a team or contributor listing. It relies on generated types to know the shape of the person data it receives, and it delegates rendering of any rich text content associated with the person—such as a bio or description—to a dedicated rich text component.
+card-person is a React component used to render a person's profile information within the marketing web app. It relies on the `PersonFieldsFragment` type to type-check the shape of person data it receives, ensuring the component works with the fields defined for a person entry from the content source.
 
-By composing the CtfRichtext component, card-person keeps its own responsibilities focused on the card's structure and layout, while the formatting and rendering of long-form content is handled elsewhere. This separation lets the rich text component be reused consistently across other parts of the site that also need to display Contentful-sourced rich text.
+To display richer text content associated with a person, such as a biography or description, card-person delegates rendering to the CtfRichtext component. This allows the card to present formatted rich text alongside the person's other details in a consistent way with the rest of the site's content rendering.
 
 # Relations
 
-- [Ctf Person.Generated](ctf-person.generated.md) — Types the person data used to populate the card {kind: sync}
-- [Ctf Richtext](ctf-richtext.md) — Renders the person's rich text bio within the card {kind: sync}
+- [Ctf Person.Generated](ctf-person.generated.md) — Types the person data shown on the card {kind: sync}
+- [Ctf Richtext](ctf-richtext.md) — Renders the person's rich text description {kind: sync}

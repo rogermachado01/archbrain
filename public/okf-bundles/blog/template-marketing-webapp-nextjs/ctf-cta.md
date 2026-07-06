@@ -1,19 +1,20 @@
 ---
 type: React Component
 title: Ctf Cta
-description: `ctf-cta` is a React component that renders a call-to-action block within the marketing web app template, most likely sourced from Contentful entries typed for CTAs. It relies on a generated fragment type, `CtaFieldsFragment`, to type the shape of the CTA data it receives, keeping the component's props aligned with the underlying GraphQL schema.
+description: `ctf-cta` is a React component that renders a call-to-action block for the Contentful-driven marketing site template. It relies on generated GraphQL types from its companion `.generated` module to type the CTA fields it receives, such as headline or link data, ensuring the component's props align with the shape returned by the CMS query.
 level: component
 owner: contentful/team-workflows
+ddd_subdomain: core
+ddd_context: CTA Content
+ddd_role: Presentational Component
 ---
 
-`ctf-cta` is a React component that renders a call-to-action block within the marketing web app template, most likely sourced from Contentful entries typed for CTAs. It relies on a generated fragment type, `CtaFieldsFragment`, to type the shape of the CTA data it receives, keeping the component's props aligned with the underlying GraphQL schema.
+`ctf-cta` is a React component that renders a call-to-action block for the Contentful-driven marketing site template. It relies on generated GraphQL types from its companion `.generated` module to type the CTA fields it receives, such as headline or link data, ensuring the component's props align with the shape returned by the CMS query.
 
-To display any accompanying descriptive or supporting text, the component delegates rendering to `CtfRichtext`, which handles Contentful rich text fields consistently across the app. The component also draws on the shared theme utilities, using `getColorConfigFromPalette` to resolve color styling based on a palette value, allowing the CTA's visual appearance to adapt to editorial or design choices without hardcoding colors.
-
-Together these relations show `ctf-cta` acting as a composed presentational unit: it consumes typed content data, renders rich text via a shared component, and styles itself using the app's central theme configuration.
+To display any rich text content associated with the CTA, the component delegates rendering to `ctf-richtext`, which handles the structured Contentful rich text format. For visual styling, `ctf-cta` uses the `getColorConfigFromPalette` helper from the theme module to resolve the appropriate color configuration based on a selected palette, allowing the CTA's appearance to adapt to different theme or design variants defined by the CMS content.
 
 # Relations
 
-- [Ctf Cta.Generated](ctf-cta.generated.md) — Types the CTA's Contentful field data {kind: sync}
-- [Ctf Richtext](ctf-richtext.md) — Renders the CTA's rich text content {kind: sync}
-- [Theme](theme.md) — Resolves the CTA's color styling from the theme palette {kind: sync}
+- [Ctf Cta.Generated](ctf-cta.generated.md) — Uses generated types to shape incoming CTA data {kind: sync}
+- [Ctf Richtext](ctf-richtext.md) — Renders rich text content within the CTA {kind: sync}
+- [Theme](theme.md) — Resolves color styling from the theme palette {kind: sync}

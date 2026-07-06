@@ -1,17 +1,20 @@
 ---
 type: React Component
 title: Ctf Product Gql
-description: ctf-product-gql is a React component that acts as a data-fetching wrapper for rendering a product entry sourced from Contentful. It uses the generated useCtfProductQuery hook to retrieve the product data for a given entry, then delegates the actual presentation to the CtfProduct component once the data is available.
+description: `ctf-product-gql` is a React component that acts as the data-fetching layer for the product feature, sitting between the Contentful GraphQL API and the presentational `CtfProduct` component. It uses the generated `useCtfProductQuery` hook to retrieve product entry data, then decides how to render based on the result of that query.
 level: component
 owner: contentful/team-workflows
+ddd_subdomain: core
+ddd_context: Product Content
+ddd_role: Data Fetching Component
 ---
 
-ctf-product-gql is a React component that acts as a data-fetching wrapper for rendering a product entry sourced from Contentful. It uses the generated useCtfProductQuery hook to retrieve the product data for a given entry, then delegates the actual presentation to the CtfProduct component once the data is available.
+`ctf-product-gql` is a React component that acts as the data-fetching layer for the product feature, sitting between the Contentful GraphQL API and the presentational `CtfProduct` component. It uses the generated `useCtfProductQuery` hook to retrieve product entry data, then decides how to render based on the result of that query.
 
-If the query does not resolve to a valid entry, the component falls back to rendering the EntryNotFound component, providing a consistent error state for missing or unpublished content. In this way, ctf-product-gql serves as the connective layer between the GraphQL query layer and the presentational product component, handling both the happy path and the not-found case for product entries within the marketing webapp template.
+When the query resolves with valid data, `ctf-product-gql` passes that data down to `CtfProduct` for rendering. When no matching entry is found, it falls back to rendering `EntryNotFound`, providing a consistent way to handle missing content across the marketing webapp template.
 
 # Relations
 
-- [Ctf Product.Generated](ctf-product.generated.md) — Fetches product entry data via generated GraphQL hook {kind: sync}
-- [Ctf Product](ctf-product.md) — Renders the fetched product entry {kind: sync}
-- [Entry Not Found](entry-not-found.md) — Shows a not-found state when the product entry is missing {kind: sync}
+- [Ctf Product.Generated](ctf-product.generated.md) — Fetches product entry data via the generated query hook {kind: sync}
+- [Ctf Product](ctf-product.md) — Renders the fetched product data {kind: sync}
+- [Entry Not Found](entry-not-found.md) — Shows a not-found state when the entry is missing {kind: sync}

@@ -1,15 +1,18 @@
 ---
 type: React Component
 title: Component Resolver
-description: The Component Resolver is a React component within the Next.js marketing webapp template responsible for dynamically resolving and rendering components based on content data, typically sourced from Contentful. To determine how content should be displayed, it relies on contextual information about the current Contentful setup, which it obtains by importing the useContentfulContext hook from the contentful-context module.
+description: The Component Resolver is a React component responsible for dynamically resolving and rendering components within the marketing webapp template. As part of its operation, it draws on contextual data supplied through the Contentful context, allowing it to make rendering decisions informed by the current content state.
 level: component
 owner: contentful/team-workflows
+ddd_subdomain: generic
+ddd_context: Content Rendering Infrastructure
+ddd_role: Resolver Component
 ---
 
-The Component Resolver is a React component within the Next.js marketing webapp template responsible for dynamically resolving and rendering components based on content data, typically sourced from Contentful. To determine how content should be displayed, it relies on contextual information about the current Contentful setup, which it obtains by importing the useContentfulContext hook from the contentful-context module.
+The Component Resolver is a React component responsible for dynamically resolving and rendering components within the marketing webapp template. As part of its operation, it draws on contextual data supplied through the Contentful context, allowing it to make rendering decisions informed by the current content state.
 
-By consuming this context, the Component Resolver can access shared Contentful state or configuration needed to correctly map content entries to their corresponding React components. This makes it a central piece of the content-driven rendering pipeline, bridging raw content data with the appropriate UI components in the application.
+To access this context, the Component Resolver imports the useContentfulContext hook from the contentful-context module. This connects the resolver's rendering logic to the broader Contentful-driven content pipeline, ensuring that whatever content or preview state is active is available when determining how to resolve and display components.
 
 # Relations
 
-- [Contentful Context](contentful-context.md) — Reads Contentful context to resolve the correct component {kind: sync}
+- [Contentful Context](contentful-context.md) — Reads live content state to guide component rendering {kind: sync}

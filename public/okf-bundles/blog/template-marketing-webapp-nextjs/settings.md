@@ -1,15 +1,18 @@
 ---
 type: React Component
 title: Settings
-description: The settings concept is a React component that serves as the page-level entry point for the settings section of the marketing web app template. Its primary responsibility is to assemble and render the settings experience for the user by delegating to a dedicated form component rather than implementing settings fields or logic itself.
+description: This component represents the settings page within the marketing web app template, built with Next.js. As a React Component, it serves as the entry point for rendering the settings experience within the application's routing structure.
 level: component
 owner: contentful/team-workflows
+ddd_subdomain: supporting
+ddd_context: Settings
+ddd_role: Presentational Component
 ---
 
-The settings concept is a React component that serves as the page-level entry point for the settings section of the marketing web app template. Its primary responsibility is to assemble and render the settings experience for the user by delegating to a dedicated form component rather than implementing settings fields or logic itself.
+This component represents the settings page within the marketing web app template, built with Next.js. As a React Component, it serves as the entry point for rendering the settings experience within the application's routing structure.
 
-To do this, it imports SettingsForm from the settings feature module and uses it to present the actual settings interface. This keeps the component focused on composition, acting as a thin wrapper that connects the routing or page layer to the reusable settings form implementation.
+Its primary responsibility is to compose the settings screen by bringing in the SettingsForm component, which handles the actual settings interface presented to the user. This keeps the page-level component focused on layout and composition, while delegating the form logic and fields to the imported component.
 
 # Relations
 
-- [Settings Form](settings-form.md) — Renders the settings form {kind: sync}
+- [Settings Form](settings-form.md) — Renders the settings form for the page {kind: sync}

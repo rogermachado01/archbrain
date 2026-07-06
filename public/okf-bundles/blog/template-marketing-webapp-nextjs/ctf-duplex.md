@@ -1,18 +1,21 @@
 ---
 type: React Component
 title: Ctf Duplex
-description: `ctf-duplex` is a React component used to render a two-part content module, typically pairing an image with rich text in a side-by-side layout, as suggested by its "duplex" naming. It relies on generated GraphQL types from its companion fragment file to type the data it receives from Contentful, ensuring the shape of the content matches what the component expects.
+description: "CtfDuplex is a React component used in the marketing web app template to render a two-part content layout, commonly seen in landing pages that pair an image with accompanying text in a side-by-side or split arrangement. It relies on generated GraphQL types to know the shape of its Contentful-sourced data, and delegates the actual rendering of its two halves to specialized child components: one for displaying images and one for rendering rich text content."
 level: component
 owner: contentful/team-workflows
+ddd_subdomain: core
+ddd_context: Duplex Content
+ddd_role: Presentational Component
 ---
 
-`ctf-duplex` is a React component used to render a two-part content module, typically pairing an image with rich text in a side-by-side layout, as suggested by its "duplex" naming. It relies on generated GraphQL types from its companion fragment file to type the data it receives from Contentful, ensuring the shape of the content matches what the component expects.
+CtfDuplex is a React component used in the marketing web app template to render a two-part content layout, commonly seen in landing pages that pair an image with accompanying text in a side-by-side or split arrangement. It relies on generated GraphQL types to know the shape of its Contentful-sourced data, and delegates the actual rendering of its two halves to specialized child components: one for displaying images and one for rendering rich text content.
 
-To build its visual output, the component composes two other feature components: `ctf-image` for displaying the associated image asset, and `ctf-richtext` for rendering the formatted text content. It also draws on the shared theme utilities to derive color styling from a defined palette, allowing the duplex block to adapt its appearance based on a color configuration passed in as content data, such as background or accent colors tied to a design system.
+To style itself consistently with the rest of the site, CtfDuplex pulls color configuration from the shared theme module, allowing the component to adapt its background or accent colors based on a palette value supplied by the content model. Together, these pieces let CtfDuplex act as a composable, content-driven building block for duplex-style sections throughout the marketing site.
 
 # Relations
 
-- [Ctf Duplex.Generated](ctf-duplex.generated.md) — Types the component's Contentful data using the generated duplex fragment {kind: sync}
-- [Ctf Image](ctf-image.md) — Renders the accompanying image within the duplex layout {kind: sync}
-- [Ctf Richtext](ctf-richtext.md) — Renders the rich text content within the duplex layout {kind: sync}
-- [Theme](theme.md) — Derives color styling from the shared theme palette {kind: sync}
+- [Ctf Duplex.Generated](ctf-duplex.generated.md) — Uses generated types to type the duplex content data {kind: sync}
+- [Ctf Image](ctf-image.md) — Renders the image half of the duplex layout {kind: sync}
+- [Ctf Richtext](ctf-richtext.md) — Renders the rich text half of the duplex layout {kind: sync}
+- [Theme](theme.md) — Derives theme colors for the duplex section's styling {kind: sync}

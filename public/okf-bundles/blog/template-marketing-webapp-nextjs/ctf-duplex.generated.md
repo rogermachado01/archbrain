@@ -1,16 +1,19 @@
 ---
 type: React Component
 title: Ctf Duplex.Generated
-description: `ctf-duplex.generated` is a generated module belonging to the React Component layer of the Next.js marketing web app template. Its role, based on the code it pulls in, is to assemble a "duplex" content block by combining page link data with asset data, both of which are sourced from other generated GraphQL fragment modules in the codebase.
+description: `ctf-duplex.generated` is a generated artifact belonging to the Duplex React component within the `template-marketing-webapp-nextjs` template. As a generated module, it centralizes the GraphQL fragment types and fragment documents that the Duplex component depends on for its data shape, rather than containing hand-written component logic itself.
 level: component
 owner: contentful/team-workflows
+ddd_subdomain: core
+ddd_context: Duplex Content
+ddd_role: Generated Type/Fragment
 ---
 
-`ctf-duplex.generated` is a generated module belonging to the React Component layer of the Next.js marketing web app template. Its role, based on the code it pulls in, is to assemble a "duplex" content block by combining page link data with asset data, both of which are sourced from other generated GraphQL fragment modules in the codebase.
+`ctf-duplex.generated` is a generated artifact belonging to the Duplex React component within the `template-marketing-webapp-nextjs` template. As a generated module, it centralizes the GraphQL fragment types and fragment documents that the Duplex component depends on for its data shape, rather than containing hand-written component logic itself.
 
-Specifically, this module imports `PageLinkFieldsFragment` and its corresponding document (`PageLinkFieldsFragmentDoc`) from the page-link component's generated file, giving it access to the shape and query definition for page link fields. It also imports `AssetFieldsFragment` and `AssetFieldsFragmentDoc` from the ctf-asset component's generated file, giving it access to the shape and query definition for asset fields. Together these imports suggest that the duplex component is used to render a paired layout — likely combining a linked page reference with an associated media asset — by relying on the fragment definitions and typed data structures generated elsewhere in the project rather than defining them itself.
+This file pulls in two related generated modules. It imports `PageLinkFieldsFragment` and `PageLinkFieldsFragmentDoc` from the page-link generated module, which supplies the typed shape and query fragment for link data used elsewhere in the app. It also imports `AssetFieldsFragment` and `AssetFieldsFragmentDoc` from the ctf-asset generated module, providing the typed shape and fragment for asset (e.g., image or media) data. Together these imports let the Duplex component work with strongly-typed link and asset fields sourced from Contentful without redefining those fragments locally.
 
 # Relations
 
-- [Page Link.Generated](page-link.generated.md) — Pulls in page link data for the duplex layout {kind: sync}
-- [Ctf Asset.Generated](ctf-asset.generated.md) — Pulls in asset/media data for the duplex layout {kind: sync}
+- [Page Link.Generated](page-link.generated.md) — Supplies link data fields for Duplex content {kind: sync}
+- [Ctf Asset.Generated](ctf-asset.generated.md) — Supplies asset/media fields for Duplex content {kind: sync}

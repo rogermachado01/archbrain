@@ -1,11 +1,16 @@
 ---
 type: React Component
 title: Avatar
-description: The Avatar component is a React component within the Next.js marketing web app template, intended for rendering user or entity avatar imagery within the application's interface. As part of the template's component library, it provides a reusable, self-contained piece of UI that other parts of the marketing site can incorporate wherever an avatar display is needed.
+description: The Avatar component is a React component defined in the marketing web app template built on Next.js, part of the template-marketing-webapp-nextjs project. It represents a discrete, reusable UI element within the application's component architecture, intended to render user or entity avatar imagery as part of the marketing site's interface.
 level: component
 owner: contentful/team-workflows
+ddd_subdomain: core
+ddd_context: People Content
+ddd_role: Presentational Component
 ---
 
-The Avatar component is a React component within the Next.js marketing web app template, intended for rendering user or entity avatar imagery within the application's interface. As part of the template's component library, it provides a reusable, self-contained piece of UI that other parts of the marketing site can incorporate wherever an avatar display is needed.
+The Avatar component is a React component defined in the marketing web app template built on Next.js, part of the template-marketing-webapp-nextjs project. It represents a discrete, reusable UI element within the application's component architecture, intended to render user or entity avatar imagery as part of the marketing site's interface.
 
-Being a React Component in this architecture, it fits into the broader composition of the Next.js application, where individual UI concerns are isolated into discrete components that can be assembled into pages and layouts across the marketing web app.
+As a component-level concept within this Next.js template, Avatar fits into the broader front-end architecture alongside other UI components, contributing to the visual presentation layer of the marketing web application. Its role is scoped to whatever a typical avatar element serves in a marketing context, such as displaying a profile image or placeholder graphic within pages or shared layout sections of the app.
+
+Beyond its classification as a React Component within this template, no additional details, props, relations, or behaviors have been specified for this concept.

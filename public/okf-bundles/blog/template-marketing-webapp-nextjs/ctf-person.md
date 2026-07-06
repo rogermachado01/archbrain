@@ -1,15 +1,18 @@
 ---
 type: React Component
 title: Ctf Person
-description: CtfPerson is a React component responsible for rendering a person entity within the marketing web app template, such as an author, team member, or other individual profile represented in the content model. It relies on a generated GraphQL fragment type, PersonFieldsFragment, to type the shape of the person data it receives as props, ensuring consistency between the component's expectations and the underlying Contentful schema.
+description: `ctf-person` is a React component responsible for rendering a person entity within the marketing web app template, most likely used to display author bios, team member profiles, or similar people-related content sourced from Contentful. It relies on generated GraphQL typings to ensure the shape of the person data it receives matches what the CMS provides.
 level: component
 owner: contentful/team-workflows
+ddd_subdomain: core
+ddd_context: People Content
+ddd_role: Presentational Component
 ---
 
-CtfPerson is a React component responsible for rendering a person entity within the marketing web app template, such as an author, team member, or other individual profile represented in the content model. It relies on a generated GraphQL fragment type, PersonFieldsFragment, to type the shape of the person data it receives as props, ensuring consistency between the component's expectations and the underlying Contentful schema.
+`ctf-person` is a React component responsible for rendering a person entity within the marketing web app template, most likely used to display author bios, team member profiles, or similar people-related content sourced from Contentful. It relies on generated GraphQL typings to ensure the shape of the person data it receives matches what the CMS provides.
 
-By importing this fragment type from its generated code file, CtfPerson stays aligned with the content structure defined for "Person" entries, allowing it to safely destructure and display fields associated with a person without needing to manually redefine or guess the shape of that data.
+Specifically, the component imports the `PersonFieldsFragment` type from its generated code file, which defines the structure of the person data fields (such as name, image, or role) that the component expects as props. This keeps the component's data contract in sync with the underlying Contentful content model, reducing the risk of runtime errors from mismatched data shapes.
 
 # Relations
 
-- [Ctf Person.Generated](ctf-person.generated.md) — Types its incoming person data with the generated fragment {kind: sync}
+- [Ctf Person.Generated](ctf-person.generated.md) — Type-checks person props against the generated Contentful fragment {kind: sync}

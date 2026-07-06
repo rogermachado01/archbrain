@@ -18,7 +18,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.238Z"
+      "lastScannedAt": "2026-07-06T13:11:35.233Z"
     },
     "template-marketing-webapp-nextjs/author": {
       "inputHash": "22401b98c06569b0a7e148226992add194e2305d0ceb3452ea0b31369f0f9839",
@@ -39,7 +39,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.239Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/avatar": {
       "inputHash": "f69771426c9c84cbc8ec11f40dec2ed8542dcd1dc34ec72c2c4fcdcd3177c2d5",
@@ -54,7 +54,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.239Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/card-leadership": {
       "inputHash": "ff11d8f57139112d864a889633ec76f4ce06b9461349f71e99831d5af6e25a5b",
@@ -85,7 +85,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.239Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/card-person": {
       "inputHash": "85bff36526041c7375ffc82780535464e68fe3ec123adfccf2895ee059288494",
@@ -111,7 +111,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.239Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-asset.generated": {
       "inputHash": "4fa5c384ce8c0fca7f36655b2929ef896ef9b6be2485cbd8e1177f3807703ca6",
@@ -126,7 +126,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.239Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-asset": {
       "inputHash": "b8848cb54da1268dc053f62272dd7ebe64d63c86db3cb909e0de8902b216f44d",
@@ -157,7 +157,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.239Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/business-info.generated": {
       "inputHash": "1b82452c706f81264def374d041ee6e7cd9e6e01b76f8fdfa502921b33a8b3e5",
@@ -183,7 +183,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.239Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-business-info-gql": {
       "inputHash": "f3f73ed82fa150d98a1b0765cdb8ae5406e2b496827ca750cbe89b563286e5a3",
@@ -214,7 +214,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.239Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-cta.generated": {
       "inputHash": "a4683084cd823ca66d196de1618b425633d22a3b196eefdd03520e3fcd4d850a",
@@ -235,7 +235,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.239Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-cta-gql": {
       "inputHash": "7c9d564f33fe251aa5e4405e10d92468b30e7a22701f2a3a29fbfb6ab93142ac",
@@ -261,7 +261,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.239Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-cta": {
       "inputHash": "e0010535ea653ab3c015e7f9b2aa9e2cac270514a4b3004b06d4ce5d68afa54c",
@@ -292,7 +292,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.239Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-duplex.generated": {
       "inputHash": "61f142cf812b7ebf6c74ba4ac2c9198d86dbcf3a350ac15af606332fa04620fe",
@@ -318,7 +318,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.239Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-duplex-gql": {
       "inputHash": "282ba73132e45bbe4626887735d2dd0248f1b7a83ad51ff3402a320b6b9990ad",
@@ -344,7 +344,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.239Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-duplex": {
       "inputHash": "d43736cceb90d2c9fbf7537c2679643da60c6d513ca6ea04ff600733afa5d544",
@@ -380,7 +380,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.239Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-footer.generated": {
       "inputHash": "eac88a014da55aa2d998cb883c2b3f8dd3583965781d6061fb8c6e41e2848458",
@@ -406,7 +406,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.239Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-footer-gql": {
       "inputHash": "25f85799ecfea60ba16862e269e5b9cddcd342e18939ec32caeed3a956d5e0cc",
@@ -437,7 +437,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.239Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-footer": {
       "inputHash": "244c807abc91b8716f248bbdc317d30b2dd4eddc66c4a2c2bff1fe78788f07c1",
@@ -476,7 +476,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.239Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-hero-banner.generated": {
       "inputHash": "8716538fd198a5c79ff82e00d58a63e7299aad9670981ce2a48dc4b5f90bbb26",
@@ -502,7 +502,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.239Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-hero-banner-gql": {
       "inputHash": "4efec57f65de72513b03d8a4f3d541ac55ad07e2c515d562abafe5e66edaf7f7",
@@ -528,7 +528,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.239Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-hero-banner": {
       "inputHash": "9d3cee69a7ca26f2acab035245c989a2750246bb858f5b1236460e491e0374fa",
@@ -559,7 +559,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-image": {
       "inputHash": "f9895ec22bf04c8b90233b5d32b6f2b613154ec1161d62df748a5adc3ac3c2dc",
@@ -574,7 +574,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-info-block.generated": {
       "inputHash": "7e6180d52a1b40593479ccfc9f40f9fa54b808fda1e042fcbdd5e5d296d3ccc0",
@@ -595,7 +595,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-info-block-gql": {
       "inputHash": "061077ee8b1a268a89b963409b304f8b591315ee43f3180b7e5b2e93d5354b7b",
@@ -621,7 +621,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-info-block": {
       "inputHash": "606589bca7e7cc665af2198d48bfad262e51930a72fd7610cae337e569ae2d53",
@@ -657,7 +657,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-mobile-menu-gql": {
       "inputHash": "bc75d04db1eb27c12b4efbb51ddbddebd0209f0be4561527d02a7d26a6e51c8d",
@@ -688,7 +688,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-mobile-menu": {
       "inputHash": "2427e311fadf68b77e4e9df3621f0a94f205ca0bd385160a93f940afe5268c7d",
@@ -718,7 +718,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-navigation.generated": {
       "inputHash": "5f95b92c899930a6c5aec8035983ec8921a9b44c87f380940d2fde6ae29ec361",
@@ -744,7 +744,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-navigation-gql": {
       "inputHash": "584c82ad6d5bbc05219b4c2e4f4f8bcfa0b5bbe83cc5488fa048bf3a6d022bfb",
@@ -775,7 +775,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-navigation": {
       "inputHash": "6a6681a1a3c8f81b61b7d588db555158523c5bf56d266f86cc1383c086b225c3",
@@ -805,7 +805,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-page.generated": {
       "inputHash": "21749ff72fc4e36ccbeea5cced62f500655cf6d168ab66a3739ba7a52055c9b3",
@@ -826,7 +826,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-person.generated": {
       "inputHash": "4b9f410aa469161053eab98c30e40d64cbc6df7f765a0dd3c47e533962a36a5e",
@@ -847,7 +847,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-person-gql": {
       "inputHash": "51f05fdf7a643ae145b355d1169be31dd9cca082a40eeedeaa166360c40578c4",
@@ -873,7 +873,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-person": {
       "inputHash": "5b6bbe835811bfa0e446fefd859ddb5541d6a68a251b37d1d553a5dc7716b3b8",
@@ -894,7 +894,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-product-feature.generated": {
       "inputHash": "7385aea03db66458a0424bddbe80f771f0bd6329480d3952f238d57362818a02",
@@ -915,7 +915,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-product-table.generated": {
       "inputHash": "8ee68db73c23f7085ce57097f156817144dcbf16d011f60e734bb6a9dd08fca9",
@@ -946,7 +946,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-product-table-gql": {
       "inputHash": "493c6262a6a18e049a47ca884e000aa47a79315ca97ea7ead1d3c25f8e07e078",
@@ -977,7 +977,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-product-table": {
       "inputHash": "8ae3384de3f00b9568549f36cbd1e996b88ca2ca8214cc9de62cd8a08958a0eb",
@@ -1003,7 +1003,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-product.generated": {
       "inputHash": "89b0ba642f3725e221074ea6f639dace34d4f13d4f8b49bce232bdac81ee7753",
@@ -1029,7 +1029,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-product-gql": {
       "inputHash": "9a7a823d86710a1cf30a23f4a8dfb4bd3639a1c82bee3e3747f01bad7b29c70c",
@@ -1060,7 +1060,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-product": {
       "inputHash": "55aebe90ab547a8745e15b1b5b16c6ae7b9553a05fc25c82a621052a9ff60f41",
@@ -1091,7 +1091,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-quote.generated": {
       "inputHash": "47c8e8ddd20b3306086debd097f42b44bc60d97941996a6caf11836f9abf3a9c",
@@ -1117,7 +1117,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-quote-gql": {
       "inputHash": "930845a7ff524ffe793b82f06fca5542cee3d32e2843255eb52a06520895d3fd",
@@ -1143,7 +1143,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-quote": {
       "inputHash": "ffab27915874811ca2685d1ae0dd8196cdd5868b8f98dc340432d9de8b937367",
@@ -1174,7 +1174,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-richtext.generated": {
       "inputHash": "459e2c4678aae64e8590ce5f3d6c8d3baa8371236ae1c9e3b02f00755686bdf4",
@@ -1195,7 +1195,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-richtext": {
       "inputHash": "ea9261adb90ec91467c42395a30e5e3cb26105cdfd188526c7b8913936bd6ee3",
@@ -1236,7 +1236,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-text-block.generated": {
       "inputHash": "933b1d40a66ff8eaab8e7d8e0adc2ead4d5a49bd00ad15909647508b18e00fd4",
@@ -1262,7 +1262,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-text-block-gql": {
       "inputHash": "5a9c858e104645c8d1cca42c61b911ab6a79004772ff498a326b384902b5bb7e",
@@ -1288,7 +1288,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-text-block": {
       "inputHash": "e6ef3512453adf7dad23d9b11a28d51d3f3fd3b84fb909eb61f4aac011fb1b6b",
@@ -1319,7 +1319,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-video": {
       "inputHash": "10d375e39416b51e826b270eb7d6034a2afbce5d597af534ac8ab8173a2fd987",
@@ -1340,7 +1340,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/entry-not-found": {
       "inputHash": "93eb67305e84b4ec2520104848671d9f87c95776d18dd2143fd29ffaf10d3762",
@@ -1361,7 +1361,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/page-error": {
       "inputHash": "09c3c17141316b31d7678cac7bf6f0c8ded9e92df0371f1f6a1f7760969b90ae",
@@ -1382,7 +1382,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/page-graphql-error": {
       "inputHash": "73ca2a84b54a2062de3210a1ae85f5418aa00dfabc58b2d6c02d81ff1c7aad37",
@@ -1403,7 +1403,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/format-currency": {
       "inputHash": "ed3081dda140422a09ed26eb2dfe30e8a2173c54d9729a6fc956c47ea6501be1",
@@ -1424,7 +1424,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/LanguageSelector": {
       "inputHash": "0e8d6b62ba79d5357d319d0a3c917c2373db73cb914413c5bce49af30f0fdf94",
@@ -1442,7 +1442,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/markdown": {
       "inputHash": "5c0abfdf1350ab1457ba2eb423c180c5bf24776f03838bff56df07e99cb69ffc",
@@ -1457,7 +1457,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/category-link.generated": {
       "inputHash": "2ce0674627a5eadcca072c86aa2b34d1d39e065fd78e2a9bd40353b4219466ad",
@@ -1472,7 +1472,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/page-link.generated": {
       "inputHash": "b85112ef81eecff86f1575b1c500207759220b4b898b65cc4d9baf929a54ef0c",
@@ -1487,7 +1487,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/post-link.generated": {
       "inputHash": "55df9c02e031a56d4dc19995fab07e91eb7a2987f70b6d83d8b5df043c997a21",
@@ -1502,7 +1502,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/page-link": {
       "inputHash": "80bf2ee4b5fdbdef5d80e32fa3f95346f0d3a5f11481501ce898165254f2697d",
@@ -1528,7 +1528,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/section-headlines": {
       "inputHash": "e2f2ca7b92d5e191684470d05797a03ad66bab5a0ac1c60ef6ec6b1bf8f11fb9",
@@ -1549,7 +1549,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/settings-form": {
       "inputHash": "a34627a7274dd9a356b86e095954b68eab0da7a37152a90b0047bbb8aa5b7310",
@@ -1573,7 +1573,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/settings": {
       "inputHash": "ee2947fa620b46024676f304b116511d25d608e13807ba08650aa24d7b012e43",
@@ -1594,7 +1594,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/component-resolver": {
       "inputHash": "012ce237519e6e2cf449c8a7145b463db3c10a465ae9cdc6ac0d9dd3e225fb61",
@@ -1615,7 +1615,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/error-box": {
       "inputHash": "139471176735c30b2e750a966b65fe3ebe7e486336e692d6965855d0801431c4",
@@ -1630,7 +1630,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/graphql-error": {
       "inputHash": "7f1d94b41451ef47d5c0e8406fee620369b0bfc3fe98796bff0d3d1ab581d538",
@@ -1645,7 +1645,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/link": {
       "inputHash": "b31e3c0237dbbf295f0c61971b89b949af290923146c299782e55d7ebdc2978b",
@@ -1660,7 +1660,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/header": {
       "inputHash": "b09a2659a90774c9c85c2d8c0e5204ff5871201491633d34e92d10a5e9e6ca3b",
@@ -1696,7 +1696,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/layout": {
       "inputHash": "089b26493892a43063960db5d0be3a77e7df9c251252460c374c38fc4975a48a",
@@ -1722,7 +1722,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/page-container": {
       "inputHash": "cba1b8c39ebc0dadc45007f78b379db09415073bc08e5abd239d2a23a12acf00",
@@ -1737,7 +1737,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/contentful-context": {
       "inputHash": "8795d76963c41d7d01f0f63c41e750c3ff554df513ef34631ac9526bd2052ffa",
@@ -1752,7 +1752,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-componentMap.generated": {
       "inputHash": "68aafe45b6036323e3048b83ecaf153ab0271b81f721a0a00b2409f5fe771002",
@@ -1767,7 +1767,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/ctf-menuGroup.generated": {
       "inputHash": "1d257fa82497bd5f443e4961e6a412c569327d6af6e3baca6367c883951634f3",
@@ -1788,7 +1788,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/[slug]": {
       "inputHash": "9a4f6d27118fde57457f57b772d81d6fc9a3f56d05051bbd51bcc1633a84725f",
@@ -1819,7 +1819,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/index-page": {
       "inputHash": "f80951784affff6eb9647387940abbde8c3dba7af273a74f75ba535cca5217cf",
@@ -1850,7 +1850,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     },
     "template-marketing-webapp-nextjs/theme": {
       "inputHash": "14f96aa5a9c498dc14c987cdf1b649c58feaa87ea1f91fa46cedf5c38dd11312",
@@ -1865,7 +1865,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T13:01:33.240Z"
+      "lastScannedAt": "2026-07-06T13:11:35.235Z"
     }
   },
   "lambdaEnvVarBindings": {}

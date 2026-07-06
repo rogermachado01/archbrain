@@ -1,17 +1,20 @@
 ---
 type: Next.js Page
 title: Index Page
-description: The index page is the Next.js page component that serves as the main entry point for the marketing site, assembling the primary layout and content sections a visitor sees on load. It relies on generated GraphQL query hooks to pull structured content from Contentful, rather than fetching data manually, keeping the page focused on composing components and passing along the fetched results.
+description: The index page is the Next.js entry point for the site's marketing home route, responsible for assembling the overall page shell and its content. It relies on generated GraphQL query hooks to pull in the data needed for the primary structural pieces of the page, keeping data fetching colocated with the components that consume it.
 level: component
 owner: contentful/team-workflows
+ddd_subdomain: core
+ddd_context: Page Routing
+ddd_role: Page Component
 ---
 
-The index page is the Next.js page component that serves as the main entry point for the marketing site, assembling the primary layout and content sections a visitor sees on load. It relies on generated GraphQL query hooks to pull structured content from Contentful, rather than fetching data manually, keeping the page focused on composing components and passing along the fetched results.
+The index page is the Next.js entry point for the site's marketing home route, responsible for assembling the overall page shell and its content. It relies on generated GraphQL query hooks to pull in the data needed for the primary structural pieces of the page, keeping data fetching colocated with the components that consume it.
 
-To build the full page, it draws on three generated query hooks: one for the site navigation, one for the footer, and one for the main page content itself. Together these hooks let the index page render a complete, content-managed layout — header navigation, the body content defined in Contentful, and a closing footer — all wired together through Next.js data-fetching conventions.
+Specifically, the index page draws on three generated query hooks: one for the site footer, one for the site navigation, and one for the main Contentful-driven page content. Together these hooks let the page render a consistent header/footer frame around dynamically fetched page content, with each concern (navigation, footer, page body) handled by its own dedicated query.
 
 # Relations
 
-- [Ctf Footer.Generated](ctf-footer.generated.md) — Loads footer content for the page {kind: sync}
-- [Ctf Navigation.Generated](ctf-navigation.generated.md) — Loads navigation content for the page {kind: sync}
-- [Ctf Page.Generated](ctf-page.generated.md) — Loads main page content from Contentful {kind: sync}
+- [Ctf Footer.Generated](ctf-footer.generated.md) — Renders the site footer {kind: sync}
+- [Ctf Navigation.Generated](ctf-navigation.generated.md) — Renders the site navigation {kind: sync}
+- [Ctf Page.Generated](ctf-page.generated.md) — Fetches and renders the main page content {kind: sync}

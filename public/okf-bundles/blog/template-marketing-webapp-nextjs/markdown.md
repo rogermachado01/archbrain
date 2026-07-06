@@ -1,13 +1,14 @@
 ---
 type: React Component
 title: Markdown
-description: The `markdown` component is a React Component belonging to the template-marketing-webapp-nextjs package, used within the broader architecture as a building block for rendering markdown-based content in a Next.js marketing web application template.
+description: The Markdown component is a React component within the Next.js marketing web app template, used to render Markdown-formatted content as part of the application's UI. It serves as a presentational building block that developers can incorporate into pages or other components wherever formatted text content—such as blog posts, documentation, or marketing copy—needs to be displayed.
 level: component
 owner: contentful/team-workflows
+ddd_subdomain: generic
+ddd_context: Formatting Utilities
+ddd_role: Presentational Component
 ---
 
-The `markdown` component is a React Component belonging to the template-marketing-webapp-nextjs package, used within the broader architecture as a building block for rendering markdown-based content in a Next.js marketing web application template.
+The Markdown component is a React component within the Next.js marketing web app template, used to render Markdown-formatted content as part of the application's UI. It serves as a presentational building block that developers can incorporate into pages or other components wherever formatted text content—such as blog posts, documentation, or marketing copy—needs to be displayed.
 
-As a React Component, it is designed to be imported and composed within other parts of the application's UI tree, following standard React conventions for reusability and integration into the marketing web app's page and layout structure.
-
-Given its identifier and placement within the template-marketing-webapp-nextjs template, this component likely serves a focused role in presenting formatted text content, though specific props, styling, or rendering behavior are not detailed beyond its classification as a React Component within this template package.
+As part of the broader marketing webapp template, this component fits into the template's collection of reusable UI pieces, offering a consistent way to handle Markdown content across the application without requiring each page to implement its own rendering logic.

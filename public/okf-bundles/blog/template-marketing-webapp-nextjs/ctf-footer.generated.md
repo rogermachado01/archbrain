@@ -1,16 +1,19 @@
 ---
 type: React Component
 title: Ctf Footer.Generated
-description: `ctf-footer.generated` is a generated React Component module that renders the marketing site's footer. It draws on GraphQL fragment definitions rather than defining data shapes itself, relying on generated fragment types and documents imported from elsewhere in the shared codebase to describe the content it displays.
+description: `ctf-footer.generated` is a generated React component module belonging to the Next.js marketing web app template. It represents the footer section of a page and is built up from generated GraphQL fragment types, reflecting the shape of footer content as modeled in Contentful.
 level: component
 owner: contentful/team-workflows
+ddd_subdomain: core
+ddd_context: Footer Content
+ddd_role: Generated Type/Fragment
 ---
 
-`ctf-footer.generated` is a generated React Component module that renders the marketing site's footer. It draws on GraphQL fragment definitions rather than defining data shapes itself, relying on generated fragment types and documents imported from elsewhere in the shared codebase to describe the content it displays.
+`ctf-footer.generated` is a generated React component module belonging to the Next.js marketing web app template. It represents the footer section of a page and is built up from generated GraphQL fragment types, reflecting the shape of footer content as modeled in Contentful.
 
-Specifically, it imports `MenuGroupFieldsFragment` and its companion document from the `ctf-menuGroup` generated fragment module, which supplies the structure for grouped menu links typically shown in a footer's columns. It also imports `PageLinkFieldsFragment` and its document from the `page-link` generated fragment module, providing the shape for individual page links referenced within those menu groups. Together these imports let the footer component request and type-check the nested data it needs to render navigational content.
+To assemble the footer, the module draws on two related generated fragments: one describing menu groups, used to render collections of links organized under a heading, and one describing individual page links, used to render single navigational links. Together these give the footer component the typed data it needs to display the site's footer navigation structure consistently across the app.
 
 # Relations
 
-- [Ctf MenuGroup.Generated](ctf-menuGroup.generated.md) — Renders footer menu groups using shared menu-group fragment data {kind: sync}
-- [Page Link.Generated](page-link.generated.md) — Renders individual footer links using shared page-link fragment data {kind: sync}
+- [Ctf MenuGroup.Generated](ctf-menuGroup.generated.md) — Renders grouped navigation menus in the footer {kind: sync}
+- [Page Link.Generated](page-link.generated.md) — Renders individual page links in the footer {kind: sync}

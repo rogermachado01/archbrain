@@ -1,11 +1,14 @@
 ---
 type: React Component
 title: Category Link.Generated
-description: CategoryLink is a React component from the marketing web app template, used to render a link representing a category, typically pointing to a filtered or category-specific page within the site.
+description: CategoryLink is a React component from the marketing webapp Next.js template, generated as part of the template's category-link module. It represents a link element used to reference or navigate to a category within the marketing site.
 level: component
 owner: contentful/team-workflows
+ddd_subdomain: supporting
+ddd_context: Linking & Navigation
+ddd_role: Generated Type/Fragment
 ---
 
-CategoryLink is a React component from the marketing web app template, used to render a link representing a category, typically pointing to a filtered or category-specific page within the site.
+CategoryLink is a React component from the marketing webapp Next.js template, generated as part of the template's category-link module. It represents a link element used to reference or navigate to a category within the marketing site.
 
-As a generated component, it follows the conventions of the template's component library, offering a consistent, reusable way to display category navigation links across the marketing site's pages, such as blogs, product listings, or resource sections. It is intended to be used wherever category-based linking is needed within the Next.js application structure.
+As a component, it is intended to be used within the broader Next.js application structure, likely rendered wherever category navigation or category references are needed in the marketing webapp's UI.

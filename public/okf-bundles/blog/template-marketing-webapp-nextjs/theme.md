@@ -1,11 +1,14 @@
 ---
 type: React Component
 title: Theme
-description: The Theme concept represents a React Component within the template-marketing-webapp-nextjs template, responsible for defining and applying the visual styling system used across the marketing web application. As a component-type concept, it encapsulates theme-related logic and configuration, such as color schemes, typography, and other design tokens, allowing consuming components to render consistently according to the established visual identity.
+description: The `theme` concept represents the React Component responsible for handling theme-related presentation within the marketing web app template built on Next.js. As part of the `template-marketing-webapp-nextjs` project, it exists to support the visual and structural styling needs of the application, functioning as a discrete, reusable unit within the component architecture.
 level: component
 owner: contentful/team-workflows
+ddd_subdomain: generic
+ddd_context: Design System
+ddd_role: Theme Configuration
 ---
 
-The Theme concept represents a React Component within the template-marketing-webapp-nextjs template, responsible for defining and applying the visual styling system used across the marketing web application. As a component-type concept, it encapsulates theme-related logic and configuration, such as color schemes, typography, and other design tokens, allowing consuming components to render consistently according to the established visual identity.
+The `theme` concept represents the React Component responsible for handling theme-related presentation within the marketing web app template built on Next.js. As part of the `template-marketing-webapp-nextjs` project, it exists to support the visual and structural styling needs of the application, functioning as a discrete, reusable unit within the component architecture.
 
-In practice, Theme is used by other components in the marketing web application to access shared styling values or context, ensuring a unified appearance throughout the site. Its placement within the Next.js-based marketing template indicates it serves as a foundational styling layer that supports the broader page and component structure of the application.
+In practice, this component is used wherever theme-driven rendering logic needs to be applied across the marketing site, allowing the broader application to maintain consistent styling behavior through a dedicated component rather than duplicating logic elsewhere. Its role is scoped specifically to theme concerns, keeping this responsibility separated from other components in the template.

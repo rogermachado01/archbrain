@@ -1,15 +1,18 @@
 ---
 type: React Component
 title: Page Error
-description: page-error is a React component in the marketing web app template, responsible for rendering the error state shown to visitors when a page fails to load or an unexpected issue occurs. As part of the template's page-level structure, it provides a user-facing fallback UI that keeps the visual identity of the site consistent even when something goes wrong.
+description: page-error is a React Component within the Next.js marketing webapp template, serving as the error boundary or error page shown when something goes wrong during rendering or navigation. It relies on the shared theme configuration to keep its presentation consistent with the rest of the site, rather than defining its own standalone styling.
 level: component
 owner: contentful/team-workflows
+ddd_subdomain: generic
+ddd_context: Error Handling
+ddd_role: Presentational Component
 ---
 
-page-error is a React component in the marketing web app template, responsible for rendering the error state shown to visitors when a page fails to load or an unexpected issue occurs. As part of the template's page-level structure, it provides a user-facing fallback UI that keeps the visual identity of the site consistent even when something goes wrong.
+page-error is a React Component within the Next.js marketing webapp template, serving as the error boundary or error page shown when something goes wrong during rendering or navigation. It relies on the shared theme configuration to keep its presentation consistent with the rest of the site, rather than defining its own standalone styling.
 
-To achieve this visual consistency, page-error draws on the shared design system by using colorfulTheme from the theme module. This ensures the error page reflects the same colors and styling conventions used across the rest of the marketing site, rather than presenting a generic, unstyled error screen.
+By pulling in the colorful theme, this component ensures that even error states remain visually aligned with the overall brand and design language used throughout the template, giving users a cohesive experience even when a failure occurs.
 
 # Relations
 
-- [Theme](theme.md) — Styles the error page with the shared color theme {kind: sync}
+- [Theme](theme.md) — Applies the shared color theme to style the error page {kind: sync}

@@ -1,11 +1,14 @@
 ---
 type: React Component
 title: Post Link.Generated
-description: PostLink is a React component within the marketing webapp template built on Next.js. As a generated component, it is produced automatically as part of the template's build or scaffolding process rather than being hand-authored, reflecting the structure of the underlying content it represents.
+description: PostLink is a React component from the marketing web app template built on Next.js, generated as part of the template's standard scaffolding. It functions as a link element used to navigate to a post or blog entry within the marketing site, wrapping the relevant routing and anchor behavior needed for that navigation.
 level: component
 owner: contentful/team-workflows
+ddd_subdomain: supporting
+ddd_context: Linking & Navigation
+ddd_role: Generated Type/Fragment
 ---
 
-PostLink is a React component within the marketing webapp template built on Next.js. As a generated component, it is produced automatically as part of the template's build or scaffolding process rather than being hand-authored, reflecting the structure of the underlying content it represents.
+PostLink is a React component from the marketing web app template built on Next.js, generated as part of the template's standard scaffolding. It functions as a link element used to navigate to a post or blog entry within the marketing site, wrapping the relevant routing and anchor behavior needed for that navigation.
 
-In practice, PostLink is used to render a link to a post, serving as a reusable UI piece within the marketing site's page composition. Being part of the Next.js-based template, it fits into the broader set of generated components that the application assembles to display content such as blog posts or articles, providing consistent linking behavior wherever post references need to be surfaced in the interface.
+As a generated component, PostLink is intended to be used within other parts of the marketing web app—such as post listings, cards, or previews—wherever a clickable reference to an individual post is needed. It encapsulates the link logic so that other components can reference posts consistently without reimplementing the navigation details each time.

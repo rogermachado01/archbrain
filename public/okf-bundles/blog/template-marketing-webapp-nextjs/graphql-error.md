@@ -1,11 +1,14 @@
 ---
 type: React Component
 title: Graphql Error
-description: `GraphQLError` is a React component belonging to the marketing web app template built on Next.js, where it plays the role of surfacing error states that arise from GraphQL operations within the application. As a component in a Next.js-based marketing site template, it fits into the broader pattern of using GraphQL as a data layer, providing a dedicated piece of UI specifically for representing when a GraphQL query or mutation has failed or returned an error condition.
+description: GraphQLError is a React component used within the template-marketing-webapp-nextjs architecture to represent and handle error states arising from GraphQL data operations. It serves as a dedicated UI element that renders appropriate feedback when a GraphQL query or mutation fails, helping to isolate error-handling logic from the rest of the component tree.
 level: component
 owner: contentful/team-workflows
+ddd_subdomain: generic
+ddd_context: Error Handling
+ddd_role: Presentational Component
 ---
 
-`GraphQLError` is a React component belonging to the marketing web app template built on Next.js, where it plays the role of surfacing error states that arise from GraphQL operations within the application. As a component in a Next.js-based marketing site template, it fits into the broader pattern of using GraphQL as a data layer, providing a dedicated piece of UI specifically for representing when a GraphQL query or mutation has failed or returned an error condition.
+GraphQLError is a React component used within the template-marketing-webapp-nextjs architecture to represent and handle error states arising from GraphQL data operations. It serves as a dedicated UI element that renders appropriate feedback when a GraphQL query or mutation fails, helping to isolate error-handling logic from the rest of the component tree.
 
-In practice, this component would be used wherever GraphQL-backed data fetching occurs in the marketing web app, giving the interface a consistent way to communicate error states to the user rather than leaving failed requests unhandled or silently broken. Its placement within the template suggests it is intended as a reusable piece, available to other parts of the application that depend on GraphQL data.
+In practice, this component would be composed into pages or feature components that rely on GraphQL data fetching, providing a consistent way to display error messaging to the user when the underlying data layer encounters a problem.

@@ -1,15 +1,18 @@
 ---
 type: React Component
 title: Ctf Product Feature.Generated
-description: This is a generated React component definition for `ctf-product-feature`, part of the marketing web app template built on Next.js. As a `.generated` file, it is produced from an underlying GraphQL schema or query definition rather than authored directly, following the pattern used across the template's Contentful-backed components.
+description: This is a generated React component belonging to the marketing webapp Next.js template, specifically representing a product feature block used for the CTF (Contentful) integration. As a `.generated` module, it is produced by a code generation process, likely tied to GraphQL types or fragments defined in the Contentful schema, allowing the component to work with strongly typed data structures reflecting the underlying content model.
 level: component
 owner: contentful/team-workflows
+ddd_subdomain: core
+ddd_context: Product Content
+ddd_role: Generated Type/Fragment
 ---
 
-This is a generated React component definition for `ctf-product-feature`, part of the marketing web app template built on Next.js. As a `.generated` file, it is produced from an underlying GraphQL schema or query definition rather than authored directly, following the pattern used across the template's Contentful-backed components.
+This is a generated React component belonging to the marketing webapp Next.js template, specifically representing a product feature block used for the CTF (Contentful) integration. As a `.generated` module, it is produced by a code generation process, likely tied to GraphQL types or fragments defined in the Contentful schema, allowing the component to work with strongly typed data structures reflecting the underlying content model.
 
-The component relies on asset-related fragment definitions from the `ctf-asset` module, importing `AssetFieldsFragment` and `AssetFieldsFragmentDoc`. This suggests that a product feature entry can include associated media assets (such as images), and the generated types and document fragments allow this component to correctly type and query that asset data as part of rendering a product feature's content.
+The component depends on the ctf-asset concept, importing `AssetFieldsFragment` and `AssetFieldsFragmentDoc` from its generated module. This suggests that the product feature component displays or processes asset data—such as images or media—associated with a product feature entry, relying on the shared asset fragment definition to ensure consistent shape and typing of asset-related fields wherever they appear across the template.
 
 # Relations
 
-- [Ctf Asset.Generated](ctf-asset.generated.md) — Includes asset data for feature media {kind: sync}
+- [Ctf Asset.Generated](ctf-asset.generated.md) — Uses shared asset fragment to render feature media {kind: sync}

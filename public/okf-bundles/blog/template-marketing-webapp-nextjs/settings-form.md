@@ -1,15 +1,18 @@
 ---
 type: React Component
 title: Settings Form
-description: SettingsForm is a React component within the marketing-webapp-nextjs template, responsible for rendering a form used to manage settings within the application. It relies on the Contentful context to access shared state or configuration relevant to the marketing app, drawing this context via the useContentfulContext hook.
+description: SettingsForm is a React component within the marketing webapp template that provides a form-based interface for managing settings, likely tied to the app's Contentful-driven configuration. It relies on shared context to access the current Contentful setup, allowing the form to reflect or update values relevant to the connected space and environment.
 level: component
 owner: contentful/team-workflows
+ddd_subdomain: supporting
+ddd_context: Settings
+ddd_role: Form Component
 ---
 
-SettingsForm is a React component within the marketing-webapp-nextjs template, responsible for rendering a form used to manage settings within the application. It relies on the Contentful context to access shared state or configuration relevant to the marketing app, drawing this context via the useContentfulContext hook.
+SettingsForm is a React component within the marketing webapp template that provides a form-based interface for managing settings, likely tied to the app's Contentful-driven configuration. It relies on shared context to access the current Contentful setup, allowing the form to reflect or update values relevant to the connected space and environment.
 
-By importing useContentfulContext from the contentful-context module, SettingsForm can read whatever contextual values that hook exposes, allowing it to tailor its rendered form or behavior according to the current Contentful-related state established elsewhere in the template. This positions SettingsForm as a consumer of shared context rather than a source of it, integrating into the broader app structure by depending on centrally managed context data.
+By consuming the Contentful context, SettingsForm can operate within the broader app-building flow, where users configure how content is sourced and rendered. This positions it as a supporting UI piece for administrators or developers adjusting integration settings rather than a content-facing component.
 
 # Relations
 
-- [Contentful Context](contentful-context.md) — Reads shared Contentful context to inform the settings form {kind: sync}
+- [Contentful Context](contentful-context.md) — Reads Contentful connection details from shared context {kind: sync}

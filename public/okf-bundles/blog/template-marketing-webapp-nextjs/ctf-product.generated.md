@@ -1,16 +1,19 @@
 ---
 type: React Component
 title: Ctf Product.Generated
-description: `ctf-product.generated` is a generated GraphQL artifact for the marketing web app's Product component, part of the Contentful (`ctf-`) integration layer used to fetch and type content for a "product" entry type. As a generated file, it centralizes the fragments and typed helpers that describe the shape of product data pulled from the CMS, so that the corresponding React component can render product entries with type-safe access to their fields.
+description: `ctf-product.generated` is a generated GraphQL artifact for a Product component in this Next.js marketing template, part of the Contentful (`ctf-`) content-model integration layer. It defines and exports typed fragment fields used to shape product data fetched from Contentful, and it pulls in related generated fragments so that product data can be composed alongside associated content types.
 level: component
 owner: contentful/team-workflows
+ddd_subdomain: core
+ddd_context: Product Content
+ddd_role: Generated Type/Fragment
 ---
 
-`ctf-product.generated` is a generated GraphQL artifact for the marketing web app's Product component, part of the Contentful (`ctf-`) integration layer used to fetch and type content for a "product" entry type. As a generated file, it centralizes the fragments and typed helpers that describe the shape of product data pulled from the CMS, so that the corresponding React component can render product entries with type-safe access to their fields.
+`ctf-product.generated` is a generated GraphQL artifact for a Product component in this Next.js marketing template, part of the Contentful (`ctf-`) content-model integration layer. It defines and exports typed fragment fields used to shape product data fetched from Contentful, and it pulls in related generated fragments so that product data can be composed alongside associated content types.
 
-This file composes its product data model out of related content fragments rather than defining everything itself. It draws in asset fields from the `ctf-asset` module, letting a product reference associated media (such as images), and it draws in product feature fields from the `ctf-product-feature` module, letting a product reference a list of feature entries. Together these imports let the generated product fragment represent a richer, nested content structure assembled from other Contentful entry types.
+Specifically, this file depends on the asset fragment definitions from `ctf-asset.generated` and the product feature fragment definitions from `ctf-product-feature.generated`, importing both the fragment type and the fragment document object from each. This composition pattern indicates that a product entry, as modeled here, includes references to assets (such as images) and to product features, which are themselves resolved through their own generated fragment definitions elsewhere in the codebase.
 
 # Relations
 
-- [Ctf Asset.Generated](ctf-asset.generated.md) — Includes product image/asset data {kind: sync}
-- [Ctf Product Feature.Generated](ctf-product-feature.generated.md) — Includes product feature entries {kind: sync}
+- [Ctf Asset.Generated](ctf-asset.generated.md) — Includes product image or media assets {kind: sync}
+- [Ctf Product Feature.Generated](ctf-product-feature.generated.md) — Lists the product's associated features {kind: sync}

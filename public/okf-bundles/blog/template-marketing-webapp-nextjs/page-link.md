@@ -1,16 +1,19 @@
 ---
 type: React Component
 title: Page Link
-description: PageLink is a React component that renders a link derived from CMS-driven page data. It relies on a generated fragment type, PageLinkFieldsFragment, to know the shape of the page link fields it receives, such as the target page's slug or route information coming from the content model.
+description: PageLink is a React component that renders a link whose content and destination are derived from CMS-provided page-link data. It relies on a generated GraphQL fragment type, PageLinkFieldsFragment, to type the shape of the page-link fields it receives, ensuring the component's props stay in sync with the underlying schema.
 level: component
 owner: contentful/team-workflows
+ddd_subdomain: supporting
+ddd_context: Linking & Navigation
+ddd_role: Presentational Component
 ---
 
-PageLink is a React component that renders a link derived from CMS-driven page data. It relies on a generated fragment type, PageLinkFieldsFragment, to know the shape of the page link fields it receives, such as the target page's slug or route information coming from the content model.
+PageLink is a React component that renders a link whose content and destination are derived from CMS-provided page-link data. It relies on a generated GraphQL fragment type, PageLinkFieldsFragment, to type the shape of the page-link fields it receives, ensuring the component's props stay in sync with the underlying schema.
 
-To actually render the anchor element, PageLink composes the shared Link component, passing through its LinkProps so that navigation behaves consistently with other links across the marketing site. In effect, PageLink acts as a thin adapter layer that translates typed CMS page-link data into a properly configured Link instance.
+To actually render the clickable element, PageLink delegates to the shared Link component, passing along the appropriate LinkProps. This composition allows PageLink to focus on interpreting page-link-specific data while reusing the shared link behavior—such as navigation handling and styling—that Link already provides.
 
 # Relations
 
-- [Page Link.Generated](page-link.generated.md) — Types incoming page link data using the generated fragment {kind: sync}
+- [Page Link.Generated](page-link.generated.md) — Types its props using the generated page-link fragment {kind: sync}
 - [Link](link.md) — Renders the actual anchor via the shared Link component {kind: sync}

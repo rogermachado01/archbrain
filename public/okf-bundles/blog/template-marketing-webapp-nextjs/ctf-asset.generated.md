@@ -1,13 +1,14 @@
 ---
 type: React Component
 title: Ctf Asset.Generated
-description: `ctf-asset.generated` is a React Component belonging to the template-marketing-webapp-nextjs template. As a generated component, it forms part of the application's component layer, rendered within the broader Next.js page and layout structure that makes up the marketing web app.
+description: `ctf-asset.generated` is a React Component within the template-marketing-webapp-nextjs project, representing a generated asset component tied to Contentful (CTF) as a content source. As a generated artifact, it is produced automatically rather than authored by hand, indicating it is likely derived from a schema, content model, or type definition defined in Contentful.
 level: component
 owner: contentful/team-workflows
+ddd_subdomain: supporting
+ddd_context: Asset Content
+ddd_role: Generated Type/Fragment
 ---
 
-`ctf-asset.generated` is a React Component belonging to the template-marketing-webapp-nextjs template. As a generated component, it forms part of the application's component layer, rendered within the broader Next.js page and layout structure that makes up the marketing web app.
+`ctf-asset.generated` is a React Component within the template-marketing-webapp-nextjs project, representing a generated asset component tied to Contentful (CTF) as a content source. As a generated artifact, it is produced automatically rather than authored by hand, indicating it is likely derived from a schema, content model, or type definition defined in Contentful.
 
-Given its name, this component is concerned with rendering or representing a Contentful ("ctf") asset, such as an image or media file sourced from the CMS. Its "generated" designation indicates that it is produced automatically rather than hand-authored, likely as part of a code generation step tied to the content model or schema used by the template.
-
-In practice, this component would be used wherever the marketing site needs to display or reference Contentful asset data, acting as a reusable building block within the larger set of components that make up the template's front-end architecture.
+In practical use, this component would be used within the marketing web application to render or represent asset data—such as images or media files—retrieved from Contentful, following a structure or interface that is kept in sync with the underlying content model through the generation process.

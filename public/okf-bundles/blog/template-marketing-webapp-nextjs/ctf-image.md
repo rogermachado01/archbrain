@@ -1,11 +1,16 @@
 ---
 type: React Component
 title: Ctf Image
-description: CtfImage is a React component belonging to the marketing webapp Next.js template, used to render image content within the "call to action" (CTF, likely short for "Content Type Framework" or similar content-typed) section of a marketing page. As a component in this template's architecture, it serves as a building block responsible for displaying image assets consistently wherever this content type is used across the site.
+description: `ctf-image` is a React component belonging to the marketing web app Next.js template. As a component-type concept, it represents a discrete, reusable piece of UI within the template's architecture, intended to be composed into pages or other components as part of the overall front-end structure.
 level: component
 owner: contentful/team-workflows
+ddd_subdomain: supporting
+ddd_context: Asset Content
+ddd_role: Presentational Component
 ---
 
-CtfImage is a React component belonging to the marketing webapp Next.js template, used to render image content within the "call to action" (CTF, likely short for "Content Type Framework" or similar content-typed) section of a marketing page. As a component in this template's architecture, it serves as a building block responsible for displaying image assets consistently wherever this content type is used across the site.
+`ctf-image` is a React component belonging to the marketing web app Next.js template. As a component-type concept, it represents a discrete, reusable piece of UI within the template's architecture, intended to be composed into pages or other components as part of the overall front-end structure.
 
-In practice, CtfImage is invoked by parent components or page templates that assemble marketing pages from structured content, passing in image-related data so it can be rendered appropriately within the page layout. Its role is scoped specifically to image presentation, keeping image-rendering logic separate from other concerns handled by sibling components in the same template.
+Given its identifier, it is scoped specifically to rendering image content, likely used wherever the template needs a standardized way to display images—such as in marketing pages, hero sections, or content blocks—within the broader Next.js application. Its exact props, styling, and behavior are not specified beyond its role as an image-related component in the template.
+
+As with other components in the `template-marketing-webapp-nextjs` template, `ctf-image` fits into the larger set of building blocks that make up the marketing site, working alongside other components to assemble complete pages, though its specific relationships to other concepts are not detailed here.

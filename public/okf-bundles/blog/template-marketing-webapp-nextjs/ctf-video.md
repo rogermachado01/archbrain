@@ -1,15 +1,18 @@
 ---
 type: React Component
 title: Ctf Video
-description: CtfVideo is a React component within the marketing web app template, responsible for rendering video content sourced from Contentful within the site's feature components.
+description: `ctf-video` is a React component within the Next.js marketing web app template, part of the Contentful (ctf) component family responsible for rendering media content sourced from Contentful entries. As a video-focused component, it fits into the broader pattern of ctf-components that take Contentful field data and render corresponding UI, likely displaying a video asset such as a poster image or thumbnail derived from an associated media asset.
 level: component
 owner: contentful/team-workflows
+ddd_subdomain: supporting
+ddd_context: Asset Content
+ddd_role: Presentational Component
 ---
 
-CtfVideo is a React component within the marketing web app template, responsible for rendering video content sourced from Contentful within the site's feature components.
+`ctf-video` is a React component within the Next.js marketing web app template, part of the Contentful (ctf) component family responsible for rendering media content sourced from Contentful entries. As a video-focused component, it fits into the broader pattern of ctf-components that take Contentful field data and render corresponding UI, likely displaying a video asset such as a poster image or thumbnail derived from an associated media asset.
 
-To support its rendering needs, CtfVideo relies on the AssetFieldsFragment type imported from the generated ctf-asset module. This suggests that CtfVideo works with asset data structured according to the shared asset fields definition, likely to access properties such as the video file's URL or metadata needed for playback or display.
+The component relies on generated GraphQL type definitions to understand the shape of the asset data it works with. Specifically, it imports the `AssetFieldsFragment` type from the generated types file associated with the `ctf-asset` component, indicating that `ctf-video` shares or reuses asset field typing to properly type-check or structure asset-related data (such as a video's cover image or file metadata) used in its rendering logic.
 
 # Relations
 
-- [Ctf Asset.Generated](ctf-asset.generated.md) — Uses shared asset field types to describe the video source {kind: sync}
+- [Ctf Asset.Generated](ctf-asset.generated.md) — Uses generated asset field types to type video asset data {kind: sync}
