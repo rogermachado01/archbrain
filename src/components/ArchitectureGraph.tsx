@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Export, Graph, MiniMap } from "@antv/x6";
-import type { ArchNode, ArchRelation, AwsGroup, AwsGroupKind } from "@/lib/types";
+import type { ArchNode, ArchRelation, AwsGroup, AwsGroupKind, DddSubdomain } from "@/lib/types";
 import { computeLayeredPositions } from "@/lib/layout";
-import { computeGroupBoxes } from "@/lib/groups";
-import { getRelationStyle } from "@/lib/relation-style";
+import { computeGroupBoxes, computeBoundedContextBoxes } from "@/lib/groups";
+import { formatRelationLabel, getRelationStyle } from "@/lib/relation-style";
 
 const NODE_WIDTH = 240;
 const NODE_HEIGHT = 88;
@@ -30,6 +30,20 @@ const SUBLABEL_WRAP_HEIGHT = 18; // 1 line at fontSize 11 (lineHeight 16)
 const GROUP_BOX_PADDING = 20;
 const GROUP_BOX_LABEL_BAND = 26;
 
+// Bounded-context boxes are a separate (linguistic, not network) grouping, so
+// their padding is deliberately != GROUP_BOX_PADDING — their edges must never
+// land exactly on an AWS network-group edge, which would look like a single
+// merged box instead of two independent, possibly-overlapping boundaries.
+const BC_BOX_PADDING = 28;
+const BC_BOX_LABEL_BAND = 26;
+const BC_STYLE = { stroke: "#7d3ac1", dash: "10,5" };
+
+const SUBDOMAIN_STYLE: Record<DddSubdomain, { label: string; color: string }> = {
+  core: { label: "CORE", color: "#d13212" },
+  supporting: { label: "SUPPORTING", color: "#1168bd" },
+  generic: { label: "GENERIC", color: "#687078" },
+};
+
 // Minimap is only useful once a view has enough nodes that panning around
 // loses context; the container is always mounted (see render below) so the
 // plugin only needs registering once, at graph creation.
@@ -41,6 +55,12 @@ const MINIMAP_HEIGHT = 120;
 // (see tracePath in src/lib/model.ts) is active.
 const DIMMED_NODE_OPACITY = 0.25;
 const DIMMED_EDGE_OPACITY = 0.15;
+
+// Manual zoom controls (+/- buttons) step by this much per click, bounded to
+// the same range X6 clamps mousewheel zoom and zoomToFit to.
+const ZOOM_STEP = 0.1;
+const ZOOM_MIN = 0.2;
+const ZOOM_MAX = 2.5;
 
 const GROUP_STYLE: Record<
   AwsGroupKind,
@@ -69,6 +89,7 @@ function registerShapes() {
         { tagName: "text", selector: "label" },
         { tagName: "text", selector: "sublabel" },
         { tagName: "text", selector: "badge" },
+        { tagName: "text", selector: "subdomainBadge" },
       ],
       attrs: {
         body: { fill: "#ffffff", stroke: "#aab7c4", strokeWidth: 1, rx: 8, ry: 8 },
@@ -100,6 +121,17 @@ function registerShapes() {
           fontSize: 13,
           fill: "#ec7211",
           fontWeight: 700,
+        },
+        // Bottom-right corner, distinct from the top-right drillable "»" badge
+        // and below the single-line sublabel — see SUBDOMAIN_STYLE for colors.
+        subdomainBadge: {
+          refX: NODE_WIDTH - 10,
+          refY: NODE_HEIGHT - 8,
+          textAnchor: "end",
+          textVerticalAnchor: "bottom",
+          fontSize: 9,
+          fontWeight: 700,
+          letterSpacing: 0.5,
         },
       },
     },
@@ -208,6 +240,14 @@ export default function ArchitectureGraph({
   // rebuild effect below and read by the separate highlight effect, which
   // doesn't recompute the graph and so has no other way to know about them.
   const structuralIdsRef = useRef<Set<string>>(new Set());
+  // Identifies the current view's node/edge *set* (not selection state) so the
+  // rebuild effect below can tell "drilled into a different view" apart from
+  // "just clicked a node in the same view" — see its zoomToFit call.
+  const lastViewKeyRef = useRef<string | null>(null);
+  // Mirrors the graph's live scale (kept in sync via the "scale" event, fired
+  // by mousewheel zoom, the +/-/Fit buttons, and zoomToFit alike) so the
+  // toolbar can show a percentage the user can trust.
+  const [zoomPercent, setZoomPercent] = useState(100);
 
   useEffect(() => {
     registerShapes();
@@ -217,7 +257,7 @@ export default function ArchitectureGraph({
       container: containerRef.current,
       autoResize: true,
       panning: true,
-      mousewheel: { enabled: true, modifiers: ["ctrl", "meta"] },
+      mousewheel: { enabled: true, modifiers: ["ctrl", "meta"], minScale: ZOOM_MIN, maxScale: ZOOM_MAX },
       interacting: { nodeMovable: false },
     });
     graph.use(new Export());
@@ -233,16 +273,34 @@ export default function ArchitectureGraph({
     }
     graphRef.current = graph;
 
+    const scaleHandler = ({ sx }: { sx: number }) => setZoomPercent(Math.round(sx * 100));
+    graph.on("scale", scaleHandler);
+
     // autoResize keeps the SVG viewport in sync with the container's on-screen
     // size (e.g. the sidebar widening for the Wiki tab, or the window itself
     // resizing), but doesn't re-fit the zoom/pan on its own — without this the
     // previously-fit diagram can end up partially outside the now-narrower
-    // graph area.
-    const resizeHandler = () => graph.zoomToFit({ padding: 40, maxScale: 1 });
+    // graph area. Guarded on a non-zero container size: zoomToFit's internal
+    // scaleContentToFit divides by the *graph's* configured width/height (kept
+    // in sync by autoResize), and a transient zero-size container — e.g. the
+    // instant a flex sibling's width changes, before layout settles — makes
+    // that division produce a non-finite scale, which throws when applied to
+    // the underlying SVGMatrix ("The provided double value is non-finite").
+    const resizeHandler = () => {
+      const el = containerRef.current;
+      if (!el || el.clientWidth === 0 || el.clientHeight === 0 || graph.getCellCount() === 0) return;
+      try {
+        graph.zoomToFit({ padding: 40, maxScale: 1 });
+      } catch {
+        // Best-effort re-fit — an occasional missed fit (e.g. a transient
+        // layout state the guards above didn't catch) shouldn't crash the app.
+      }
+    };
     graph.on("resize", resizeHandler);
 
     return () => {
       graph.off("resize", resizeHandler);
+      graph.off("scale", scaleHandler);
       graph.dispose();
       graphRef.current = null;
     };
@@ -295,17 +353,41 @@ export default function ArchitectureGraph({
           labelBand: GROUP_BOX_LABEL_BAND,
         })
       : [];
+    // Bounded-context boxes are a linguistic grouping (from node.ddd.context),
+    // computed independently of the AWS network groups above. Unlike AWS groups,
+    // they are NOT gated to the "every visible node is a container" AWS view —
+    // they render whenever any visible node has a ddd.context, including inside a
+    // drilled-into container, since the okf-scan pipeline's organizer stage now
+    // assigns ddd_context at the component level too (see
+    // docs/superpowers/specs/2026-07-06-ddd-organizer-agent-design.md).
+    const showBoundedContextBoxes = positions.some(({ node }) => node.ddd?.context);
+    const bcBoxes = showBoundedContextBoxes
+      ? computeBoundedContextBoxes(nodes, positions, {
+          nodeWidth: NODE_WIDTH,
+          nodeHeight: NODE_HEIGHT,
+          padding: BC_BOX_PADDING,
+          labelBand: BC_BOX_LABEL_BAND,
+        })
+      : [];
+    // zIndex is derived from the deepest AWS group present so bounded-context boxes
+    // and the AWS boundary always stay behind every AWS network group, however many
+    // nesting levels a dataset defines; with no groups (groupBoxes empty — always
+    // true outside an AWS boundary view), this reduces to a fixed depth.
+    const maxGroupDepth = groupBoxes.length > 0 ? Math.max(...groupBoxes.map((b) => b.depth)) : -1;
 
     if (isAwsBoundaryView && boundaryConfig) {
-      const minX = Math.min(...positions.map((p) => p.x), ...groupBoxes.map((b) => b.x));
-      const minY = Math.min(...positions.map((p) => p.y), ...groupBoxes.map((b) => b.y));
-      const maxX = Math.max(...positions.map((p) => p.x + NODE_WIDTH), ...groupBoxes.map((b) => b.x + b.width));
-      const boundaryMaxY = Math.max(maxDetourY, ...groupBoxes.map((b) => b.y + b.height));
-
-      // zIndex is derived from the deepest group present so the boundary always
-      // stays furthest back, however many nesting levels a dataset defines; with
-      // no groups (groupBoxes empty), this reduces to today's fixed -1.
-      const maxGroupDepth = groupBoxes.length > 0 ? Math.max(...groupBoxes.map((b) => b.depth)) : -1;
+      const minX = Math.min(...positions.map((p) => p.x), ...groupBoxes.map((b) => b.x), ...bcBoxes.map((b) => b.x));
+      const minY = Math.min(...positions.map((p) => p.y), ...groupBoxes.map((b) => b.y), ...bcBoxes.map((b) => b.y));
+      const maxX = Math.max(
+        ...positions.map((p) => p.x + NODE_WIDTH),
+        ...groupBoxes.map((b) => b.x + b.width),
+        ...bcBoxes.map((b) => b.x + b.width)
+      );
+      const boundaryMaxY = Math.max(
+        maxDetourY,
+        ...groupBoxes.map((b) => b.y + b.height),
+        ...bcBoxes.map((b) => b.y + b.height)
+      );
 
       cells.push(
         graph.createNode({
@@ -315,7 +397,7 @@ export default function ArchitectureGraph({
           y: minY - BOUNDARY_PADDING,
           width: maxX - minX + BOUNDARY_PADDING * 2,
           height: boundaryMaxY - minY + BOUNDARY_PADDING * 2,
-          zIndex: -(maxGroupDepth + 2),
+          zIndex: -(maxGroupDepth + 3),
           attrs: {
             icon: { "xlink:href": `/aws-icons/${boundaryConfig.icon}` },
             label: { text: boundaryConfig.label },
@@ -359,6 +441,29 @@ export default function ArchitectureGraph({
       });
     }
 
+    bcBoxes.forEach((box) => {
+      cells.push(
+        graph.createNode({
+          id: box.group.id,
+          shape: "arch-group",
+          x: box.x,
+          y: box.y,
+          width: box.width,
+          height: box.height,
+          zIndex: -(maxGroupDepth + 2),
+          attrs: {
+            body: { stroke: BC_STYLE.stroke, strokeDasharray: BC_STYLE.dash },
+            icon: { display: "none" },
+            label: {
+              refX: 12,
+              fill: BC_STYLE.stroke,
+              text: `Bounded Context: ${box.group.name}`,
+            },
+          },
+        })
+      );
+    });
+
     positions.forEach(({ node, x, y }) => {
       const drillable = isDrillable(node.id);
       const isSelected = node.id === selectedNodeId;
@@ -367,6 +472,9 @@ export default function ArchitectureGraph({
       const textX = hasIcon ? 62 : NODE_WIDTH / 2;
       const textAnchor = hasIcon ? "start" : "middle";
       const textWidth = (hasIcon ? NODE_WIDTH - textX - 12 : NODE_WIDTH - 24);
+      const subdomain = node.ddd?.subdomain;
+      const subdomainStyle = subdomain ? SUBDOMAIN_STYLE[subdomain] : undefined;
+      const isCore = subdomain === "core";
 
       cells.push(
         graph.createNode({
@@ -380,8 +488,16 @@ export default function ArchitectureGraph({
           attrs: {
             body: {
               fill: isSystemBoundary ? "#f0f5ff" : "#ffffff",
-              stroke: isSelected ? "#ec7211" : isSystemBoundary ? "#1168bd" : node.external ? "#8b96a5" : "#aab7c4",
-              strokeWidth: isSelected ? 2.5 : isSystemBoundary ? 2 : 1,
+              stroke: isSelected
+                ? "#ec7211"
+                : isSystemBoundary
+                  ? "#1168bd"
+                  : isCore
+                    ? SUBDOMAIN_STYLE.core.color
+                    : node.external
+                      ? "#8b96a5"
+                      : "#aab7c4",
+              strokeWidth: isSelected ? 2.5 : isSystemBoundary ? 2 : isCore ? 2 : 1,
               ...(node.external ? { strokeDasharray: "5,3" } : {}),
             },
             icon: hasIcon ? { "xlink:href": `/aws-icons/${node.icon}`, display: "inline" } : { display: "none" },
@@ -398,6 +514,9 @@ export default function ArchitectureGraph({
               textWrap: { width: textWidth, height: SUBLABEL_WRAP_HEIGHT, ellipsis: true },
             },
             badge: { text: drillable ? "»" : "" },
+            subdomainBadge: subdomainStyle
+              ? { text: subdomainStyle.label, fill: subdomainStyle.color }
+              : { text: "" },
           },
         })
       );
@@ -424,6 +543,7 @@ export default function ArchitectureGraph({
             ]
           : undefined;
       const style = getRelationStyle(rel);
+      const labelText = formatRelationLabel(rel);
 
       cells.push(
         graph.createEdge({
@@ -442,12 +562,12 @@ export default function ArchitectureGraph({
               ...(style.dash ? { strokeDasharray: style.dash } : {}),
             },
           },
-          labels: rel.label
+          labels: labelText
             ? [
                 {
                   position: { distance: labelDistance },
                   attrs: {
-                    text: { text: rel.label, fontSize: 11, fill: "#3b4553" },
+                    text: { text: labelText, fontSize: 11, fill: "#3b4553" },
                     rect: {
                       fill: "#ffffff",
                       stroke: "#d8dee6",
@@ -468,11 +588,34 @@ export default function ArchitectureGraph({
     });
 
     graph.resetCells(cells);
-    graph.zoomToFit({ padding: 40, maxScale: 1 });
+    // This effect also reruns on a plain selection change (selectedNodeId is
+    // a dep, since it drives each node's selected-border style below) — but
+    // re-fitting zoom/pan on every click, discarding whatever the user had
+    // manually zoomed/panned to, is exactly the jarring behavior this view
+    // key exists to prevent. Only re-fit when the node/edge *set* actually
+    // changed (a real drill-in/out or data-source switch), not merely which
+    // one is selected within the same view.
+    const viewKey = `${nodes.map((n) => n.id).join(",")}|${relations.map((r) => r.id).join(",")}`;
+    const isNewView = lastViewKeyRef.current !== viewKey;
+    lastViewKeyRef.current = viewKey;
+    // cells can legitimately be empty (e.g. a deep link straight to a leaf
+    // node with no children) — skip the fit rather than let zoomToFit's
+    // division-by-empty-content-area produce a non-finite scale.
+    if (cells.length > 0 && isNewView) {
+      try {
+        graph.zoomToFit({ padding: 40, maxScale: 1 });
+      } catch {
+        // Best-effort — see the resize handler below for the same rationale.
+      }
+    }
 
     // Group boxes aren't real ArchNodes (findNode(archModel, group.id) would find
     // nothing), so clicks on them must be ignored the same way the boundary is.
-    const structuralIds = new Set([BOUNDARY_ID, ...groupBoxes.map((b) => b.group.id)]);
+    const structuralIds = new Set([
+      BOUNDARY_ID,
+      ...groupBoxes.map((b) => b.group.id),
+      ...bcBoxes.map((b) => b.group.id),
+    ]);
     structuralIdsRef.current = structuralIds;
     const clickHandler = ({ node }: { node: { id: string } }) => {
       if (structuralIds.has(node.id)) return;
@@ -510,6 +653,7 @@ export default function ArchitectureGraph({
       cell.attr("label/opacity", opacity);
       cell.attr("sublabel/opacity", opacity);
       cell.attr("badge/opacity", opacity);
+      cell.attr("subdomainBadge/opacity", opacity);
     });
 
     graph.getEdges().forEach((cell) => {
@@ -529,10 +673,49 @@ export default function ArchitectureGraph({
     }
   }
 
+  function handleZoomStep(direction: 1 | -1) {
+    graphRef.current?.zoom(direction * ZOOM_STEP, { minScale: ZOOM_MIN, maxScale: ZOOM_MAX });
+  }
+
+  function handleZoomFit() {
+    const graph = graphRef.current;
+    // Same empty-content guard as the rebuild effect and resize handler above.
+    if (!graph || graph.getCellCount() === 0) return;
+    try {
+      graph.zoomToFit({ padding: 40, maxScale: 1 });
+    } catch {
+      // Best-effort — see the resize handler above for the same rationale.
+    }
+  }
+
   return (
     <>
       <div ref={containerRef} style={{ width: "100%", height: "100%" }} />
       <div className="graph-toolbar">
+        <div className="zoom-controls">
+          <button
+            className="zoom-step"
+            onClick={() => handleZoomStep(-1)}
+            disabled={zoomPercent <= ZOOM_MIN * 100}
+            aria-label="Zoom out"
+            title="Zoom out"
+          >
+            −
+          </button>
+          <span className="zoom-level">{zoomPercent}%</span>
+          <button
+            className="zoom-step"
+            onClick={() => handleZoomStep(1)}
+            disabled={zoomPercent >= ZOOM_MAX * 100}
+            aria-label="Zoom in"
+            title="Zoom in"
+          >
+            +
+          </button>
+          <button className="zoom-fit" onClick={handleZoomFit} title="Fit diagram to screen">
+            Fit
+          </button>
+        </div>
         <button onClick={() => handleExport("png")}>Export PNG</button>
         <button onClick={() => handleExport("svg")}>Export SVG</button>
       </div>
