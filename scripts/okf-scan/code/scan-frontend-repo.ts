@@ -2,7 +2,7 @@ import path from "node:path";
 import ts from "typescript";
 import { ROOT_CONTEXT_ID, type ConceptFacts, type FactRelation } from "../types";
 import { findDescendants, listSourceFiles, parseSourceFile } from "./ts-source";
-import { buildRouteTable, isReservedPageFile, matchRoute, pagesRelativePath } from "./next-routes";
+import { buildRouteTable, isReservedPageFile, matchRoute, pagesRelativePath, rawRouteSegments } from "./next-routes";
 import { loadCompilerOptions, resolveImportedFile } from "./module-resolution";
 import { mergeGeneratedSatellites } from "./merge-generated";
 import { buildRouteHierarchy } from "./route-hierarchy";
@@ -66,10 +66,7 @@ function conceptIdForFile(containerId: string, file: string): string {
 
 /** "index" -> "/", "[slug]" -> "/[slug]", "blog/[slug]" -> "/blog/[slug]". */
 function routePathForPageFile(pagesRelative: string): string {
-  const withoutExt = pagesRelative.replace(/\.(tsx?|jsx?)$/, "");
-  const segments = withoutExt.split("/").filter(Boolean);
-  if (segments[segments.length - 1] === "index") segments.pop();
-  return `/${segments.join("/")}`;
+  return `/${rawRouteSegments(pagesRelative).join("/")}`;
 }
 
 function findFetchUrls(root: ts.Node): string[] {
@@ -193,6 +190,7 @@ interface ParsedFile {
   source: ts.SourceFile;
   conceptId: string;
   isPage: boolean;
+  pagesRelative?: string;
 }
 
 export async function scanFrontendRepo(ctx: FrontendScanContext): Promise<ConceptFacts[]> {
@@ -215,6 +213,7 @@ export async function scanFrontendRepo(ctx: FrontendScanContext): Promise<Concep
       source,
       conceptId: conceptIdForFile(ctx.containerId, file),
       isPage,
+      pagesRelative,
     });
   }
 
@@ -231,7 +230,7 @@ export async function scanFrontendRepo(ctx: FrontendScanContext): Promise<Concep
   const routeTable = buildRouteTable(
     parsedFiles
       .filter((p) => p.isPage)
-      .map((p) => ({ conceptId: p.conceptId, pagesRelative: pagesRelativePath(p.file, ctx.repoDir)! })),
+      .map((p) => ({ conceptId: p.conceptId, pagesRelative: p.pagesRelative! })),
   );
 
   const concepts: ConceptFacts[] = [
@@ -275,7 +274,7 @@ export async function scanFrontendRepo(ctx: FrontendScanContext): Promise<Concep
       type: parsed.isPage ? "Next.js Page" : "React Component",
       level: "component",
       parentId: ctx.containerId,
-      routePath: parsed.isPage ? routePathForPageFile(pagesRelativePath(parsed.file, ctx.repoDir)!) : undefined,
+      routePath: parsed.isPage ? routePathForPageFile(parsed.pagesRelative!) : undefined,
       relations,
       sourceFiles: [parsed.file],
       needsReview: needsReview.length > 0 ? needsReview : undefined,

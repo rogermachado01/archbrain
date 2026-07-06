@@ -38,6 +38,14 @@ function parseRouteSegment(raw: string): RouteSegment {
   return { type: "literal", value: raw };
 }
 
+/** Strips the file extension and a trailing "index" segment, leaving raw path segments (still `[slug]`/`[...slug]`/literal, unparsed). Shared by routeSegmentsForPageFile and routePathForPageFile. */
+export function rawRouteSegments(pagesRelative: string): string[] {
+  const withoutExt = pagesRelative.replace(/\.(tsx?|jsx?)$/, "");
+  const segments = withoutExt.split("/").filter(Boolean);
+  if (segments[segments.length - 1] === "index") segments.pop();
+  return segments;
+}
+
 /**
  * Converts a page file's path (relative to `pages/`) into matchable route segments,
  * per Next.js Pages Router conventions: `[slug]` (dynamic), `[...slug]` (catch-all),
@@ -45,10 +53,7 @@ function parseRouteSegment(raw: string): RouteSegment {
  * itself rather than a literal "index" segment.
  */
 export function routeSegmentsForPageFile(pagesRelative: string): RouteSegment[] {
-  const withoutExt = pagesRelative.replace(/\.(tsx?|jsx?)$/, "");
-  const rawSegments = withoutExt.split("/").filter(Boolean);
-  if (rawSegments[rawSegments.length - 1] === "index") rawSegments.pop();
-  return rawSegments.map(parseRouteSegment);
+  return rawRouteSegments(pagesRelative).map(parseRouteSegment);
 }
 
 function hasNonLiteralSegment(entry: RouteTableEntry): boolean {
