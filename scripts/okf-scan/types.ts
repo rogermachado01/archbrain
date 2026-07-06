@@ -9,12 +9,12 @@ export interface BranchMap {
 }
 
 export interface RepoMapConfig {
-  terraform: {
+  terraform?: {
     path: string;
     envFiles: { dev: string; hml: string; prd: string };
   };
-  resources: Record<string, { repo: string; branch: BranchMap }>;
-  frontend: { repo: string; branch: BranchMap }[];
+  resources?: Record<string, { repo: string; branch: BranchMap }>;
+  frontend?: { repo: string; branch: BranchMap }[];
 }
 
 /** Id of the single synthesized root "context"-level node every top-level container attaches to. */
@@ -44,6 +44,10 @@ export interface ConceptFacts {
   sourceFiles: string[];
   /** facts the scanner could not fully resolve (dynamic value, unrecognized call, etc.) */
   needsReview?: string[];
+  /** Pages Router route this page serves, e.g. "/" or "/blog/[slug]" — set only on Next.js Page concepts. */
+  routePath?: string;
+  /** routePaths of every page that reaches this component through static imports — set by buildRouteHierarchy. */
+  usedByRoutes?: string[];
 }
 
 export interface GroupFact {
