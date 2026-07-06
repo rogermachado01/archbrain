@@ -44,9 +44,10 @@ describe("createAnthropicLlmClient", () => {
     });
 
     const client = createAnthropicLlmClient("fake-key");
-    const prose = await client.describeConcept(facts);
+    const description = await client.describeConcept(facts);
 
-    expect(prose).toBe("A DynamoDB table.");
+    expect(description.prose).toBe("A DynamoDB table.");
+    expect(description.relationLabels).toEqual([]);
   });
 
   it("retries once on a 429 rate-limit error and then succeeds", async () => {
@@ -57,12 +58,12 @@ describe("createAnthropicLlmClient", () => {
       .mockResolvedValueOnce({ content: [{ type: "text", text: "Recovered." }], stop_reason: "end_turn" });
 
     const client = createAnthropicLlmClient("fake-key");
-    const prosePromise = client.describeConcept(facts);
+    const descriptionPromise = client.describeConcept(facts);
 
     await vi.advanceTimersByTimeAsync(500);
-    const prose = await prosePromise;
+    const description = await descriptionPromise;
 
-    expect(prose).toBe("Recovered.");
+    expect(description.prose).toBe("Recovered.");
     expect(createMock).toHaveBeenCalledTimes(2);
   });
 
@@ -181,5 +182,110 @@ describe("createAnthropicLlmClient", () => {
     expect(createMock).toHaveBeenCalledWith(
       expect.objectContaining({ max_tokens: 1024, thinking: { type: "disabled" } }),
     );
+  });
+
+  it("splits prose from a well-formed numbered relation-labels list, matching them in order", async () => {
+    createMock.mockReset();
+    createMock.mockResolvedValueOnce({
+      content: [
+        {
+          type: "text",
+          text: [
+            "Layout composes the page shell.",
+            "",
+            "RELATION LABELS:",
+            "1. Renders the site header for navigation",
+            "2. Renders the site footer",
+          ].join("\n"),
+        },
+      ],
+      stop_reason: "end_turn",
+    });
+
+    const factsWithRelations: ConceptFacts = {
+      id: "web-storefront/layout",
+      type: "React Component",
+      level: "component",
+      parentId: "web-storefront",
+      sourceFiles: [],
+      relations: [
+        { targetId: "web-storefront/header", kind: "sync", evidence: 'imports Header from "./header"' },
+        { targetId: "web-storefront/ctf-footer-gql", kind: "sync", evidence: 'imports CtfFooterGql from "@src/ctf-footer-gql"' },
+      ],
+    };
+
+    const client = createAnthropicLlmClient("fake-key");
+    const description = await client.describeConcept(factsWithRelations);
+
+    expect(description.prose).toBe("Layout composes the page shell.");
+    expect(description.relationLabels).toEqual([
+      "Renders the site header for navigation",
+      "Renders the site footer",
+    ]);
+  });
+
+  it("falls back to an empty relation-labels list when the count doesn't match, without throwing", async () => {
+    createMock.mockReset();
+    createMock.mockResolvedValueOnce({
+      content: [
+        {
+          type: "text",
+          text: ["Layout composes the page shell.", "", "RELATION LABELS:", "1. Renders the site header"].join("\n"),
+        },
+      ],
+      stop_reason: "end_turn",
+    });
+
+    const factsWithRelations: ConceptFacts = {
+      id: "web-storefront/layout",
+      type: "React Component",
+      level: "component",
+      parentId: "web-storefront",
+      sourceFiles: [],
+      relations: [
+        { targetId: "web-storefront/header", kind: "sync", evidence: "imports Header" },
+        { targetId: "web-storefront/ctf-footer-gql", kind: "sync", evidence: "imports CtfFooterGql" },
+      ],
+    };
+
+    const client = createAnthropicLlmClient("fake-key");
+    const description = await client.describeConcept(factsWithRelations);
+
+    expect(description.prose).toBe("Layout composes the page shell.");
+    expect(description.relationLabels).toEqual([]);
+  });
+
+  it("falls back to an empty relation-labels list when the RELATION LABELS marker is missing", async () => {
+    createMock.mockReset();
+    createMock.mockResolvedValueOnce({
+      content: [{ type: "text", text: "Layout composes the page shell." }],
+      stop_reason: "end_turn",
+    });
+
+    const factsWithRelations: ConceptFacts = {
+      id: "web-storefront/layout",
+      type: "React Component",
+      level: "component",
+      parentId: "web-storefront",
+      sourceFiles: [],
+      relations: [{ targetId: "web-storefront/header", kind: "sync", evidence: "imports Header" }],
+    };
+
+    const client = createAnthropicLlmClient("fake-key");
+    const description = await client.describeConcept(factsWithRelations);
+
+    expect(description.prose).toBe("Layout composes the page shell.");
+    expect(description.relationLabels).toEqual([]);
+  });
+
+  it("does not request relation labels in the prompt when facts have no relations", async () => {
+    createMock.mockReset();
+    createMock.mockResolvedValueOnce({ content: [{ type: "text", text: "ok" }], stop_reason: "end_turn" });
+
+    const client = createAnthropicLlmClient("fake-key");
+    await client.describeConcept(facts);
+
+    const sentPrompt = createMock.mock.calls[0][0].messages[0].content as string;
+    expect(sentPrompt).not.toContain("RELATION LABELS");
   });
 });

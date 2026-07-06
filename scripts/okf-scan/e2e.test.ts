@@ -29,7 +29,7 @@ function makeFsIo(realBundleDir: string): OkfIo {
 
 const fakeLlm: LlmClient = {
   async describeConcept(facts) {
-    return `Generated description of ${facts.id}.`;
+    return { prose: `Generated description of ${facts.id}.`, relationLabels: [] };
   },
 };
 

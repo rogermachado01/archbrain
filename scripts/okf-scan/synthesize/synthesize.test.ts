@@ -13,7 +13,7 @@ function fakeLlm(): { client: LlmClient; calls: ConceptFacts[] } {
     client: {
       async describeConcept(facts) {
         calls.push(facts);
-        return `Prose for ${facts.id}.`;
+        return { prose: `Prose for ${facts.id}.`, relationLabels: [] };
       },
     },
   };
@@ -187,7 +187,7 @@ describe("synthesize", () => {
       async describeConcept(facts) {
         calls.push(facts.id);
         if (facts.id === "orders_table") throw new Error("rate limited");
-        return `Prose for ${facts.id}.`;
+        return { prose: `Prose for ${facts.id}.`, relationLabels: [] };
       },
     };
     const scanResult = scanResultWith(512);
@@ -280,5 +280,37 @@ describe("synthesize", () => {
     expect(summary.needsReview).toEqual([
       { id: "orders", notes: ["dynamic env var value could not be resolved"] },
     ]);
+  });
+
+  it("uses the LLM-provided relation label in the Relations section instead of the raw evidence", async () => {
+    const scanResult: ScanResult = {
+      groups: [],
+      lambdaEnvVarBindings: {},
+      concepts: [
+        {
+          id: "orders",
+          type: "AWS Lambda Function",
+          level: "container",
+          parentId: "platform",
+          relations: [{ targetId: "orders_table", kind: "sync", evidence: "PutItemCommand" }],
+          sourceFiles: [],
+        },
+        { id: "orders_table", type: "Amazon DynamoDB Table", level: "container", parentId: "platform", sourceFiles: [] },
+      ],
+    };
+    const client: LlmClient = {
+      async describeConcept(facts) {
+        return {
+          prose: `Prose for ${facts.id}.`,
+          relationLabels: facts.relations?.map(() => "Writes new orders to the table") ?? [],
+        };
+      },
+    };
+
+    await synthesize({ scanResult, bundleDir, llm: client });
+
+    const ordersContent = await readFile(path.join(bundleDir, "orders.md"), "utf-8");
+    expect(ordersContent).toContain("[Orders Table](orders_table.md) — Writes new orders to the table {kind: sync}");
+    expect(ordersContent).not.toContain("PutItemCommand");
   });
 });

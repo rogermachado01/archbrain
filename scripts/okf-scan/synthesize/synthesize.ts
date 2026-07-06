@@ -136,8 +136,26 @@ export async function synthesize(options: SynthesizeOptions): Promise<Synthesize
       try {
         const filePath = conceptFilePath(bundleDir, facts.id);
         const preserved = readPreserved(await readIfExists(filePath));
-        const prose = await llm.describeConcept(facts);
-        const markdown = buildConceptMarkdown({ facts, prose, preserved, conceptTitles, groups: scanResult.groups });
+        const description = await llm.describeConcept(facts);
+        // factsForMarkdown is a scratch copy carrying the LLM's relation labels,
+        // used only for this concept's markdown output — the manifest still stores
+        // the original, label-free `facts` below (unchanged), so a future run's
+        // inputHash comparison keeps comparing like-for-like against freshly-scanned
+        // facts, which never carry a `label` (only scanners produce facts, and no
+        // scanner ever sets `.label`, only `.evidence`).
+        const factsForMarkdown: ConceptFacts = facts.relations
+          ? {
+              ...facts,
+              relations: facts.relations.map((rel, i) => ({ ...rel, label: description.relationLabels[i] ?? rel.label })),
+            }
+          : facts;
+        const markdown = buildConceptMarkdown({
+          facts: factsForMarkdown,
+          prose: description.prose,
+          preserved,
+          conceptTitles,
+          groups: scanResult.groups,
+        });
         await mkdir(path.dirname(filePath), { recursive: true });
         await writeFile(filePath, markdown, "utf-8");
         return { status: "ok", id: facts.id, inputHash, facts };
