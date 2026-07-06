@@ -31,10 +31,25 @@ export function getBreadcrumb(model: ArchModel, id: string | null): ArchNode[] {
   return trail;
 }
 
-/** Walks up the parentId chain from id until it finds a node in visibleIds, or null if none. */
-function nearestVisibleAncestor(model: ArchModel, id: string, visibleIds: Set<string>): string | null {
+/**
+ * Walks up the parentId chain from id until it finds a node in visibleIds, or
+ * null if none. clusterOverride (real node id -> currently-visible cluster
+ * pseudo-node id) is consulted at every step of the walk, not just the
+ * starting id — a node several levels below a clustered container still
+ * needs to resolve through it — and takes priority over the plain
+ * visibleIds check, since a clustered-away node's real container isn't
+ * visible either while its cluster list is showing.
+ */
+function nearestVisibleAncestor(
+  model: ArchModel,
+  id: string,
+  visibleIds: Set<string>,
+  clusterOverride?: Map<string, string>
+): string | null {
   let current = findNode(model, id);
   while (current) {
+    const overridden = clusterOverride?.get(current.id);
+    if (overridden) return overridden;
     if (visibleIds.has(current.id)) return current.id;
     current = current.parentId ? findNode(model, current.parentId) : undefined;
   }
@@ -50,16 +65,23 @@ function nearestVisibleAncestor(model: ArchModel, id: string, visibleIds: Set<st
  * same node on both ends (i.e. internal to one visible node) are dropped.
  * Multiple relations rolling up to the same (source, target) pair merge into
  * a single edge with `aggregated: true`.
+ * An optional clusterOverride additionally resolves a real node straight to a
+ * currently-visible cluster pseudo-node id, when its actual container isn't
+ * visible but its bounded-context cluster is (see src/lib/clusters.ts).
  */
-export function getRelationsForViewWithRollup(model: ArchModel, visibleIds: Set<string>): ArchRelation[] {
+export function getRelationsForViewWithRollup(
+  model: ArchModel,
+  visibleIds: Set<string>,
+  clusterOverride?: Map<string, string>
+): ArchRelation[] {
   const direct = getRelationsForView(model, visibleIds);
   const directIds = new Set(direct.map((r) => r.id));
 
   const groups = new Map<string, ArchRelation[]>();
   model.relations.forEach((r) => {
     if (directIds.has(r.id)) return;
-    const src = nearestVisibleAncestor(model, r.source, visibleIds);
-    const tgt = nearestVisibleAncestor(model, r.target, visibleIds);
+    const src = nearestVisibleAncestor(model, r.source, visibleIds, clusterOverride);
+    const tgt = nearestVisibleAncestor(model, r.target, visibleIds, clusterOverride);
     if (!src || !tgt || src === tgt) return;
     const key = `${src}->${tgt}`;
     const bucket = groups.get(key);
