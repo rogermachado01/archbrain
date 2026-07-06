@@ -1,16 +1,15 @@
 ---
 type: React Component
 title: Ctf Cta.Generated
-description: This is a generated file belonging to the CTF CTA (Call-To-Action) React component within the Next.js marketing web app template. As a generated artifact, it is produced from a corresponding GraphQL document rather than hand-authored, and it depends on shared page-link definitions to describe the structure of link data used within the CTA.
+description: This is a generated React component within the marketing web app template, identified as `ctf-cta.generated`. Based on its name, it likely represents a call-to-action (CTA) component, though its generated nature suggests it was produced from a schema or content model definition rather than authored directly.
 level: component
 owner: contentful/team-workflows
 ---
 
-This is a generated file belonging to the CTF CTA (Call-To-Action) React component within the Next.js marketing web app template. As a generated artifact, it is produced from a corresponding GraphQL document rather than hand-authored, and it depends on shared page-link definitions to describe the structure of link data used within the CTA.
+This is a generated React component within the marketing web app template, identified as `ctf-cta.generated`. Based on its name, it likely represents a call-to-action (CTA) component, though its generated nature suggests it was produced from a schema or content model definition rather than authored directly.
 
-Specifically, the component's generated code imports both the `PageLinkFieldsFragment` type and the `PageLinkFieldsFragmentDoc` document from the page-link module's own generated output. This indicates that the CTA component embeds or references a page-link fragment as part of its data requirements, relying on the page-link concept to define the shape and query fragment for link fields (such as the destination page a call-to-action button points to).
+The component draws on shared page link data by importing `PageLinkFieldsFragment` and `PageLinkFieldsFragmentDoc` from the page-link module's generated fragment file. This suggests the CTA component uses page link fields—likely to resolve or type the destination that the call-to-action button or link points to—reusing a common GraphQL fragment definition rather than duplicating that logic.
 
 # Relations
 
-- [Page Link.Generated](page-link.generated.md) — Uses page-link's field types to type the CTA's link data {kind: sync}
-- [Page Link.Generated](page-link.generated.md) — Includes page-link's fragment document to fetch link fields for the CTA {kind: sync}
+- [Page Link.Generated](page-link.generated.md) — Uses page link fields to resolve the CTA's destination link {kind: sync}

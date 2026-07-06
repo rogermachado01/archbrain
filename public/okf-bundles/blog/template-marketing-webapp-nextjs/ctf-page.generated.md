@@ -1,16 +1,15 @@
 ---
 type: React Component
 title: Ctf Page.Generated
-description: `ctf-page.generated` is a generated React component that represents a Page content type from Contentful, part of the marketing webapp Next.js template. As a generated artifact, it is tied to a GraphQL schema and relies on shared fragments to compose the shape of the data it consumes, rather than defining that data independently.
+description: `ctf-page.generated` is a generated React component module belonging to the marketing webapp Next.js template. As a generated artifact, its contents are produced from an upstream schema or query definition rather than hand-authored, and it is intended to be consumed by other parts of the application rather than edited directly.
 level: component
 owner: contentful/team-workflows
 ---
 
-`ctf-page.generated` is a generated React component that represents a Page content type from Contentful, part of the marketing webapp Next.js template. As a generated artifact, it is tied to a GraphQL schema and relies on shared fragments to compose the shape of the data it consumes, rather than defining that data independently.
+`ctf-page.generated` is a generated React component module belonging to the marketing webapp Next.js template. As a generated artifact, its contents are produced from an upstream schema or query definition rather than hand-authored, and it is intended to be consumed by other parts of the application rather than edited directly.
 
-This component depends on the `ctf-asset.generated` module for asset-related fields, pulling in both the fragment type definition and the corresponding document used to structure or validate asset data at runtime. This suggests that pages rendered by this component can include embedded or referenced assets (such as images or media) as part of their content, with the asset shape and query logic centralized in the dedicated asset module rather than duplicated here.
+This module depends on the generated asset module, pulling in `AssetFieldsFragment` and `AssetFieldsFragmentDoc` from `ctf-asset.generated`. This suggests that a page rendered by this component can include associated media assets, with the fragment defining the shape of asset data and the fragment document used to compose or execute a GraphQL query that fetches it.
 
 # Relations
 
-- [Ctf Asset.Generated](ctf-asset.generated.md) — Uses asset field types to type page content {kind: sync}
-- [Ctf Asset.Generated](ctf-asset.generated.md) — Uses the asset query fragment to fetch embedded media {kind: sync}
+- [Ctf Asset.Generated](ctf-asset.generated.md) — Includes asset data for media used on the page {kind: sync}

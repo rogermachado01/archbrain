@@ -1,16 +1,15 @@
 ---
 type: React Component
 title: Ctf Richtext.Generated
-description: `ctf-richtext.generated` is a generated React component within the marketing web app template, part of the rich text content field module. As a generated artifact, its contents are produced from a schema or codegen process rather than hand-authored, and it participates in the app's rendering of structured content pulled from a CMS-like source.
+description: `ctf-richtext.generated` is a generated React component within the marketing web app template, part of the module responsible for rendering rich text content sourced from Contentful. As a generated artifact, its structure and type usage are derived from the underlying GraphQL schema rather than hand-authored, keeping it in sync with the content model it supports.
 level: component
 owner: contentful/team-workflows
 ---
 
-`ctf-richtext.generated` is a generated React component within the marketing web app template, part of the rich text content field module. As a generated artifact, its contents are produced from a schema or codegen process rather than hand-authored, and it participates in the app's rendering of structured content pulled from a CMS-like source.
+`ctf-richtext.generated` is a generated React component within the marketing web app template, part of the module responsible for rendering rich text content sourced from Contentful. As a generated artifact, its structure and type usage are derived from the underlying GraphQL schema rather than hand-authored, keeping it in sync with the content model it supports.
 
-This component draws on the page-link module to resolve link fields embedded within rich text content, relying on both the typed fragment shape and its accompanying document definition to properly query and type link data used inline in the rendered text.
+This component depends on the page-link module, pulling in `PageLinkFieldsFragment` and `PageLinkFieldsFragmentDoc` from its generated file. This suggests that rich text fields can embed or reference internal page links, and this component relies on that fragment's typing and query document to properly resolve and render those embedded link references as part of the rich text output.
 
 # Relations
 
-- [Page Link.Generated](page-link.generated.md) — Uses page link field types for embedded links in rich text {kind: sync}
-- [Page Link.Generated](page-link.generated.md) — Uses the page link query fragment for embedded links in rich text {kind: sync}
+- [Page Link.Generated](page-link.generated.md) — Resolves embedded page links within rich text content {kind: sync}

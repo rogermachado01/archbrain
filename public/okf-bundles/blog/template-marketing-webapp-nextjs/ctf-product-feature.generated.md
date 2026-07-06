@@ -1,16 +1,15 @@
 ---
 type: React Component
 title: Ctf Product Feature.Generated
-description: `ctf-product-feature.generated` is a generated GraphQL artifact for the Product Feature component in the Next.js marketing web app template. As a generated module, it is not hand-written; it is produced from a GraphQL document to expose typed fragments and fragment documents that other parts of the app can consume when querying and rendering content from Contentful.
+description: This is a generated GraphQL artifact for the `ctf-product-feature` component, part of the Next.js marketing webapp template's Contentful (ctf) integration. As a `.generated` file, it contains auto-produced TypeScript types and/or document nodes derived from a GraphQL schema or query, rather than hand-authored logic, and is intended to be consumed by the corresponding component code rather than edited directly.
 level: component
 owner: contentful/team-workflows
 ---
 
-`ctf-product-feature.generated` is a generated GraphQL artifact for the Product Feature component in the Next.js marketing web app template. As a generated module, it is not hand-written; it is produced from a GraphQL document to expose typed fragments and fragment documents that other parts of the app can consume when querying and rendering content from Contentful.
+This is a generated GraphQL artifact for the `ctf-product-feature` component, part of the Next.js marketing webapp template's Contentful (ctf) integration. As a `.generated` file, it contains auto-produced TypeScript types and/or document nodes derived from a GraphQL schema or query, rather than hand-authored logic, and is intended to be consumed by the corresponding component code rather than edited directly.
 
-This particular file depends on the generated output for the `ctf-asset` component, pulling in both the `AssetFieldsFragment` type and its corresponding `AssetFieldsFragmentDoc`. This indicates that a Product Feature entry can reference an asset (such as an image) as part of its content model, and the generated code reuses the shared asset fragment definitions rather than redefining them, ensuring consistent typing and query composition between the Product Feature component and the Asset component across the codebase.
+The file imports `AssetFieldsFragment` and `AssetFieldsFragmentDoc` from the sibling `ctf-asset` generated module. This indicates that a product feature entry in Contentful includes an associated asset (such as an image), and the generated types/fragment document for that asset are reused here so the product feature's GraphQL query and typings can properly represent that nested asset data.
 
 # Relations
 
-- [Ctf Asset.Generated](ctf-asset.generated.md) — Imports typed asset fields for rendering feature media {kind: sync}
-- [Ctf Asset.Generated](ctf-asset.generated.md) — Reuses the asset fragment document to compose its GraphQL query {kind: sync}
+- [Ctf Asset.Generated](ctf-asset.generated.md) — Reuses asset field types and fragment for the product feature's embedded image {kind: sync}

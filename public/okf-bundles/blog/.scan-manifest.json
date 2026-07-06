@@ -146,7 +146,7 @@
       "lastScannedAt": "2026-07-06T00:18:25.899Z"
     },
     "template-marketing-webapp-nextjs/business-info.generated": {
-      "inputHash": "4b6acdba794218961d18bd67ca0ddb2129ced47ec7f19a8785683af154ff3ce5",
+      "inputHash": "1b82452c706f81264def374d041ee6e7cd9e6e01b76f8fdfa502921b33a8b3e5",
       "facts": {
         "id": "template-marketing-webapp-nextjs/business-info.generated",
         "type": "React Component",
@@ -156,22 +156,12 @@
           {
             "targetId": "template-marketing-webapp-nextjs/ctf-asset.generated",
             "kind": "sync",
-            "evidence": "imports AssetFieldsFragment from \"../../ctf-asset/__generated/ctf-asset.generated\""
+            "evidence": "imports AssetFieldsFragment, AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
           },
           {
             "targetId": "template-marketing-webapp-nextjs/ctf-componentMap.generated",
             "kind": "sync",
-            "evidence": "imports ComponentReferenceFields_ComponentCta_Fragment, ComponentReferenceFields_ComponentDuplex_Fragment, ComponentReferenceFields_ComponentHeroBanner_Fragment, ComponentReferenceFields_ComponentInfoBlock_Fragment, ComponentReferenceFields_ComponentProductTable_Fragment, ComponentReferenceFields_ComponentQuote_Fragment, ComponentReferenceFields_ComponentTextBlock_Fragment, ComponentReferenceFields_FooterMenu_Fragment, ComponentReferenceFields_MenuGroup_Fragment, ComponentReferenceFields_NavigationMenu_Fragment, ComponentReferenceFields_Page_Fragment, ComponentReferenceFields_Seo_Fragment, ComponentReferenceFields_TopicBusinessInfo_Fragment, ComponentReferenceFields_TopicPerson_Fragment, ComponentReferenceFields_TopicProduct_Fragment, ComponentReferenceFields_TopicProductFeature_Fragment from \"../../../../../lib/shared-fragments/__generated/ctf-componentMap.generated\""
-          },
-          {
-            "targetId": "template-marketing-webapp-nextjs/ctf-asset.generated",
-            "kind": "sync",
-            "evidence": "imports AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
-          },
-          {
-            "targetId": "template-marketing-webapp-nextjs/ctf-componentMap.generated",
-            "kind": "sync",
-            "evidence": "imports ComponentReferenceFieldsFragmentDoc from \"../../../../../lib/shared-fragments/__generated/ctf-componentMap.generated\""
+            "evidence": "imports ComponentReferenceFields_ComponentCta_Fragment, ComponentReferenceFields_ComponentDuplex_Fragment, ComponentReferenceFields_ComponentHeroBanner_Fragment, ComponentReferenceFields_ComponentInfoBlock_Fragment, ComponentReferenceFields_ComponentProductTable_Fragment, ComponentReferenceFields_ComponentQuote_Fragment, ComponentReferenceFields_ComponentTextBlock_Fragment, ComponentReferenceFields_FooterMenu_Fragment, ComponentReferenceFields_MenuGroup_Fragment, ComponentReferenceFields_NavigationMenu_Fragment, ComponentReferenceFields_Page_Fragment, ComponentReferenceFields_Seo_Fragment, ComponentReferenceFields_TopicBusinessInfo_Fragment, ComponentReferenceFields_TopicPerson_Fragment, ComponentReferenceFields_TopicProduct_Fragment, ComponentReferenceFields_TopicProductFeature_Fragment, ComponentReferenceFieldsFragmentDoc from \"../../../../../lib/shared-fragments/__generated/ctf-componentMap.generated\""
           }
         ],
         "sourceFiles": [
@@ -179,7 +169,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T00:18:25.899Z"
+      "lastScannedAt": "2026-07-06T00:32:21.377Z"
     },
     "template-marketing-webapp-nextjs/ctf-business-info-gql": {
       "inputHash": "f3f73ed82fa150d98a1b0765cdb8ae5406e2b496827ca750cbe89b563286e5a3",
@@ -213,7 +203,7 @@
       "lastScannedAt": "2026-07-06T00:18:25.899Z"
     },
     "template-marketing-webapp-nextjs/ctf-cta.generated": {
-      "inputHash": "543111b5a67b9c520a3daac15c150b632bf8fa7e46682bfedc0776b4672865a7",
+      "inputHash": "a4683084cd823ca66d196de1618b425633d22a3b196eefdd03520e3fcd4d850a",
       "facts": {
         "id": "template-marketing-webapp-nextjs/ctf-cta.generated",
         "type": "React Component",
@@ -223,12 +213,7 @@
           {
             "targetId": "template-marketing-webapp-nextjs/page-link.generated",
             "kind": "sync",
-            "evidence": "imports PageLinkFieldsFragment from \"../../../page-link/__generated/page-link.generated\""
-          },
-          {
-            "targetId": "template-marketing-webapp-nextjs/page-link.generated",
-            "kind": "sync",
-            "evidence": "imports PageLinkFieldsFragmentDoc from \"../../../page-link/__generated/page-link.generated\""
+            "evidence": "imports PageLinkFieldsFragment, PageLinkFieldsFragmentDoc from \"../../../page-link/__generated/page-link.generated\""
           }
         ],
         "sourceFiles": [
@@ -236,7 +221,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T00:18:25.899Z"
+      "lastScannedAt": "2026-07-06T00:32:21.378Z"
     },
     "template-marketing-webapp-nextjs/ctf-cta-gql": {
       "inputHash": "7c9d564f33fe251aa5e4405e10d92468b30e7a22701f2a3a29fbfb6ab93142ac",
@@ -296,7 +281,7 @@
       "lastScannedAt": "2026-07-06T00:18:25.899Z"
     },
     "template-marketing-webapp-nextjs/ctf-duplex.generated": {
-      "inputHash": "74a2bd6d5da8b960632ac63c326216f951d1dced02b636da0f0f53cb1c592a83",
+      "inputHash": "61f142cf812b7ebf6c74ba4ac2c9198d86dbcf3a350ac15af606332fa04620fe",
       "facts": {
         "id": "template-marketing-webapp-nextjs/ctf-duplex.generated",
         "type": "React Component",
@@ -306,22 +291,12 @@
           {
             "targetId": "template-marketing-webapp-nextjs/page-link.generated",
             "kind": "sync",
-            "evidence": "imports PageLinkFieldsFragment from \"../../../page-link/__generated/page-link.generated\""
+            "evidence": "imports PageLinkFieldsFragment, PageLinkFieldsFragmentDoc from \"../../../page-link/__generated/page-link.generated\""
           },
           {
             "targetId": "template-marketing-webapp-nextjs/ctf-asset.generated",
             "kind": "sync",
-            "evidence": "imports AssetFieldsFragment from \"../../ctf-asset/__generated/ctf-asset.generated\""
-          },
-          {
-            "targetId": "template-marketing-webapp-nextjs/page-link.generated",
-            "kind": "sync",
-            "evidence": "imports PageLinkFieldsFragmentDoc from \"../../../page-link/__generated/page-link.generated\""
-          },
-          {
-            "targetId": "template-marketing-webapp-nextjs/ctf-asset.generated",
-            "kind": "sync",
-            "evidence": "imports AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
+            "evidence": "imports AssetFieldsFragment, AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
           }
         ],
         "sourceFiles": [
@@ -329,7 +304,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T00:18:25.899Z"
+      "lastScannedAt": "2026-07-06T00:32:21.378Z"
     },
     "template-marketing-webapp-nextjs/ctf-duplex-gql": {
       "inputHash": "282ba73132e45bbe4626887735d2dd0248f1b7a83ad51ff3402a320b6b9990ad",
@@ -394,7 +369,7 @@
       "lastScannedAt": "2026-07-06T00:18:25.899Z"
     },
     "template-marketing-webapp-nextjs/ctf-footer.generated": {
-      "inputHash": "a6f7ac7f4f13bd27e9ce46110218464eb0ec3ae669bcbb48948b7a91c1dafbe1",
+      "inputHash": "eac88a014da55aa2d998cb883c2b3f8dd3583965781d6061fb8c6e41e2848458",
       "facts": {
         "id": "template-marketing-webapp-nextjs/ctf-footer.generated",
         "type": "React Component",
@@ -404,22 +379,12 @@
           {
             "targetId": "template-marketing-webapp-nextjs/ctf-menuGroup.generated",
             "kind": "sync",
-            "evidence": "imports MenuGroupFieldsFragment from \"../../../../../lib/shared-fragments/__generated/ctf-menuGroup.generated\""
+            "evidence": "imports MenuGroupFieldsFragment, MenuGroupFieldsFragmentDoc from \"../../../../../lib/shared-fragments/__generated/ctf-menuGroup.generated\""
           },
           {
             "targetId": "template-marketing-webapp-nextjs/page-link.generated",
             "kind": "sync",
-            "evidence": "imports PageLinkFieldsFragment from \"../../../page-link/__generated/page-link.generated\""
-          },
-          {
-            "targetId": "template-marketing-webapp-nextjs/ctf-menuGroup.generated",
-            "kind": "sync",
-            "evidence": "imports MenuGroupFieldsFragmentDoc from \"../../../../../lib/shared-fragments/__generated/ctf-menuGroup.generated\""
-          },
-          {
-            "targetId": "template-marketing-webapp-nextjs/page-link.generated",
-            "kind": "sync",
-            "evidence": "imports PageLinkFieldsFragmentDoc from \"../../../page-link/__generated/page-link.generated\""
+            "evidence": "imports PageLinkFieldsFragment, PageLinkFieldsFragmentDoc from \"../../../page-link/__generated/page-link.generated\""
           }
         ],
         "sourceFiles": [
@@ -427,7 +392,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T00:18:25.899Z"
+      "lastScannedAt": "2026-07-06T00:32:21.378Z"
     },
     "template-marketing-webapp-nextjs/ctf-footer-gql": {
       "inputHash": "25f85799ecfea60ba16862e269e5b9cddcd342e18939ec32caeed3a956d5e0cc",
@@ -500,7 +465,7 @@
       "lastScannedAt": "2026-07-06T00:18:25.899Z"
     },
     "template-marketing-webapp-nextjs/ctf-hero-banner.generated": {
-      "inputHash": "8401c573acd17e32793e96b5233abfc44093cd7354b39f64e7f6c976ca60966d",
+      "inputHash": "8716538fd198a5c79ff82e00d58a63e7299aad9670981ce2a48dc4b5f90bbb26",
       "facts": {
         "id": "template-marketing-webapp-nextjs/ctf-hero-banner.generated",
         "type": "React Component",
@@ -510,22 +475,12 @@
           {
             "targetId": "template-marketing-webapp-nextjs/page-link.generated",
             "kind": "sync",
-            "evidence": "imports PageLinkFieldsFragment from \"../../../page-link/__generated/page-link.generated\""
+            "evidence": "imports PageLinkFieldsFragment, PageLinkFieldsFragmentDoc from \"../../../page-link/__generated/page-link.generated\""
           },
           {
             "targetId": "template-marketing-webapp-nextjs/ctf-asset.generated",
             "kind": "sync",
-            "evidence": "imports AssetFieldsFragment from \"../../ctf-asset/__generated/ctf-asset.generated\""
-          },
-          {
-            "targetId": "template-marketing-webapp-nextjs/page-link.generated",
-            "kind": "sync",
-            "evidence": "imports PageLinkFieldsFragmentDoc from \"../../../page-link/__generated/page-link.generated\""
-          },
-          {
-            "targetId": "template-marketing-webapp-nextjs/ctf-asset.generated",
-            "kind": "sync",
-            "evidence": "imports AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
+            "evidence": "imports AssetFieldsFragment, AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
           }
         ],
         "sourceFiles": [
@@ -533,7 +488,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T00:18:25.899Z"
+      "lastScannedAt": "2026-07-06T00:32:21.378Z"
     },
     "template-marketing-webapp-nextjs/ctf-hero-banner-gql": {
       "inputHash": "4efec57f65de72513b03d8a4f3d541ac55ad07e2c515d562abafe5e66edaf7f7",
@@ -608,7 +563,7 @@
       "lastScannedAt": "2026-07-04T20:44:59.384Z"
     },
     "template-marketing-webapp-nextjs/ctf-info-block.generated": {
-      "inputHash": "7775370c47f89ab9ae09404468955058732064895f1ed76db857948fa1eb3529",
+      "inputHash": "7e6180d52a1b40593479ccfc9f40f9fa54b808fda1e042fcbdd5e5d296d3ccc0",
       "facts": {
         "id": "template-marketing-webapp-nextjs/ctf-info-block.generated",
         "type": "React Component",
@@ -618,12 +573,7 @@
           {
             "targetId": "template-marketing-webapp-nextjs/ctf-asset.generated",
             "kind": "sync",
-            "evidence": "imports AssetFieldsFragment from \"../../ctf-asset/__generated/ctf-asset.generated\""
-          },
-          {
-            "targetId": "template-marketing-webapp-nextjs/ctf-asset.generated",
-            "kind": "sync",
-            "evidence": "imports AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
+            "evidence": "imports AssetFieldsFragment, AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
           }
         ],
         "sourceFiles": [
@@ -631,7 +581,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T00:18:25.899Z"
+      "lastScannedAt": "2026-07-06T00:32:21.378Z"
     },
     "template-marketing-webapp-nextjs/ctf-info-block-gql": {
       "inputHash": "061077ee8b1a268a89b963409b304f8b591315ee43f3180b7e5b2e93d5354b7b",
@@ -757,7 +707,7 @@
       "lastScannedAt": "2026-07-06T00:18:25.899Z"
     },
     "template-marketing-webapp-nextjs/ctf-navigation.generated": {
-      "inputHash": "defab8eebf2dd0e4285f77e9f7665c6872f119481877ae502d08811fd286aa14",
+      "inputHash": "5f95b92c899930a6c5aec8035983ec8921a9b44c87f380940d2fde6ae29ec361",
       "facts": {
         "id": "template-marketing-webapp-nextjs/ctf-navigation.generated",
         "type": "React Component",
@@ -767,22 +717,12 @@
           {
             "targetId": "template-marketing-webapp-nextjs/page-link.generated",
             "kind": "sync",
-            "evidence": "imports PageLinkFieldsFragment from \"../../../page-link/__generated/page-link.generated\""
+            "evidence": "imports PageLinkFieldsFragment, PageLinkFieldsFragmentDoc from \"../../../page-link/__generated/page-link.generated\""
           },
           {
             "targetId": "template-marketing-webapp-nextjs/ctf-menuGroup.generated",
             "kind": "sync",
-            "evidence": "imports MenuGroupFieldsFragment from \"../../../../../lib/shared-fragments/__generated/ctf-menuGroup.generated\""
-          },
-          {
-            "targetId": "template-marketing-webapp-nextjs/page-link.generated",
-            "kind": "sync",
-            "evidence": "imports PageLinkFieldsFragmentDoc from \"../../../page-link/__generated/page-link.generated\""
-          },
-          {
-            "targetId": "template-marketing-webapp-nextjs/ctf-menuGroup.generated",
-            "kind": "sync",
-            "evidence": "imports MenuGroupFieldsFragmentDoc from \"../../../../../lib/shared-fragments/__generated/ctf-menuGroup.generated\""
+            "evidence": "imports MenuGroupFieldsFragment, MenuGroupFieldsFragmentDoc from \"../../../../../lib/shared-fragments/__generated/ctf-menuGroup.generated\""
           }
         ],
         "sourceFiles": [
@@ -790,7 +730,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T00:18:25.899Z"
+      "lastScannedAt": "2026-07-06T00:32:21.378Z"
     },
     "template-marketing-webapp-nextjs/ctf-navigation-gql": {
       "inputHash": "584c82ad6d5bbc05219b4c2e4f4f8bcfa0b5bbe83cc5488fa048bf3a6d022bfb",
@@ -854,7 +794,7 @@
       "lastScannedAt": "2026-07-06T00:18:25.899Z"
     },
     "template-marketing-webapp-nextjs/ctf-page.generated": {
-      "inputHash": "c846370898b2463b58f39c98910191dc612d85b9420f9dccb972baa7623bffb9",
+      "inputHash": "21749ff72fc4e36ccbeea5cced62f500655cf6d168ab66a3739ba7a52055c9b3",
       "facts": {
         "id": "template-marketing-webapp-nextjs/ctf-page.generated",
         "type": "React Component",
@@ -864,12 +804,7 @@
           {
             "targetId": "template-marketing-webapp-nextjs/ctf-asset.generated",
             "kind": "sync",
-            "evidence": "imports AssetFieldsFragment from \"../../ctf-asset/__generated/ctf-asset.generated\""
-          },
-          {
-            "targetId": "template-marketing-webapp-nextjs/ctf-asset.generated",
-            "kind": "sync",
-            "evidence": "imports AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
+            "evidence": "imports AssetFieldsFragment, AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
           }
         ],
         "sourceFiles": [
@@ -877,10 +812,10 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T00:18:25.899Z"
+      "lastScannedAt": "2026-07-06T00:32:21.378Z"
     },
     "template-marketing-webapp-nextjs/ctf-person.generated": {
-      "inputHash": "684f5741cd90cee87d1030b507e1b9753de9f5525936ea52516be421a0cd1e8e",
+      "inputHash": "4b9f410aa469161053eab98c30e40d64cbc6df7f765a0dd3c47e533962a36a5e",
       "facts": {
         "id": "template-marketing-webapp-nextjs/ctf-person.generated",
         "type": "React Component",
@@ -890,12 +825,7 @@
           {
             "targetId": "template-marketing-webapp-nextjs/ctf-asset.generated",
             "kind": "sync",
-            "evidence": "imports AssetFieldsFragment from \"../../ctf-asset/__generated/ctf-asset.generated\""
-          },
-          {
-            "targetId": "template-marketing-webapp-nextjs/ctf-asset.generated",
-            "kind": "sync",
-            "evidence": "imports AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
+            "evidence": "imports AssetFieldsFragment, AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
           }
         ],
         "sourceFiles": [
@@ -903,7 +833,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T00:18:25.899Z"
+      "lastScannedAt": "2026-07-06T00:32:21.378Z"
     },
     "template-marketing-webapp-nextjs/ctf-person-gql": {
       "inputHash": "51f05fdf7a643ae145b355d1169be31dd9cca082a40eeedeaa166360c40578c4",
@@ -953,7 +883,7 @@
       "lastScannedAt": "2026-07-06T00:18:25.899Z"
     },
     "template-marketing-webapp-nextjs/ctf-product-feature.generated": {
-      "inputHash": "3f2e13419709e01a0092182c1a1030bc96c372540ac0a3a8e206276502eef161",
+      "inputHash": "7385aea03db66458a0424bddbe80f771f0bd6329480d3952f238d57362818a02",
       "facts": {
         "id": "template-marketing-webapp-nextjs/ctf-product-feature.generated",
         "type": "React Component",
@@ -963,12 +893,7 @@
           {
             "targetId": "template-marketing-webapp-nextjs/ctf-asset.generated",
             "kind": "sync",
-            "evidence": "imports AssetFieldsFragment from \"../../ctf-asset/__generated/ctf-asset.generated\""
-          },
-          {
-            "targetId": "template-marketing-webapp-nextjs/ctf-asset.generated",
-            "kind": "sync",
-            "evidence": "imports AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
+            "evidence": "imports AssetFieldsFragment, AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
           }
         ],
         "sourceFiles": [
@@ -976,10 +901,10 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T00:18:25.899Z"
+      "lastScannedAt": "2026-07-06T00:32:21.378Z"
     },
     "template-marketing-webapp-nextjs/ctf-product-table.generated": {
-      "inputHash": "83797491d1755d35773b8efc6667b3b13489506f695b35c77f124e360a57be2a",
+      "inputHash": "8ee68db73c23f7085ce57097f156817144dcbf16d011f60e734bb6a9dd08fca9",
       "facts": {
         "id": "template-marketing-webapp-nextjs/ctf-product-table.generated",
         "type": "React Component",
@@ -989,32 +914,17 @@
           {
             "targetId": "template-marketing-webapp-nextjs/ctf-product.generated",
             "kind": "sync",
-            "evidence": "imports ProductFieldsFragment from \"../../ctf-product/__generated/ctf-product.generated\""
+            "evidence": "imports ProductFieldsFragment, ProductFieldsFragmentDoc from \"../../ctf-product/__generated/ctf-product.generated\""
           },
           {
             "targetId": "template-marketing-webapp-nextjs/ctf-asset.generated",
             "kind": "sync",
-            "evidence": "imports AssetFieldsFragment from \"../../ctf-asset/__generated/ctf-asset.generated\""
+            "evidence": "imports AssetFieldsFragment, AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
           },
           {
             "targetId": "template-marketing-webapp-nextjs/ctf-product-feature.generated",
             "kind": "sync",
-            "evidence": "imports ProductFeatureFieldsFragment from \"../../ctf-product-feature/__generated/ctf-product-feature.generated\""
-          },
-          {
-            "targetId": "template-marketing-webapp-nextjs/ctf-product.generated",
-            "kind": "sync",
-            "evidence": "imports ProductFieldsFragmentDoc from \"../../ctf-product/__generated/ctf-product.generated\""
-          },
-          {
-            "targetId": "template-marketing-webapp-nextjs/ctf-asset.generated",
-            "kind": "sync",
-            "evidence": "imports AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
-          },
-          {
-            "targetId": "template-marketing-webapp-nextjs/ctf-product-feature.generated",
-            "kind": "sync",
-            "evidence": "imports ProductFeatureFieldsFragmentDoc from \"../../ctf-product-feature/__generated/ctf-product-feature.generated\""
+            "evidence": "imports ProductFeatureFieldsFragment, ProductFeatureFieldsFragmentDoc from \"../../ctf-product-feature/__generated/ctf-product-feature.generated\""
           }
         ],
         "sourceFiles": [
@@ -1022,7 +932,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T00:18:25.899Z"
+      "lastScannedAt": "2026-07-06T00:32:21.378Z"
     },
     "template-marketing-webapp-nextjs/ctf-product-table-gql": {
       "inputHash": "493c6262a6a18e049a47ca884e000aa47a79315ca97ea7ead1d3c25f8e07e078",
@@ -1082,7 +992,7 @@
       "lastScannedAt": "2026-07-06T00:18:25.899Z"
     },
     "template-marketing-webapp-nextjs/ctf-product.generated": {
-      "inputHash": "cf7729aae833b2bede825e8d92f3785c73f2261edf2a137538df623a2d1198aa",
+      "inputHash": "89b0ba642f3725e221074ea6f639dace34d4f13d4f8b49bce232bdac81ee7753",
       "facts": {
         "id": "template-marketing-webapp-nextjs/ctf-product.generated",
         "type": "React Component",
@@ -1092,22 +1002,12 @@
           {
             "targetId": "template-marketing-webapp-nextjs/ctf-asset.generated",
             "kind": "sync",
-            "evidence": "imports AssetFieldsFragment from \"../../ctf-asset/__generated/ctf-asset.generated\""
+            "evidence": "imports AssetFieldsFragment, AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
           },
           {
             "targetId": "template-marketing-webapp-nextjs/ctf-product-feature.generated",
             "kind": "sync",
-            "evidence": "imports ProductFeatureFieldsFragment from \"../../ctf-product-feature/__generated/ctf-product-feature.generated\""
-          },
-          {
-            "targetId": "template-marketing-webapp-nextjs/ctf-asset.generated",
-            "kind": "sync",
-            "evidence": "imports AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
-          },
-          {
-            "targetId": "template-marketing-webapp-nextjs/ctf-product-feature.generated",
-            "kind": "sync",
-            "evidence": "imports ProductFeatureFieldsFragmentDoc from \"../../ctf-product-feature/__generated/ctf-product-feature.generated\""
+            "evidence": "imports ProductFeatureFieldsFragment, ProductFeatureFieldsFragmentDoc from \"../../ctf-product-feature/__generated/ctf-product-feature.generated\""
           }
         ],
         "sourceFiles": [
@@ -1115,7 +1015,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T00:18:25.899Z"
+      "lastScannedAt": "2026-07-06T00:32:21.378Z"
     },
     "template-marketing-webapp-nextjs/ctf-product-gql": {
       "inputHash": "9a7a823d86710a1cf30a23f4a8dfb4bd3639a1c82bee3e3747f01bad7b29c70c",
@@ -1180,7 +1080,7 @@
       "lastScannedAt": "2026-07-06T00:18:25.899Z"
     },
     "template-marketing-webapp-nextjs/ctf-quote.generated": {
-      "inputHash": "e8e47fb8e8dc92eb27c4b601a01adca95a5d5d4a6be36ca165767028b94670b3",
+      "inputHash": "47c8e8ddd20b3306086debd097f42b44bc60d97941996a6caf11836f9abf3a9c",
       "facts": {
         "id": "template-marketing-webapp-nextjs/ctf-quote.generated",
         "type": "React Component",
@@ -1190,22 +1090,12 @@
           {
             "targetId": "template-marketing-webapp-nextjs/ctf-componentMap.generated",
             "kind": "sync",
-            "evidence": "imports ComponentReferenceFields_ComponentCta_Fragment, ComponentReferenceFields_ComponentDuplex_Fragment, ComponentReferenceFields_ComponentHeroBanner_Fragment, ComponentReferenceFields_ComponentInfoBlock_Fragment, ComponentReferenceFields_ComponentProductTable_Fragment, ComponentReferenceFields_ComponentQuote_Fragment, ComponentReferenceFields_ComponentTextBlock_Fragment, ComponentReferenceFields_FooterMenu_Fragment, ComponentReferenceFields_MenuGroup_Fragment, ComponentReferenceFields_NavigationMenu_Fragment, ComponentReferenceFields_Page_Fragment, ComponentReferenceFields_Seo_Fragment, ComponentReferenceFields_TopicBusinessInfo_Fragment, ComponentReferenceFields_TopicPerson_Fragment, ComponentReferenceFields_TopicProduct_Fragment, ComponentReferenceFields_TopicProductFeature_Fragment from \"../../../../../lib/shared-fragments/__generated/ctf-componentMap.generated\""
+            "evidence": "imports ComponentReferenceFields_ComponentCta_Fragment, ComponentReferenceFields_ComponentDuplex_Fragment, ComponentReferenceFields_ComponentHeroBanner_Fragment, ComponentReferenceFields_ComponentInfoBlock_Fragment, ComponentReferenceFields_ComponentProductTable_Fragment, ComponentReferenceFields_ComponentQuote_Fragment, ComponentReferenceFields_ComponentTextBlock_Fragment, ComponentReferenceFields_FooterMenu_Fragment, ComponentReferenceFields_MenuGroup_Fragment, ComponentReferenceFields_NavigationMenu_Fragment, ComponentReferenceFields_Page_Fragment, ComponentReferenceFields_Seo_Fragment, ComponentReferenceFields_TopicBusinessInfo_Fragment, ComponentReferenceFields_TopicPerson_Fragment, ComponentReferenceFields_TopicProduct_Fragment, ComponentReferenceFields_TopicProductFeature_Fragment, ComponentReferenceFieldsFragmentDoc from \"../../../../../lib/shared-fragments/__generated/ctf-componentMap.generated\""
           },
           {
             "targetId": "template-marketing-webapp-nextjs/ctf-asset.generated",
             "kind": "sync",
-            "evidence": "imports AssetFieldsFragment from \"../../ctf-asset/__generated/ctf-asset.generated\""
-          },
-          {
-            "targetId": "template-marketing-webapp-nextjs/ctf-componentMap.generated",
-            "kind": "sync",
-            "evidence": "imports ComponentReferenceFieldsFragmentDoc from \"../../../../../lib/shared-fragments/__generated/ctf-componentMap.generated\""
-          },
-          {
-            "targetId": "template-marketing-webapp-nextjs/ctf-asset.generated",
-            "kind": "sync",
-            "evidence": "imports AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
+            "evidence": "imports AssetFieldsFragment, AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
           }
         ],
         "sourceFiles": [
@@ -1213,7 +1103,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T00:18:25.899Z"
+      "lastScannedAt": "2026-07-06T00:32:21.378Z"
     },
     "template-marketing-webapp-nextjs/ctf-quote-gql": {
       "inputHash": "930845a7ff524ffe793b82f06fca5542cee3d32e2843255eb52a06520895d3fd",
@@ -1273,7 +1163,7 @@
       "lastScannedAt": "2026-07-06T00:18:25.899Z"
     },
     "template-marketing-webapp-nextjs/ctf-richtext.generated": {
-      "inputHash": "a1ec6a81892bc996497bd8641d14c7e0653368a16fb178ede8fba4a99e8400dc",
+      "inputHash": "459e2c4678aae64e8590ce5f3d6c8d3baa8371236ae1c9e3b02f00755686bdf4",
       "facts": {
         "id": "template-marketing-webapp-nextjs/ctf-richtext.generated",
         "type": "React Component",
@@ -1283,12 +1173,7 @@
           {
             "targetId": "template-marketing-webapp-nextjs/page-link.generated",
             "kind": "sync",
-            "evidence": "imports PageLinkFieldsFragment from \"../../../page-link/__generated/page-link.generated\""
-          },
-          {
-            "targetId": "template-marketing-webapp-nextjs/page-link.generated",
-            "kind": "sync",
-            "evidence": "imports PageLinkFieldsFragmentDoc from \"../../../page-link/__generated/page-link.generated\""
+            "evidence": "imports PageLinkFieldsFragment, PageLinkFieldsFragmentDoc from \"../../../page-link/__generated/page-link.generated\""
           }
         ],
         "sourceFiles": [
@@ -1296,7 +1181,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T00:18:25.899Z"
+      "lastScannedAt": "2026-07-06T00:32:21.378Z"
     },
     "template-marketing-webapp-nextjs/ctf-richtext": {
       "inputHash": "ea9261adb90ec91467c42395a30e5e3cb26105cdfd188526c7b8913936bd6ee3",
@@ -1340,7 +1225,7 @@
       "lastScannedAt": "2026-07-06T00:18:25.899Z"
     },
     "template-marketing-webapp-nextjs/ctf-text-block.generated": {
-      "inputHash": "2b232977dfe7d27c5593adf711eae47a553fe788eb924c2a22045702698f1329",
+      "inputHash": "933b1d40a66ff8eaab8e7d8e0adc2ead4d5a49bd00ad15909647508b18e00fd4",
       "facts": {
         "id": "template-marketing-webapp-nextjs/ctf-text-block.generated",
         "type": "React Component",
@@ -1350,22 +1235,12 @@
           {
             "targetId": "template-marketing-webapp-nextjs/ctf-componentMap.generated",
             "kind": "sync",
-            "evidence": "imports ComponentReferenceFields_ComponentCta_Fragment, ComponentReferenceFields_ComponentDuplex_Fragment, ComponentReferenceFields_ComponentHeroBanner_Fragment, ComponentReferenceFields_ComponentInfoBlock_Fragment, ComponentReferenceFields_ComponentProductTable_Fragment, ComponentReferenceFields_ComponentQuote_Fragment, ComponentReferenceFields_ComponentTextBlock_Fragment, ComponentReferenceFields_FooterMenu_Fragment, ComponentReferenceFields_MenuGroup_Fragment, ComponentReferenceFields_NavigationMenu_Fragment, ComponentReferenceFields_Page_Fragment, ComponentReferenceFields_Seo_Fragment, ComponentReferenceFields_TopicBusinessInfo_Fragment, ComponentReferenceFields_TopicPerson_Fragment, ComponentReferenceFields_TopicProduct_Fragment, ComponentReferenceFields_TopicProductFeature_Fragment from \"../../../../../lib/shared-fragments/__generated/ctf-componentMap.generated\""
+            "evidence": "imports ComponentReferenceFields_ComponentCta_Fragment, ComponentReferenceFields_ComponentDuplex_Fragment, ComponentReferenceFields_ComponentHeroBanner_Fragment, ComponentReferenceFields_ComponentInfoBlock_Fragment, ComponentReferenceFields_ComponentProductTable_Fragment, ComponentReferenceFields_ComponentQuote_Fragment, ComponentReferenceFields_ComponentTextBlock_Fragment, ComponentReferenceFields_FooterMenu_Fragment, ComponentReferenceFields_MenuGroup_Fragment, ComponentReferenceFields_NavigationMenu_Fragment, ComponentReferenceFields_Page_Fragment, ComponentReferenceFields_Seo_Fragment, ComponentReferenceFields_TopicBusinessInfo_Fragment, ComponentReferenceFields_TopicPerson_Fragment, ComponentReferenceFields_TopicProduct_Fragment, ComponentReferenceFields_TopicProductFeature_Fragment, ComponentReferenceFieldsFragmentDoc from \"../../../../../lib/shared-fragments/__generated/ctf-componentMap.generated\""
           },
           {
             "targetId": "template-marketing-webapp-nextjs/ctf-asset.generated",
             "kind": "sync",
-            "evidence": "imports AssetFieldsFragment from \"../../ctf-asset/__generated/ctf-asset.generated\""
-          },
-          {
-            "targetId": "template-marketing-webapp-nextjs/ctf-componentMap.generated",
-            "kind": "sync",
-            "evidence": "imports ComponentReferenceFieldsFragmentDoc from \"../../../../../lib/shared-fragments/__generated/ctf-componentMap.generated\""
-          },
-          {
-            "targetId": "template-marketing-webapp-nextjs/ctf-asset.generated",
-            "kind": "sync",
-            "evidence": "imports AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
+            "evidence": "imports AssetFieldsFragment, AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
           }
         ],
         "sourceFiles": [
@@ -1373,7 +1248,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T00:18:25.899Z"
+      "lastScannedAt": "2026-07-06T00:32:21.378Z"
     },
     "template-marketing-webapp-nextjs/ctf-text-block-gql": {
       "inputHash": "5a9c858e104645c8d1cca42c61b911ab6a79004772ff498a326b384902b5bb7e",
@@ -1881,7 +1756,7 @@
       "lastScannedAt": "2026-07-04T20:44:59.384Z"
     },
     "template-marketing-webapp-nextjs/ctf-menuGroup.generated": {
-      "inputHash": "6922821ad6c42340a6ba37bfce242b7c450c71f8719ba1f3054488f17abd0c3f",
+      "inputHash": "1d257fa82497bd5f443e4961e6a412c569327d6af6e3baca6367c883951634f3",
       "facts": {
         "id": "template-marketing-webapp-nextjs/ctf-menuGroup.generated",
         "type": "React Component",
@@ -1891,12 +1766,7 @@
           {
             "targetId": "template-marketing-webapp-nextjs/page-link.generated",
             "kind": "sync",
-            "evidence": "imports PageLinkFieldsFragment from \"../../../components/features/page-link/__generated/page-link.generated\""
-          },
-          {
-            "targetId": "template-marketing-webapp-nextjs/page-link.generated",
-            "kind": "sync",
-            "evidence": "imports PageLinkFieldsFragmentDoc from \"../../../components/features/page-link/__generated/page-link.generated\""
+            "evidence": "imports PageLinkFieldsFragment, PageLinkFieldsFragmentDoc from \"../../../components/features/page-link/__generated/page-link.generated\""
           }
         ],
         "sourceFiles": [
@@ -1904,7 +1774,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T00:18:25.899Z"
+      "lastScannedAt": "2026-07-06T00:32:21.378Z"
     },
     "template-marketing-webapp-nextjs/theme": {
       "inputHash": "14f96aa5a9c498dc14c987cdf1b649c58feaa87ea1f91fa46cedf5c38dd11312",

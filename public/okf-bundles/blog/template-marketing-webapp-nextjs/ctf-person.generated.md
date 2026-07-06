@@ -1,16 +1,15 @@
 ---
 type: React Component
 title: Ctf Person.Generated
-description: `ctf-person.generated` is a generated React component belonging to the marketing web app template, part of the family of `.generated` files produced from GraphQL Codegen definitions in this codebase. It represents the typed output for a "Person" content type, and like its sibling generated modules, it relies on shared fragment definitions to describe the shape of associated media assets attached to a person entry.
+description: `ctf-person.generated` is a generated React Component belonging to the marketing web app template built on Next.js. As a generated artifact, it is part of the Contentful-backed data layer, likely produced from a GraphQL query definition that models a "Person" content type used across the marketing site.
 level: component
 owner: contentful/team-workflows
 ---
 
-`ctf-person.generated` is a generated React component belonging to the marketing web app template, part of the family of `.generated` files produced from GraphQL Codegen definitions in this codebase. It represents the typed output for a "Person" content type, and like its sibling generated modules, it relies on shared fragment definitions to describe the shape of associated media assets attached to a person entry.
+`ctf-person.generated` is a generated React Component belonging to the marketing web app template built on Next.js. As a generated artifact, it is part of the Contentful-backed data layer, likely produced from a GraphQL query definition that models a "Person" content type used across the marketing site.
 
-Specifically, this file draws on the asset-related generated code from the `ctf-asset` module, pulling in both the TypeScript type describing asset fields and the corresponding GraphQL document fragment. This allows the person component's generated types and queries to correctly reference and validate any asset data (such as a photo or avatar) embedded within a person record, keeping the shape of that data consistent with the rest of the app's asset-handling logic.
+This component depends on the generated asset module, pulling in `AssetFieldsFragment` and `AssetFieldsFragmentDoc` from `ctf-asset.generated`. This suggests that a Person entry includes an associated asset — such as a profile photo or avatar — and that this component reuses the shared asset fragment to ensure consistent fetching and typing of that image data wherever people are rendered (e.g., author bios, team listings, or testimonials).
 
 # Relations
 
-- [Ctf Asset.Generated](ctf-asset.generated.md) — Uses the asset fields type to describe a person's associated media {kind: sync}
-- [Ctf Asset.Generated](ctf-asset.generated.md) — Includes the asset fragment document to fetch a person's associated media {kind: sync}
+- [Ctf Asset.Generated](ctf-asset.generated.md) — Includes person's profile image data via the shared asset fragment {kind: sync}

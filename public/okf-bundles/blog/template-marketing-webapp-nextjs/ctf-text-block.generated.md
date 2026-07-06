@@ -1,18 +1,16 @@
 ---
 type: React Component
 title: Ctf Text Block.Generated
-description: ctf-text-block.generated is a generated GraphQL support module for the CtfTextBlock React component in the Next.js marketing web app template. It exists to pull in the typed fragments needed to render a text block whose content can include embedded assets and references to other components. Rather than defining new fields itself, it wires together generated fragment types and their corresponding document nodes from shared library modules, so the component can type-check and query nested data correctly.
+description: `ctf-text-block.generated` is a generated TypeScript module supporting the React component responsible for rendering a text block section within the marketing web app template built on Contentful. As a generated artifact, it pulls in type and fragment definitions needed to correctly type the data this component consumes, rather than containing hand-written rendering logic itself.
 level: component
 owner: contentful/team-workflows
 ---
 
-ctf-text-block.generated is a generated GraphQL support module for the CtfTextBlock React component in the Next.js marketing web app template. It exists to pull in the typed fragments needed to render a text block whose content can include embedded assets and references to other components. Rather than defining new fields itself, it wires together generated fragment types and their corresponding document nodes from shared library modules, so the component can type-check and query nested data correctly.
+`ctf-text-block.generated` is a generated TypeScript module supporting the React component responsible for rendering a text block section within the marketing web app template built on Contentful. As a generated artifact, it pulls in type and fragment definitions needed to correctly type the data this component consumes, rather than containing hand-written rendering logic itself.
 
-Specifically, it draws on the shared component map to resolve any embedded component references a text block might contain — such as CTAs, duplex layouts, hero banners, info blocks, product tables, quotes, other text blocks, footer/navigation menus, pages, SEO data, and topic entities — and it draws on the asset fragment module to type-check embedded media (e.g., inline images) within the text block content. Together these imports let the text block component safely traverse and render rich, nested content structures.
+It depends on the shared component map fragments, which define the broad set of possible referenced content types (CTAs, duplex sections, hero banners, info blocks, product tables, quotes, text blocks, footer/navigation menus, pages, SEO fields, and topic-related fragments) that can appear as component references within the CMS content model. It also depends on generated asset field types, allowing the text block component to properly type any associated media assets, such as images embedded alongside or within the text content.
 
 # Relations
 
-- [Ctf ComponentMap.Generated](ctf-componentMap.generated.md) — Resolves embedded component reference types for rendering nested content {kind: sync}
-- [Ctf Asset.Generated](ctf-asset.generated.md) — Types embedded asset/media fields within the text block {kind: sync}
-- [Ctf ComponentMap.Generated](ctf-componentMap.generated.md) — Supplies the GraphQL document for resolving embedded component references {kind: sync}
-- [Ctf Asset.Generated](ctf-asset.generated.md) — Supplies the GraphQL document for resolving embedded asset fields {kind: sync}
+- [Ctf ComponentMap.Generated](ctf-componentMap.generated.md) — Resolves referenced component types for embedded content {kind: sync}
+- [Ctf Asset.Generated](ctf-asset.generated.md) — Types asset fields for media used in the text block {kind: sync}
