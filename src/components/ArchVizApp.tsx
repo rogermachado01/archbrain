@@ -10,6 +10,7 @@ import RelationLegend from "@/components/RelationLegend";
 import DataSourceSelector from "@/components/DataSourceSelector";
 import SearchPalette from "@/components/SearchPalette";
 import PathModeControl, { type PathMode } from "@/components/PathModeControl";
+import { computeClusterView, CLUSTER_ID_PREFIX } from "@/lib/clusters";
 import {
   findNode,
   getBreadcrumb,
@@ -85,21 +86,62 @@ export default function ArchVizApp() {
   const loadError = loadFailed && loadFailed.sourceId === sourceId ? loadFailed.message : null;
 
   const currentParentId = archModel && rawParentId && findNode(archModel, rawParentId) ? rawParentId : null;
-  const selectedNodeId = archModel && rawSelectedId && findNode(archModel, rawSelectedId) ? rawSelectedId : null;
 
-  const visibleNodes = useMemo(
+  const rawChildren = useMemo(
     () => (archModel ? getChildren(archModel, currentParentId) : []),
     [archModel, currentParentId]
   );
-  const visibleRelations = useMemo(
-    () => (archModel ? getRelationsForViewWithRollup(archModel, new Set(visibleNodes.map((n) => n.id))) : []),
-    [archModel, visibleNodes]
-  );
+  const clusterView = useMemo(() => computeClusterView(rawChildren), [rawChildren]);
+
+  // A selected id is valid if it's either a real ArchNode or one of the current
+  // view's synthetic cluster ids — the latter never appears in archModel.nodes,
+  // so findNode alone would incorrectly invalidate a cluster selection.
+  const selectedNodeId =
+    archModel &&
+    rawSelectedId &&
+    (findNode(archModel, rawSelectedId) || clusterView?.clusterNodes.some((c) => c.id === rawSelectedId))
+      ? rawSelectedId
+      : null;
+
+  // Explicit ?cluster= (set by double-clicking a cluster node) wins; otherwise fall
+  // back to the selected node's own cluster membership, so a deep link straight to
+  // ?node=<id> (e.g. from search) auto-expands the right cluster without needing its
+  // own ?cluster= param.
+  const rawClusterParam = searchParams.get("cluster");
+  const explicitClusterId =
+    clusterView && rawClusterParam
+      ? clusterView.clusterNodes.find((c) => c.id === `${CLUSTER_ID_PREFIX}${rawClusterParam}`)?.id
+      : undefined;
+  const selectedChildClusterId =
+    clusterView && selectedNodeId ? clusterView.membershipByChildId.get(selectedNodeId) : undefined;
+  const effectiveClusterId = explicitClusterId ?? selectedChildClusterId;
+
+  const visibleNodes = useMemo(() => {
+    if (!clusterView) return rawChildren;
+    if (!effectiveClusterId) return clusterView.clusterNodes;
+    return rawChildren.filter((c) => clusterView.membershipByChildId.get(c.id) === effectiveClusterId);
+  }, [clusterView, rawChildren, effectiveClusterId]);
+
+  const visibleRelations = useMemo(() => {
+    if (!archModel) return [];
+    const visibleIds = new Set(visibleNodes.map((n) => n.id));
+    // Only pass the override while showing the cluster list itself (no single
+    // cluster drilled into yet) — once inside one cluster, relations to a
+    // sibling cluster's member are dropped, matching the existing
+    // sibling-container behavior.
+    const override = clusterView && !effectiveClusterId ? clusterView.membershipByChildId : undefined;
+    return getRelationsForViewWithRollup(archModel, visibleIds, override);
+  }, [archModel, visibleNodes, clusterView, effectiveClusterId]);
+
   const breadcrumbTrail = useMemo(
     () => (archModel ? getBreadcrumb(archModel, currentParentId) : []),
     [archModel, currentParentId]
   );
-  const selectedNode = archModel && selectedNodeId ? findNode(archModel, selectedNodeId) ?? null : null;
+  const selectedNode =
+    archModel && selectedNodeId
+      ? findNode(archModel, selectedNodeId) ?? visibleNodes.find((n) => n.id === selectedNodeId) ?? null
+      : null;
+  const isSelectedNodeCluster = Boolean(selectedNode?.synthetic);
 
   const currentContextNode = archModel && currentParentId ? findNode(archModel, currentParentId) : null;
   const headerTitle = currentContextNode?.name ?? archModel?.title ?? "System Context";
@@ -109,7 +151,7 @@ export default function ArchVizApp() {
   // selected, else the container we've drilled into, else the bundle root — kept live
   // (not computed only when switching to the Wiki tab) so it tracks the diagram selection
   // even while the tab is already open.
-  const wikiFocusId = selectedNodeId ?? currentParentId;
+  const wikiFocusId = selectedNodeId && !isSelectedNodeCluster ? selectedNodeId : currentParentId;
   const wikiEntryPath = wikiFocusId ? `${wikiFocusId}.md` : "index.md";
 
   const { highlightedNodeIds, highlightedRelationIds } = useMemo(() => {
@@ -128,7 +170,13 @@ export default function ArchVizApp() {
   }, [pathMode, selectedNodeId, visibleRelations, kindFilter]);
 
   function updateUrl(
-    patch: { source?: string; parent?: string | null; node?: string | null; panel?: SidePanelTab | null },
+    patch: {
+      source?: string;
+      parent?: string | null;
+      node?: string | null;
+      panel?: SidePanelTab | null;
+      cluster?: string | null;
+    },
     push = false
   ) {
     const params = new URLSearchParams(searchParams.toString());
@@ -145,21 +193,34 @@ export default function ArchVizApp() {
       if (patch.panel === null || patch.panel === "resource") params.delete("panel");
       else params.set("panel", patch.panel);
     }
+    if (patch.cluster !== undefined) {
+      if (patch.cluster === null) params.delete("cluster");
+      else params.set("cluster", patch.cluster);
+    }
     const qs = params.toString();
     const url = qs ? `${pathname}?${qs}` : pathname;
     (push ? router.push : router.replace)(url, { scroll: false });
   }
 
   function handleSelectSource(id: string) {
-    updateUrl({ source: id, parent: null, node: null, panel: null }, true);
+    updateUrl({ source: id, parent: null, node: null, panel: null, cluster: null }, true);
   }
 
   function handleDrillInto(id: string) {
-    updateUrl({ parent: id, node: null });
+    const target = visibleNodes.find((n) => n.id === id);
+    if (target?.synthetic) {
+      updateUrl({ cluster: id.slice(CLUSTER_ID_PREFIX.length), node: null });
+      return;
+    }
+    updateUrl({ parent: id, node: null, cluster: null });
   }
 
   function handleNavigate(id: string | null) {
-    updateUrl({ parent: id, node: null });
+    updateUrl({ parent: id, node: null, cluster: null });
+  }
+
+  function handleNavigateCluster() {
+    updateUrl({ cluster: null, node: null });
   }
 
   function handleSelectNode(id: string) {
@@ -190,7 +251,14 @@ export default function ArchVizApp() {
       <header className="app-header">
         <h1>ArchViz</h1>
         <DataSourceSelector sources={DATA_SOURCES} selectedId={sourceId} onSelect={handleSelectSource} />
-        <Breadcrumb trail={breadcrumbTrail} onNavigate={handleNavigate} />
+        <Breadcrumb
+          trail={breadcrumbTrail}
+          onNavigate={handleNavigate}
+          activeClusterLabel={
+            effectiveClusterId ? clusterView?.clusterNodes.find((c) => c.id === effectiveClusterId)?.name : undefined
+          }
+          onNavigateCluster={handleNavigateCluster}
+        />
         <button className="search-trigger" onClick={() => setSearchOpen(true)}>
           Search <kbd>Ctrl K</kbd>
         </button>
@@ -216,8 +284,14 @@ export default function ArchVizApp() {
                   selectedNodeId={selectedNodeId}
                   onSelectNode={handleSelectNode}
                   onDrillInto={handleDrillInto}
-                  isDrillable={(id) => hasChildren(archModel, id)}
-                  exportFileName={`${sourceId}-${currentParentId ?? "context"}`}
+                  isDrillable={(id) => {
+                    const target = visibleNodes.find((n) => n.id === id);
+                    if (target?.synthetic) return true;
+                    return hasChildren(archModel, id);
+                  }}
+                  exportFileName={`${sourceId}-${currentParentId ?? "context"}${
+                    effectiveClusterId ? `-${effectiveClusterId.slice(CLUSTER_ID_PREFIX.length)}` : ""
+                  }`}
                   highlightedNodeIds={highlightedNodeIds}
                   highlightedRelationIds={highlightedRelationIds}
                 />
@@ -239,7 +313,14 @@ export default function ArchVizApp() {
         </div>
         <SidePanel
           node={selectedNode}
-          wikiAvailable={Boolean(activeSource?.okfBasePath)}
+          clusterMembers={
+            isSelectedNodeCluster && archModel
+              ? selectedNode!.synthetic!.memberIds
+                  .map((id) => findNode(archModel, id))
+                  .filter((n): n is ArchNode => Boolean(n))
+              : undefined
+          }
+          wikiAvailable={Boolean(activeSource?.okfBasePath) && !isSelectedNodeCluster}
           wikiBasePath={activeSource?.okfBasePath}
           wikiEntryPath={wikiEntryPath}
           activeTab={activeTab}
