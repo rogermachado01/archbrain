@@ -45,10 +45,12 @@ This is intentionally a flat list, not a nested tree:
 - Drilling into a node means filtering `nodes` by `parentId === thatNode.id` — see
   `getChildren` in `src/lib/model.ts`. There is no separate "diagram per view" file; views are
   computed on the fly from the flat model.
-- `ArchRelation` is source/target by node id. A relation is only shown in a given view if
-  *both* endpoints are visible at that drill level (`getRelationsForView`) — relations are not
-  rolled up to parent boundaries in the MVP, so a relation between two components inside
-  different containers simply won't render until you're inside the right container.
+- `ArchRelation` is source/target by node id. `getRelationsForView` (`src/lib/model.ts`) shows a
+  relation only if *both* endpoints are visible at that drill level; `ArchVizApp` actually calls
+  `getRelationsForViewWithRollup` instead, which additionally walks a relation whose endpoint
+  isn't visible up to its nearest visible ancestor, so e.g. a relation between two components in
+  different containers still shows up (as an edge between those containers) once you're zoomed
+  out past them — see "Relation kinds" below for how rollup and aggregation work.
 - AWS-specific data lives under `node.aws = { resourceType, properties }`. Only nodes that
   represent real AWS resources have this; pure C4 "component" nodes (e.g. internal classes)
   can omit it.
@@ -100,8 +102,22 @@ navigation mechanism with a couple of conventions layered on top, in the spirit 
 - **Relations** (OKF has no typed edges — just untyped prose links) are parsed from a `# Relations`
   section: `- [target's title](relative/link.md) — label text {kind: async-event}`. The link's
   own anchor text is only for human navigation/readability; the actual `ArchRelation.label` is
-  whatever text follows the link on that line (defaults to the link text if there's none), and
-  the optional trailing `{kind: ...}` sets `ArchRelation.kind` (omit for `"sync"`).
+  whatever text follows the link on that line (defaults to the link text if there's none). A single
+  trailing brace group carries `kind:` and/or `pattern:`, in either order, both optional
+  (`{kind: async-event}`, `{pattern: acl}`, or combined `{kind: async-event, pattern: ohs-pl}`) —
+  `kind` sets `ArchRelation.kind` (omit for `"sync"`); `pattern` sets `ArchRelation.pattern`, a DDD
+  context-map relationship (`partnership`/`shared-kernel`/`customer-supplier`/`conformist`/`acl`/
+  `ohs`/`published-language`/`ohs-pl`) rendered as a `[ABBREV]` suffix on the edge label plus a
+  legend row (`getVisiblePatterns` in `relation-style.ts`).
+- **DDD metadata** comes from flat frontmatter fields — `ddd_subdomain` (`core`/`supporting`/
+  `generic`), `ddd_context` (bounded-context name), `ddd_role` (tactical building block, e.g.
+  "Aggregate Root") — populating `ArchNode.ddd`. `ddd_subdomain` renders as a corner badge + border
+  tint on the node (core only); `ddd_context` groups same-valued nodes into a dashed "Bounded
+  Context" box in the container-level view (`computeBoundedContextBoxes` in `groups.ts`), computed
+  independently of and possibly overlapping AWS network groups — see "AWS network-boundary groups"
+  below. `ddd_role` and `ddd_context` are also shown in `DetailsPanel`'s "Domain-Driven Design"
+  section. None of the three validate beyond `ddd_subdomain`'s enum; `ddd_context` is a free string
+  used only as a grouping key.
 - **AWS resource config** comes from a `# Schema` section (`- key: value` bullets, coerced to
   number/boolean where possible) plus a custom `aws_resource_type` frontmatter field — together
   these populate `ArchNode.aws`.
@@ -204,6 +220,17 @@ requires a Suspense boundary above in production builds. `ArchVizApp` derives
   succeeded but the view layer didn't reconcile in time), most visible as leftover edge labels
   from the prior drill level bleeding into the next. `resetCells` replaces atomically and does
   not have this problem.
+  Every call to `graph.zoomToFit(...)` (there are two: once after `resetCells` in the rebuild
+  effect, once in a `resize` listener registered at graph creation — see below) is guarded
+  behind a non-empty-cells check and a non-zero container-size check, then wrapped in a
+  `try/catch`. X6's `zoomToFit` divides by the content area and by the container's current
+  size internally; with zero cells (e.g. a deep link straight to a leaf node with no children)
+  or a momentarily zero-size container (a transient layout frame while a flex sibling's width
+  is changing — see the sidebar width bump in "Browsing raw OKF docs" below) that division
+  produces a non-finite scale, which throws when applied to the underlying SVGMatrix
+  (`Failed to set the 'e' property on 'SVGMatrix': The provided double value is non-finite`,
+  a real, reproduced crash) — **don't remove these guards** even though they look like dead
+  defensive code in the common case.
   Node click selects; node double-click drills in (only if `isDrillable`, i.e. the node has
   children per `hasChildren`).
   Layout is computed by `computeLayeredPositions` (`src/lib/layout.ts`): nodes are placed
@@ -242,6 +269,10 @@ requires a Suspense boundary above in production builds. `ArchVizApp` derives
   container `<div>` is always rendered (visibility toggled via CSS on `nodes.length >
   MINIMAP_NODE_THRESHOLD`) rather than conditionally mounted, since the `MiniMap` plugin is
   registered once at graph creation and needs a live container ref at that point.
+  `autoResize: true` keeps the SVG viewport's size in sync with the container element (e.g. when
+  the sidebar widens for the Wiki tab, or the window resizes) but doesn't re-fit the zoom/pan on
+  its own, so a `resize` listener registered at graph creation calls `zoomToFit` again — subject
+  to the same guards described above.
 - **`DetailsPanel`** renders whatever node is currently selected, including its full
   `aws.properties` map. Pure presentational, no X6 dependency — just the "Resource" tab's
   content; `SidePanel` (see "Browsing raw OKF docs" below) owns the surrounding `<aside>`
@@ -333,13 +364,28 @@ the same layer/adjacent rows (see the 3 saga-step Lambdas in the sample data for
 example), or accept the visual risk.
 
 Group boxes render as `arch-group` cells only when `isAwsBoundaryView` is true (same gating as
-the "AWS Cloud" boundary), with zIndex computed as `-(deepestGroupDepth + 1 - depth)` and the
-boundary itself as `-(deepestGroupDepth + 2)` — when a view has no groups this reduces to the
-boundary's original fixed `-1`, so existing group-less datasets render identically. Group ids
+the "AWS Cloud" boundary), with zIndex computed as `-(deepestGroupDepth + 1 - depth)`. Group ids
 are **not** real `ArchNode`s (`findNode(archModel, group.id)` won't find them), so the
 node-click/dblclick handlers build a `structuralIds` set (`BOUNDARY_ID` + every visible group
 id) and ignore clicks on any of them — extend this set if you ever add another synthetic/
 structural cell type.
+
+**Bounded-context boxes** (`computeBoundedContextBoxes` in `groups.ts`) are a second, independent
+overlay: a linguistic grouping from `ArchNode.ddd.context` rather than a network one, so a node can
+be in both an AWS group *and* a bounded context at once — `groupId` stays single-valued, and BC
+membership is computed separately via a `getGroupId` option `computeGroupBoxes` now takes (default
+`n => n.groupId`; BC boxes pass `n => n.ddd?.context`). BC boxes render one level in front of the
+boundary but behind every AWS network group (`-(maxGroupDepth + 2)` vs. the boundary's
+`-(maxGroupDepth + 3)`) — when a view has no AWS groups and no BC boxes this still reduces
+correctly to "boundary alone in the back" (the exact zIndex number changed from the original fixed
+`-1`, but nothing else occupies that range, so stacking is unaffected). Their synthesized group ids
+are prefixed `__bc__:` (see `BC_GROUP_ID_PREFIX`) to guarantee no collision with real `AwsGroup`/
+`ArchNode` ids, and are added to the same `structuralIds` set. Because BC boxes are computed
+independently of AWS groups and layout stays group-agnostic either way, **a BC box can legitimately
+overlap an AWS group box** (e.g. a node that's both in a private subnet and a "Payments" bounded
+context) — this is intentional, not a bug: it visualizes that a linguistic boundary and a network
+boundary are different things that don't have to align. `BC_BOX_PADDING` is deliberately different
+from `GROUP_BOX_PADDING` so the two box types' edges never land exactly on top of each other.
 
 The 4 group icons (`aws-region-badge.svg`, `aws-vpc-badge.svg`, `aws-public-subnet-badge.svg`,
 `aws-private-subnet-badge.svg`) are from the same official `Architecture-Group-Icons` folder in
@@ -359,9 +405,20 @@ package's `Architecture-Service-Icons` set (one per AWS service, 48px, kebab-cas
 `generic-application.svg` for external system, `aws-cloud-badge.svg` for the boundary badge), and
 4 network-boundary group icons from `Architecture-Group-Icons` (`aws-region-badge.svg`,
 `aws-vpc-badge.svg`, `aws-public-subnet-badge.svg`, `aws-private-subnet-badge.svg` — see
-"AWS network-boundary groups" below). Only add new icons the same way (official AWS package, not
-hand-drawn); don't recolor or restyle them, since AWS's usage guidelines require icons to stay
-unmodified.
+"AWS network-boundary groups" below). Only add new *AWS service* icons the same way (official AWS
+package, not hand-drawn); don't recolor or restyle them, since AWS's usage guidelines require icons
+to stay unmodified.
+
+The 312 count above is AWS-sourced icons only. `public/aws-icons/` also has two small sets of
+original, hand-authored icons for concepts AWS has no icon for: 6 `fe-*.svg` frontend icons (used
+by the `webapp` OKF bundle for React screens/hooks/stores/etc.) and 4 `ddd-*.svg` DDD
+building-block icons (`ddd-aggregate.svg`, `ddd-policy.svg`, `ddd-acl.svg`, `ddd-read-model.svg`,
+for Aggregate Root/Domain Service or Policy/Anti-Corruption Layer/Repository or read model — set
+via an explicit `icon:` field, same as `fe-*.svg`). Both sets follow the same original-art
+convention (48×48, flat-color rounded-rect background, simple white geometric stroke) and are
+deliberately **not** in `aws-icon-manifest.json` or looked up via `findAwsIcon()` — that manifest
+indexes only the official AWS service set. If you add more non-AWS concept icons, follow this same
+precedent rather than repurposing an AWS service icon for a meaning it wasn't drawn for.
 
 `src/data/aws-icon-manifest.json` indexes every service icon (`{ key, service, category, file }`).
 Don't guess kebab-case filenames by hand — use `findAwsIcon("Amazon DynamoDB")` from
@@ -381,3 +438,12 @@ optional `boundary_icon`) — see "Importing OKF bundles" below.
 When adding new node types or AWS resource kinds, you generally only need to touch the JSON
 data and reference an icon filename (via `findAwsIcon`) under `node.icon` — the drill-down,
 layout, and selection logic is level-agnostic.
+
+## Working with this user (brainstorming/visual companion)
+
+When using the `superpowers:brainstorming` skill's visual companion in this repo: only open it
+for questions that are genuinely visual (comparing mockups/layouts/diagrams side by side). Do
+**not** open it for conceptual/tradeoff questions (e.g. "which of these 3 engineering approaches
+do you prefer") even if dressed up with placeholder boxes — ask those directly in chat instead.
+This user answers in the terminal, not by clicking in the browser tab, so a browser-only
+multiple-choice flow with no chat equivalent doesn't work for them.
