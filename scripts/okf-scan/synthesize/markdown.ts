@@ -160,10 +160,15 @@ export interface BuildConceptMarkdownOptions {
 
 export function buildConceptMarkdown(options: BuildConceptMarkdownOptions): string {
   const { facts, prose, preserved, conceptTitles, groups } = options;
+  // The first prose paragraph becomes the frontmatter description (shown as the
+  // node/wiki subtitle); only the remaining paragraphs go into the body, so the
+  // wiki page doesn't open by repeating its own description verbatim.
+  const [descriptionParagraph = "", ...bodyParagraphs] = prose.split("\n\n");
+  const bodyProse = bodyParagraphs.join("\n\n");
   const frontmatter: Frontmatter = {
     type: facts.type,
     title: titleize(facts.id),
-    description: prose.split("\n\n")[0] ?? "",
+    description: descriptionParagraph,
     level: facts.level,
   };
   if (facts.awsResourceType) frontmatter.aws_resource_type = facts.awsResourceType;
@@ -174,7 +179,7 @@ export function buildConceptMarkdown(options: BuildConceptMarkdownOptions): stri
   if (preserved.ddd_role) frontmatter.ddd_role = preserved.ddd_role;
 
   const sections = [
-    prose,
+    bodyProse,
     buildSchemaSection(facts.schema),
     buildRelationsSection(facts, conceptTitles),
     buildLinksSection(preserved.links),

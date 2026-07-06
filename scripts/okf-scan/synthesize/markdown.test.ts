@@ -129,7 +129,10 @@ describe("buildConceptMarkdown", () => {
     const { data, content } = parseFrontmatter(markdown);
     expect(data.type).toBe("AWS Lambda Function");
     expect(data.level).toBe("container");
-    expect(content).toContain("Handles incoming orders.");
+    // Single-paragraph prose is fully consumed by the description; it's not
+    // repeated in the body (see "does not repeat the description paragraph
+    // in the body" below).
+    expect(data.description).toBe("Handles incoming orders.");
     expect(content).toContain("- memory_size: 512");
     expect(content).toContain("[Orders Table](orders_table.md) — PutItemCommand {kind: sync}");
   });
@@ -237,5 +240,31 @@ describe("buildConceptMarkdown", () => {
 
     const { data } = parseFrontmatter(markdown);
     expect(data.group).toBe("groups/vpc-main/subnet-private_a.md");
+  });
+
+  it("does not repeat the description paragraph in the body", () => {
+    const markdown = buildConceptMarkdown({
+      facts: { id: "app/hero", type: "React Component", level: "component", parentId: "app", sourceFiles: [] },
+      prose: "First paragraph, the summary.\n\nSecond paragraph, extra detail.",
+      preserved: { links: [] },
+      conceptTitles: {},
+      groups: [],
+    });
+    expect(markdown).toContain("description: First paragraph, the summary.");
+    expect(markdown).toContain("Second paragraph, extra detail.");
+    // the body must not restate the description paragraph
+    expect(markdown.split("First paragraph, the summary.")).toHaveLength(2);
+  });
+
+  it("emits no body prose at all for single-paragraph prose (description carries it)", () => {
+    const markdown = buildConceptMarkdown({
+      facts: { id: "app/hero", type: "React Component", level: "component", parentId: "app", sourceFiles: [] },
+      prose: "Only paragraph.",
+      preserved: { links: [] },
+      conceptTitles: {},
+      groups: [],
+    });
+    expect(markdown).toContain("description: Only paragraph.");
+    expect(markdown.split("Only paragraph.")).toHaveLength(2);
   });
 });
