@@ -1,16 +1,9 @@
 ---
 type: Frontend Application
 title: Template Marketing Webapp Nextjs
-description: This concept represents a marketing web application built with Next.js, serving as a frontend application within the architecture. It functions as a template, providing a starting point or reference structure for teams building customer-facing marketing sites using the Next.js framework.
-level: container
+description: A Next.js frontend application scaffolded for marketing websites, providing the customer-facing entry point where visitors land, browse content, and convert into leads or customers.
+level: context
 owner: contentful/team-workflows
-ddd_subdomain: supporting
-ddd_context: Marketing Website
-ddd_role: Presentational Application
 ---
 
-This concept represents a marketing web application built with Next.js, serving as a frontend application within the architecture. It functions as a template, providing a starting point or reference structure for teams building customer-facing marketing sites using the Next.js framework.
-
-As a Frontend Application type, this concept would typically sit at the presentation layer of a broader system, handling the rendering and delivery of marketing content to end users. Its designation as a template implies it is intended to be reused or adapted across projects rather than representing a single, one-off deployment.
-
-Beyond its identification as a Next.js-based marketing frontend template, no further details—such as specific pages, integrations, data sources, or deployment relationships—have been specified for this concept.
+As a template, it's meant to be cloned and customized per project rather than configured through extensive runtime options, giving teams a consistent starting structure for pages, layouts, and routing conventions common to marketing sites. Its role in an architecture map is as the presentation layer that typically sits in front of a CMS or backend API, rendering pages for end users while delegating content and data concerns elsewhere.

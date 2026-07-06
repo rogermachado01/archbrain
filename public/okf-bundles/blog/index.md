@@ -1,8 +1,8 @@
 ---
 title: "Generated Architecture"
+boundary: false
 ---
 
 # Concepts
 
-- [Platform](platform.md) - root system node
 - [Template Marketing Webapp Nextjs](template-marketing-webapp-nextjs.md) - Frontend Application

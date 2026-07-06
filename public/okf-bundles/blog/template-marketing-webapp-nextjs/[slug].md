@@ -1,20 +1,15 @@
 ---
 type: Next.js Page
 title: [Slug]
-description: The `[slug]` page is a dynamic Next.js route responsible for rendering marketing pages whose content is managed in Contentful. Rather than hard-coding page structure, it resolves the requested slug against generated GraphQL query hooks that fetch the page content, the site-wide navigation, and the site-wide footer, assembling them into a complete page view.
-level: component
+description: "A visitor navigating to any dynamic slug URL — such as a marketing landing page or content-driven route — lands on this Next.js page, which resolves the \"/[slug]\" path into rendered content. It assembles the page shell from Contentful-backed pieces: navigation and footer chrome that wrap the content, plus the core page content itself, all fetched via generated GraphQL query hooks."
+level: container
 owner: contentful/team-workflows
-ddd_subdomain: core
-ddd_context: Page Routing
-ddd_role: Page Component
 ---
 
-The `[slug]` page is a dynamic Next.js route responsible for rendering marketing pages whose content is managed in Contentful. Rather than hard-coding page structure, it resolves the requested slug against generated GraphQL query hooks that fetch the page content, the site-wide navigation, and the site-wide footer, assembling them into a complete page view.
-
-To do this, the page relies on three generated query hooks. It uses `useCtfPageQuery` to retrieve the main content for the page matching the given slug, `useCtfNavigationQuery` to fetch the shared navigation data shown across the site, and `useCtfFooterQuery` to fetch the shared footer data. Together these hooks let the `[slug]` page compose a full page layout from independently fetched, Contentful-backed pieces.
+The page's structure reflects a typical content-managed layout: a persistent navigation bar and footer surround a body whose data comes from a dedicated page query. Each of these three pieces is sourced from its own generated hook, meaning the page's rendering depends on Contentful data being available at request or build time for the given slug.
 
 # Relations
 
-- [Ctf Footer.Generated](ctf-footer.generated.md) — Fetches and renders the shared site footer {kind: sync}
-- [Ctf Navigation.Generated](ctf-navigation.generated.md) — Fetches and renders the shared site navigation {kind: sync}
-- [Ctf Page.Generated](ctf-page.generated.md) — Fetches and renders the page's main content for the given slug {kind: sync}
+- [Ctf Footer](shared-ui/ctf-footer.md) — Renders the site footer {kind: sync}
+- [Ctf Navigation](shared-ui/ctf-navigation.md) — Renders the site navigation bar {kind: sync}
+- [Ctf Page.Generated](shared-ui/ctf-page.generated.md) — Fetches and renders the page's content {kind: sync}
