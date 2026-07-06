@@ -1,11 +1,11 @@
 ---
 type: React Component
 title: Category Link.Generated
-description: CategoryLink is a React component from the marketing web app template's generated code, used to render links to category pages within the application. As a component focused on category navigation, it likely accepts a category identifier or object as a prop and produces a link element that directs users to the corresponding category view.
+description: CategoryLink is a React component from the marketing web app template, used to render a link representing a category, typically pointing to a filtered or category-specific page within the site.
 level: component
 owner: contentful/team-workflows
 ---
 
-CategoryLink is a React component from the marketing web app template's generated code, used to render links to category pages within the application. As a component focused on category navigation, it likely accepts a category identifier or object as a prop and produces a link element that directs users to the corresponding category view.
+CategoryLink is a React component from the marketing web app template, used to render a link representing a category, typically pointing to a filtered or category-specific page within the site.
 
-Given its "generated" designation, CategoryLink is likely produced automatically as part of a build or scaffolding process, tying it closely to the underlying data model for categories in the marketing webapp template. It would typically be used wherever category references need to be presented as clickable navigation elements, such as in listings, menus, or breadcrumb trails, though the specific contexts of use are not detailed beyond its identification as a link-rendering component.
+As a generated component, it follows the conventions of the template's component library, offering a consistent, reusable way to display category navigation links across the marketing site's pages, such as blogs, product listings, or resource sections. It is intended to be used wherever category-based linking is needed within the Next.js application structure.

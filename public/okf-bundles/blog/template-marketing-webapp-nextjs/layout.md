@@ -1,16 +1,16 @@
 ---
 type: React Component
 title: Layout
-description: The Layout component serves as a structural wrapper for pages in this Next.js marketing web app template, assembling shared page chrome around the main content. It brings together the site's footer and mobile navigation menu, both sourced from Contentful-driven components, so that consistent branding and navigation appear across pages that use this layout.
+description: The Layout component serves as a structural wrapper for pages within the marketing webapp template, assembling shared page chrome around the main content. It draws on two feature components to provide consistent navigation and footer elements across the site.
 level: component
 owner: contentful/team-workflows
 ---
 
-The Layout component serves as a structural wrapper for pages in this Next.js marketing web app template, assembling shared page chrome around the main content. It brings together the site's footer and mobile navigation menu, both sourced from Contentful-driven components, so that consistent branding and navigation appear across pages that use this layout.
+The Layout component serves as a structural wrapper for pages within the marketing webapp template, assembling shared page chrome around the main content. It draws on two feature components to provide consistent navigation and footer elements across the site.
 
-By importing CtfFooterGql and CtfMobileMenuGql, Layout delegates the rendering of these content-managed sections to their respective components, which handle fetching and displaying data from Contentful via GraphQL. This keeps Layout focused on composition and page structure while the footer and mobile menu manage their own content and presentation logic.
+Specifically, Layout imports CtfFooterGql to render the site's footer content and CtfMobileMenuGql to provide mobile navigation. By composing these pieces together, Layout ensures that every page using it presents a consistent header/navigation and footer experience without each page needing to reimplement that structure.
 
 # Relations
 
 - [Ctf Footer Gql](ctf-footer-gql.md) — Renders the site footer {kind: sync}
-- [Ctf Mobile Menu Gql](ctf-mobile-menu-gql.md) — Renders the mobile navigation menu {kind: sync}
+- [Ctf Mobile Menu Gql](ctf-mobile-menu-gql.md) — Provides mobile navigation menu {kind: sync}

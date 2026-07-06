@@ -1,11 +1,11 @@
 ---
 type: React Component
 title: Post Link.Generated
-description: PostLink is a React component belonging to the template-marketing-webapp-nextjs template, generated as part of the project's scaffolding. It represents a discrete UI element intended for rendering a link to a post within the marketing web app.
+description: PostLink is a React component within the marketing webapp template built on Next.js. As a generated component, it is produced automatically as part of the template's build or scaffolding process rather than being hand-authored, reflecting the structure of the underlying content it represents.
 level: component
 owner: contentful/team-workflows
 ---
 
-PostLink is a React component belonging to the template-marketing-webapp-nextjs template, generated as part of the project's scaffolding. It represents a discrete UI element intended for rendering a link to a post within the marketing web app.
+PostLink is a React component within the marketing webapp template built on Next.js. As a generated component, it is produced automatically as part of the template's build or scaffolding process rather than being hand-authored, reflecting the structure of the underlying content it represents.
 
-As a generated component, PostLink is meant to be used within the Next.js application's component tree, likely composed into pages or listings that reference blog posts or similar content items. Its role is scoped to presenting a navigable link, fitting into the broader architecture of the marketing site template.
+In practice, PostLink is used to render a link to a post, serving as a reusable UI piece within the marketing site's page composition. Being part of the Next.js-based template, it fits into the broader set of generated components that the application assembles to display content such as blog posts or articles, providing consistent linking behavior wherever post references need to be surfaced in the interface.

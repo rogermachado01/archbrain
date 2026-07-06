@@ -1,15 +1,15 @@
 ---
 type: React Component
 title: Component Resolver
-description: The component-resolver is a React component within the marketing web app template, responsible for determining which component to render based on content data. As part of its rendering logic, it relies on the Contentful context to access shared state or configuration relevant to the current preview or content environment.
+description: The Component Resolver is a React component within the Next.js marketing webapp template responsible for dynamically resolving and rendering components based on content data, typically sourced from Contentful. To determine how content should be displayed, it relies on contextual information about the current Contentful setup, which it obtains by importing the useContentfulContext hook from the contentful-context module.
 level: component
 owner: contentful/team-workflows
 ---
 
-The component-resolver is a React component within the marketing web app template, responsible for determining which component to render based on content data. As part of its rendering logic, it relies on the Contentful context to access shared state or configuration relevant to the current preview or content environment.
+The Component Resolver is a React component within the Next.js marketing webapp template responsible for dynamically resolving and rendering components based on content data, typically sourced from Contentful. To determine how content should be displayed, it relies on contextual information about the current Contentful setup, which it obtains by importing the useContentfulContext hook from the contentful-context module.
 
-It imports the useContentfulContext hook from the contentful-context module, indicating that its resolution behavior is aware of, or responsive to, the surrounding Contentful integration—likely to support features such as live preview or content-driven rendering decisions.
+By consuming this context, the Component Resolver can access shared Contentful state or configuration needed to correctly map content entries to their corresponding React components. This makes it a central piece of the content-driven rendering pipeline, bridging raw content data with the appropriate UI components in the application.
 
 # Relations
 
-- [Contentful Context](contentful-context.md) — Reads Contentful context to inform component resolution {kind: sync}
+- [Contentful Context](contentful-context.md) — Reads Contentful context to resolve the correct component {kind: sync}

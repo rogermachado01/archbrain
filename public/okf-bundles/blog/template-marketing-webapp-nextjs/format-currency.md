@@ -1,15 +1,15 @@
 ---
 type: React Component
 title: Format Currency
-description: `format-currency` is a React component belonging to the marketing web app template, responsible for presenting currency values in the UI. As part of its rendering logic, it relies on the shared Contentful context to access data needed to display formatted currency correctly within the page.
+description: format-currency is a React component within the marketing-webapp-nextjs template, responsible for rendering currency values in a locale- and preview-aware manner. It imports the useContentfulContext hook to access shared Contentful state, which allows the component to adjust its formatting behavior based on the current content context, such as locale settings that may be part of that shared state.
 level: component
 owner: contentful/team-workflows
 ---
 
-`format-currency` is a React component belonging to the marketing web app template, responsible for presenting currency values in the UI. As part of its rendering logic, it relies on the shared Contentful context to access data needed to display formatted currency correctly within the page.
+format-currency is a React component within the marketing-webapp-nextjs template, responsible for rendering currency values in a locale- and preview-aware manner. It imports the useContentfulContext hook to access shared Contentful state, which allows the component to adjust its formatting behavior based on the current content context, such as locale settings that may be part of that shared state.
 
-It imports `useContentfulContext` from `@src/contentful-context`, meaning it participates in the broader Contentful-driven content pipeline used across the template, drawing on whatever contextual data that hook exposes rather than managing its own state.
+By relying on the Contentful context rather than requiring props to be manually threaded through, format-currency can be dropped into other components that render pricing or monetary values, ensuring consistent formatting throughout the marketing site wherever the Contentful context is available.
 
 # Relations
 
-- [Contentful Context](contentful-context.md) — Reads shared Contentful context to help format currency values {kind: sync}
+- [Contentful Context](contentful-context.md) — Reads locale and content context to format currency values correctly {kind: sync}

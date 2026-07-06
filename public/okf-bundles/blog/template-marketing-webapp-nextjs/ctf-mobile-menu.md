@@ -1,16 +1,16 @@
 ---
 type: React Component
 title: Ctf Mobile Menu
-description: ctf-mobile-menu is a React component in the Next.js marketing web app template responsible for rendering the mobile navigation menu. It relies on typed navigation data shaped by the NavigationFieldsFragment, which defines the structure of navigation content pulled from Contentful, ensuring the component has access to the correct fields when building out the menu's links and structure.
+description: ctf-mobile-menu is a React component in the Next.js marketing web app template that renders a mobile-oriented navigation menu. It is part of the ctf-components feature area, which suggests it is designed to work with content sourced from Contentful, consuming navigation data shaped by the `NavigationFieldsFragment` type to know which links and structure to display.
 level: component
 owner: contentful/team-workflows
 ---
 
-ctf-mobile-menu is a React component in the Next.js marketing web app template responsible for rendering the mobile navigation menu. It relies on typed navigation data shaped by the NavigationFieldsFragment, which defines the structure of navigation content pulled from Contentful, ensuring the component has access to the correct fields when building out the menu's links and structure.
+ctf-mobile-menu is a React component in the Next.js marketing web app template that renders a mobile-oriented navigation menu. It is part of the ctf-components feature area, which suggests it is designed to work with content sourced from Contentful, consuming navigation data shaped by the `NavigationFieldsFragment` type to know which links and structure to display.
 
-To let users move between pages, ctf-mobile-menu uses the shared Link component rather than a raw anchor tag, keeping navigation consistent with the rest of the application's routing and link-handling behavior. Together, these dependencies let the component focus on presentation and interaction for the mobile menu while delegating data typing and navigation logic to shared, reusable pieces of the codebase.
+To render its navigation items, the component relies on the shared `Link` component from the app's shared component library, ensuring consistent link behavior (such as routing and styling) across the site. Together, these dependencies indicate that ctf-mobile-menu acts as a presentation layer for navigation data, translating a structured navigation fragment into a list of clickable links suited for smaller screens or collapsed menu states.
 
 # Relations
 
-- [Ctf Navigation.Generated](ctf-navigation.generated.md) — Uses navigation content fields to populate the mobile menu {kind: sync}
+- [Ctf Navigation.Generated](ctf-navigation.generated.md) — Uses navigation data shape to populate menu items {kind: sync}
 - [Link](link.md) — Renders menu items as navigable links {kind: sync}

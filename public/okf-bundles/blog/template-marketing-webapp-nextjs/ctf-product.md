@@ -1,17 +1,17 @@
 ---
 type: React Component
 title: Ctf Product
-description: CtfProduct is a React component responsible for rendering a product entry sourced from Contentful within the marketing webapp template. It relies on a generated fragment type, ProductFieldsFragment, to type the shape of the product data it receives, ensuring the component works with the fields defined by the corresponding GraphQL fragment.
+description: `ctf-product` is a React component that renders a product entry sourced from Contentful, used within the marketing web app template to display product content on a page. It relies on generated typing to know the shape of the product data it receives, ensuring the component's props stay in sync with the underlying Contentful content model.
 level: component
 owner: contentful/team-workflows
 ---
 
-CtfProduct is a React component responsible for rendering a product entry sourced from Contentful within the marketing webapp template. It relies on a generated fragment type, ProductFieldsFragment, to type the shape of the product data it receives, ensuring the component works with the fields defined by the corresponding GraphQL fragment.
+`ctf-product` is a React component that renders a product entry sourced from Contentful, used within the marketing web app template to display product content on a page. It relies on generated typing to know the shape of the product data it receives, ensuring the component's props stay in sync with the underlying Contentful content model.
 
-To build out the visual presentation of a product, CtfProduct composes two other Contentful-aware components: CtfAsset, likely used to render product imagery or other media assets, and CtfRichtext, used to render formatted text content such as product descriptions. By delegating asset and rich text rendering to these specialized components, CtfProduct acts as a composition point that assembles a complete product view from smaller, reusable building blocks.
+To render its content, `ctf-product` composes two other Contentful feature components: it uses `ctf-asset` to display associated media, such as a product image, and `ctf-richtext` to render formatted textual content, such as a product description. Together these compositions let `ctf-product` present a structured, media-rich product entry without handling asset or rich text rendering logic itself.
 
 # Relations
 
-- [Ctf Product.Generated](ctf-product.generated.md) — Types the product data using the generated fragment {kind: sync}
-- [Ctf Asset](ctf-asset.md) — Renders the product's media asset {kind: sync}
-- [Ctf Richtext](ctf-richtext.md) — Renders the product's rich text content {kind: sync}
+- [Ctf Product.Generated](ctf-product.generated.md) — Supplies typed product fields for rendering {kind: sync}
+- [Ctf Asset](ctf-asset.md) — Displays the product's associated image {kind: sync}
+- [Ctf Richtext](ctf-richtext.md) — Renders the product's rich text description {kind: sync}

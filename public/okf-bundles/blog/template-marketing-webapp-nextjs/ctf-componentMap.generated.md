@@ -1,11 +1,11 @@
 ---
 type: React Component
 title: Ctf ComponentMap.Generated
-description: `ctf-componentMap.generated` is a React Component within the template-marketing-webapp-nextjs project. Its name indicates that it is an auto-generated mapping file, most likely produced by a build or content-tooling step rather than authored directly by hand, and it appears to be associated with "ctf" (likely Contentful) content types, suggesting it serves as a lookup or registry connecting Contentful content type identifiers to their corresponding React components.
+description: ctf-componentMap.generated is a React Component within the template-marketing-webapp-nextjs template. As its name indicates, it is a generated artifact—a component map produced automatically rather than authored directly—intended to serve as a reference for how components in the marketing web app template relate to one another within the codebase.
 level: component
 owner: contentful/team-workflows
 ---
 
-`ctf-componentMap.generated` is a React Component within the template-marketing-webapp-nextjs project. Its name indicates that it is an auto-generated mapping file, most likely produced by a build or content-tooling step rather than authored directly by hand, and it appears to be associated with "ctf" (likely Contentful) content types, suggesting it serves as a lookup or registry connecting Contentful content type identifiers to their corresponding React components.
+ctf-componentMap.generated is a React Component within the template-marketing-webapp-nextjs template. As its name indicates, it is a generated artifact—a component map produced automatically rather than authored directly—intended to serve as a reference for how components in the marketing web app template relate to one another within the codebase.
 
-Given the limited facts available, this component's primary role within the architecture is to act as a generated artifact that other parts of the marketing web app can reference in order to resolve which React component should render a given piece of Contentful-sourced content. As with other generated files, it should generally be treated as derived output rather than a place for manual edits, with any necessary changes made upstream in whatever process produces it.
+Beyond its identification as a generated React Component belonging to this template, no further details, props, relations, or behaviors have been specified for it.

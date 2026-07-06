@@ -1,17 +1,17 @@
 ---
 type: React Component
 title: Ctf Text Block
-description: `ctf-text-block` is a React component that renders a text-based content block within the marketing webapp template, likely sourced from Contentful entries. It relies on generated typing information for its Contentful fields, ensuring the shape of the incoming data—such as text content and styling options—is known at compile time. To actually display formatted body copy, it delegates rendering of rich text content to the `CtfRichtext` component, keeping the text-block component focused on layout and configuration rather than parsing rich text structures itself.
+description: ctf-text-block is a React component that renders a text block entry from Contentful within the marketing webapp template. It relies on generated TypeScript types to know the shape of the text block content it receives, ensuring the fields it consumes match what is defined in the Contentful content model.
 level: component
 owner: contentful/team-workflows
 ---
 
-`ctf-text-block` is a React component that renders a text-based content block within the marketing webapp template, likely sourced from Contentful entries. It relies on generated typing information for its Contentful fields, ensuring the shape of the incoming data—such as text content and styling options—is known at compile time. To actually display formatted body copy, it delegates rendering of rich text content to the `CtfRichtext` component, keeping the text-block component focused on layout and configuration rather than parsing rich text structures itself.
+ctf-text-block is a React component that renders a text block entry from Contentful within the marketing webapp template. It relies on generated TypeScript types to know the shape of the text block content it receives, ensuring the fields it consumes match what is defined in the Contentful content model.
 
-Beyond just displaying text, the component also draws on the shared theme utilities to resolve color settings, allowing the block to be styled consistently according to a selected color palette. This suggests the component supports some notion of a background or accent color that content editors can configure, which is then translated into concrete style values through the theme helper.
+To display the actual text content, it delegates rendering of rich text to the CtfRichtext component, which handles the structured document format produced by Contentful. The component also uses a theme utility to derive color configuration from a palette, allowing the text block's appearance to adapt based on styling options defined for the entry.
 
 # Relations
 
-- [Ctf Text Block.Generated](ctf-text-block.generated.md) — Supplies typed field data for the text block {kind: sync}
+- [Ctf Text Block.Generated](ctf-text-block.generated.md) — Types the text block's Contentful fields {kind: sync}
 - [Ctf Richtext](ctf-richtext.md) — Renders the block's rich text content {kind: sync}
-- [Theme](theme.md) — Resolves the block's color palette into theme styles {kind: sync}
+- [Theme](theme.md) — Resolves color styling from the theme palette {kind: sync}

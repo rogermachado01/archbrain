@@ -1,11 +1,11 @@
 ---
 type: React Component
 title: Page Link.Generated
-description: PageLink is a generated React component belonging to the marketing web-app Next.js template, intended for use within that template's page structure. As a component, it is meant to be imported and rendered within other React components or pages in the application, following the conventions established by the template.
+description: PageLink is a generated React component defined within the template-marketing-webapp-nextjs template, intended for use as part of the architecture it belongs to. As a component, it represents a discrete piece of UI that can be composed alongside other elements in the marketing web application built with Next.js.
 level: component
 owner: contentful/team-workflows
 ---
 
-PageLink is a generated React component belonging to the marketing web-app Next.js template, intended for use within that template's page structure. As a component, it is meant to be imported and rendered within other React components or pages in the application, following the conventions established by the template.
+PageLink is a generated React component defined within the template-marketing-webapp-nextjs template, intended for use as part of the architecture it belongs to. As a component, it represents a discrete piece of UI that can be composed alongside other elements in the marketing web application built with Next.js.
 
-Because it is marked as generated, PageLink is produced automatically as part of the template's build or scaffolding process rather than being hand-authored, and it should be treated accordingly when integrating it into an architecture diagram or codebase—its presence reflects the template's generation pipeline rather than custom application logic.
+Given its name, PageLink is likely used to render navigational links between pages within the application, though no specific props, behaviors, or implementation details are defined beyond its identity as a generated React component in this template's structure. It should be treated as a building block within the broader page and component architecture of the marketing web app template.

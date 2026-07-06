@@ -1,18 +1,18 @@
 ---
 type: React Component
 title: Header
-description: Header is the top-level React component responsible for rendering the site's header bar across pages built with this Next.js marketing web app template. It composes navigation and branding elements, laying them out within layout constants imported from the shared theme module, which define the header's height at different breakpoints and the overall container width used to align its contents with the rest of the page.
+description: Header is a React component that renders the top navigation area of the marketing webapp template. It composes the site's primary layout chrome, combining a home link with the navigation content and sizing constraints defined for the header region.
 level: component
 owner: contentful/team-workflows
 ---
 
-Header is the top-level React component responsible for rendering the site's header bar across pages built with this Next.js marketing web app template. It composes navigation and branding elements, laying them out within layout constants imported from the shared theme module, which define the header's height at different breakpoints and the overall container width used to align its contents with the rest of the page.
+Header is a React component that renders the top navigation area of the marketing webapp template. It composes the site's primary layout chrome, combining a home link with the navigation content and sizing constraints defined for the header region.
 
-Within the header, a home link is rendered using the shared Link component, pointing to the site's root path and resolving to the index page. The header also embeds the CtfNavigationGql component to render the site's navigation menu, which is presumably sourced from Contentful data. Together these pieces let Header serve as the persistent top-of-page navigation and branding area used across the template's pages.
+The component imports CtfNavigationGql to render the actual navigation menu, which is presumably populated from Contentful data elsewhere in the app. It uses the shared Link component to wrap the site logo or brand element, pointing users back to the home page. Layout constants such as header height (in both default and medium breakpoint variants) and container width are pulled from the shared theme module to keep the header's dimensions and content width consistent with the rest of the site.
 
 # Relations
 
-- [Ctf Navigation Gql](ctf-navigation-gql.md) — Renders the site navigation menu {kind: sync}
-- [Link](link.md) — Displays a home/logo link {kind: sync}
-- [Theme](theme.md) — Sizes and aligns the header using shared layout constants {kind: sync}
-- [Index Page](index-page.md) — Home link navigates to the index page {kind: sync}
+- [Ctf Navigation Gql](ctf-navigation-gql.md) — Renders the navigation menu {kind: sync}
+- [Link](link.md) — Links back to the home page {kind: sync}
+- [Theme](theme.md) — Applies shared layout sizing constants {kind: sync}
+- [Index Page](index-page.md) — Sends users to the home page {kind: sync}

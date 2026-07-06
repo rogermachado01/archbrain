@@ -1,16 +1,16 @@
 ---
 type: React Component
 title: Ctf Cta Gql
-description: `ctf-cta-gql` is a React component that acts as a GraphQL-connected wrapper around the CTA (call-to-action) rendering logic. Rather than accepting CTA content as plain props, it is responsible for fetching the necessary data via a generated GraphQL hook and then handing that data off to the presentational CTA component for rendering.
+description: `ctf-cta-gql` is the GraphQL-connected wrapper for the marketing site's call-to-action component. It sits between the raw generated query hook and the presentational `CtfCta` component, responsible for fetching CTA content from Contentful and passing the resulting data down as props.
 level: component
 owner: contentful/team-workflows
 ---
 
-`ctf-cta-gql` is a React component that acts as a GraphQL-connected wrapper around the CTA (call-to-action) rendering logic. Rather than accepting CTA content as plain props, it is responsible for fetching the necessary data via a generated GraphQL hook and then handing that data off to the presentational CTA component for rendering.
+`ctf-cta-gql` is the GraphQL-connected wrapper for the marketing site's call-to-action component. It sits between the raw generated query hook and the presentational `CtfCta` component, responsible for fetching CTA content from Contentful and passing the resulting data down as props.
 
-To do this, it relies on `useCtfCtaQuery`, a hook produced by GraphQL Code Generator, to retrieve the CTA's content from the Contentful API. Once the query resolves, this component composes with `CtfCta`, passing along the fetched data so that `CtfCta` can handle the actual visual presentation. This separation keeps data-fetching concerns isolated from rendering concerns, letting `CtfCta` remain a straightforward presentational component while `ctf-cta-gql` manages the query lifecycle.
+In practice, this component calls `useCtfCtaQuery` to retrieve the CTA entry, then renders `CtfCta` with the fetched data. This separation keeps data-fetching concerns isolated from presentation, so `CtfCta` itself can remain a simple, reusable UI component while `ctf-cta-gql` handles the integration with the content layer.
 
 # Relations
 
 - [Ctf Cta.Generated](ctf-cta.generated.md) — Fetches CTA content via the generated query hook {kind: sync}
-- [Ctf Cta](ctf-cta.md) — Passes fetched CTA data to the presentational CTA component {kind: sync}
+- [Ctf Cta](ctf-cta.md) — Renders the presentational CTA component with fetched data {kind: sync}

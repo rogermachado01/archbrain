@@ -1,15 +1,15 @@
 ---
 type: React Component
 title: Ctf MenuGroup.Generated
-description: `ctf-menuGroup.generated` is a generated React component belonging to the marketing web app template built with Next.js. As a generated artifact, it is produced from a schema or query definition rather than hand-authored, and it forms part of the site's navigation/menu feature set, working alongside related generated modules to render structured content from the CMS.
+description: ctf-menuGroup.generated is a generated React component belonging to the marketing web app template built on Next.js. As a generated artifact, it is produced by a code generation step (likely tied to GraphQL fragments) rather than authored directly, which suggests it renders a menu group structure composed of individual page links within the site's content model.
 level: component
 owner: contentful/team-workflows
 ---
 
-`ctf-menuGroup.generated` is a generated React component belonging to the marketing web app template built with Next.js. As a generated artifact, it is produced from a schema or query definition rather than hand-authored, and it forms part of the site's navigation/menu feature set, working alongside related generated modules to render structured content from the CMS.
+ctf-menuGroup.generated is a generated React component belonging to the marketing web app template built on Next.js. As a generated artifact, it is produced by a code generation step (likely tied to GraphQL fragments) rather than authored directly, which suggests it renders a menu group structure composed of individual page links within the site's content model.
 
-This component depends on the page-link feature module, pulling in the `PageLinkFieldsFragment` type and its corresponding `PageLinkFieldsFragmentDoc` GraphQL document. This suggests that a menu group is composed of individual page links, and it relies on the page-link module to know how to fetch and type the data needed for each link within the group.
+This component draws on the page-link feature, pulling in the PageLinkFieldsFragment and its corresponding document object from that module. This indicates that a menu group is made up of one or more page links, and the component relies on the shared page-link data shape to know what fields are available when rendering each link within the group.
 
 # Relations
 
-- [Page Link.Generated](page-link.generated.md) — Uses page-link data to render each link within the menu group {kind: sync}
+- [Page Link.Generated](page-link.generated.md) — Uses page-link fragment data to render each link in the menu group {kind: sync}

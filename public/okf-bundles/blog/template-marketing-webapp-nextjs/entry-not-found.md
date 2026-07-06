@@ -1,14 +1,14 @@
 ---
 type: React Component
 title: Entry Not Found
-description: EntryNotFound is a React component belonging to the Next.js marketing web app template, used to represent a not-found or missing-entry state within the application. It relies on the ErrorBox component to present this state to the user in a consistent, styled manner.
+description: EntryNotFound is a React component in the Next.js marketing web app template, intended to represent a not-found state for an entry within the application. It relies on the shared ErrorBox component to present its content, delegating the visual and structural aspects of error messaging to that shared component rather than defining its own presentation from scratch.
 level: component
 owner: contentful/team-workflows
 ---
 
-EntryNotFound is a React component belonging to the Next.js marketing web app template, used to represent a not-found or missing-entry state within the application. It relies on the ErrorBox component to present this state to the user in a consistent, styled manner.
+EntryNotFound is a React component in the Next.js marketing web app template, intended to represent a not-found state for an entry within the application. It relies on the shared ErrorBox component to present its content, delegating the visual and structural aspects of error messaging to that shared component rather than defining its own presentation from scratch.
 
-By composing ErrorBox rather than implementing its own error presentation, EntryNotFound stays focused on signaling the specific "entry not found" condition while delegating the visual and structural details of error display to a shared component.
+By composing ErrorBox, EntryNotFound fits into the app's broader pattern of using shared UI primitives for consistent error and empty-state handling across the marketing site.
 
 # Relations
 

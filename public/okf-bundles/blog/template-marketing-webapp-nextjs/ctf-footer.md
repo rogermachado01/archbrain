@@ -1,18 +1,18 @@
 ---
 type: React Component
 title: Ctf Footer
-description: ctf-footer is a React component that renders the marketing site's footer section. It relies on a generated GraphQL fragment type, FooterFieldsFragment, to type the Contentful-sourced footer data it receives as props, keeping the component's data shape in sync with the content model defined in Contentful.
+description: ctf-footer is a React component that renders the marketing site's footer section, built from Contentful-managed content. It relies on a generated GraphQL fragment type to know the shape of the footer data it receives, ensuring the component stays in sync with the content model defined in Contentful.
 level: component
 owner: contentful/team-workflows
 ---
 
-ctf-footer is a React component that renders the marketing site's footer section. It relies on a generated GraphQL fragment type, FooterFieldsFragment, to type the Contentful-sourced footer data it receives as props, keeping the component's data shape in sync with the content model defined in Contentful.
+ctf-footer is a React component that renders the marketing site's footer section, built from Contentful-managed content. It relies on a generated GraphQL fragment type to know the shape of the footer data it receives, ensuring the component stays in sync with the content model defined in Contentful.
 
-To build out its markup, the component uses the shared Link component for navigation elements within the footer, such as links to other pages or external resources. It also consumes the useContentfulContext hook, which likely provides contextual information such as locale or preview state needed to correctly render Contentful-driven content. Finally, it references CONTAINER_WIDTH from the shared theme module to align its layout width with the rest of the site's design system, ensuring visual consistency across pages.
+To build out its layout and behavior, the component uses a shared Link component for navigation elements within the footer, and taps into the Contentful context hook to access contextual data such as locale or preview state needed for rendering content correctly. It also references a shared container width constant from the app's theme to keep the footer's layout consistent with the overall site design.
 
 # Relations
 
-- [Ctf Footer.Generated](ctf-footer.generated.md) — Types footer data using the generated Contentful fragment {kind: sync}
-- [Link](link.md) — Renders navigational links within the footer {kind: sync}
-- [Contentful Context](contentful-context.md) — Reads Contentful context for locale/preview-aware rendering {kind: sync}
-- [Theme](theme.md) — Aligns footer layout width with the shared theme {kind: sync}
+- [Ctf Footer.Generated](ctf-footer.generated.md) — Uses generated fragment types to type the footer's Contentful data {kind: sync}
+- [Link](link.md) — Renders footer navigation links {kind: sync}
+- [Contentful Context](contentful-context.md) — Reads Contentful context for locale and preview state {kind: sync}
+- [Theme](theme.md) — Aligns footer layout width with the shared theme container {kind: sync}

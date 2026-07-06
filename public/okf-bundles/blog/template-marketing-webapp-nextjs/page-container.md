@@ -1,11 +1,11 @@
 ---
 type: React Component
 title: Page Container
-description: PageContainer is a React component used within the marketing web app template built on Next.js. It serves as a structural wrapper for page-level content, providing a consistent container element that other page components can be placed within.
+description: PageContainer is a React component used within the template-marketing-webapp-nextjs template to provide consistent structural wrapping for page-level content. It serves as a layout primitive that other pages or sections can use to maintain uniform spacing, alignment, or width constraints across the marketing web application.
 level: component
 owner: contentful/team-workflows
 ---
 
-PageContainer is a React component used within the marketing web app template built on Next.js. It serves as a structural wrapper for page-level content, providing a consistent container element that other page components can be placed within.
+PageContainer is a React component used within the template-marketing-webapp-nextjs template to provide consistent structural wrapping for page-level content. It serves as a layout primitive that other pages or sections can use to maintain uniform spacing, alignment, or width constraints across the marketing web application.
 
-As a component in the template's architecture, PageContainer is intended to be reused across different pages of the marketing site, helping maintain a uniform layout structure throughout the application.
+In practice, this component is placed at the top level of a page's rendered output, wrapping the page's content so that it inherits standard container behavior. This promotes visual and structural consistency across different pages of the Next.js marketing site without requiring each page to redefine common layout rules individually.

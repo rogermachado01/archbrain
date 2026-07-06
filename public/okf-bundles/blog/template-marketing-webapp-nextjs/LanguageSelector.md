@@ -1,11 +1,11 @@
 ---
 type: React Component
 title: LanguageSelector
-description: LanguageSelector is a React component within the template-marketing-webapp-nextjs template, intended to provide a UI element that lets users switch between available languages on the marketing site. As a component, it would be used within the app's page or layout structure wherever language selection needs to be exposed to visitors.
+description: The LanguageSelector is a React component within the marketing web app template built on Next.js, providing users with a way to switch between available languages for the site's content. As part of a template designed for marketing websites, it addresses the common need for internationalization support, allowing visitors to view the site in their preferred language.
 level: component
 owner: contentful/team-workflows
 ---
 
-LanguageSelector is a React component within the template-marketing-webapp-nextjs template, intended to provide a UI element that lets users switch between available languages on the marketing site. As a component, it would be used within the app's page or layout structure wherever language selection needs to be exposed to visitors.
+The LanguageSelector is a React component within the marketing web app template built on Next.js, providing users with a way to switch between available languages for the site's content. As part of a template designed for marketing websites, it addresses the common need for internationalization support, allowing visitors to view the site in their preferred language.
 
-Beyond its identification as a React Component belonging to this Next.js marketing web app template, no further details—such as props, internal behavior, or specific placement within the page hierarchy—are specified.
+In practice, this component would be placed within the site's navigation or header area, giving users an accessible control for changing the display language at any point during their browsing session. As a template component, it serves as a starting point that can be adapted to fit the specific language options and localization requirements of a given marketing website built from this Next.js template.

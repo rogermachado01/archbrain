@@ -1,16 +1,16 @@
 ---
 type: React Component
 title: Ctf Navigation.Generated
-description: This is a generated file within the `ctf-navigation` module, part of the Next.js marketing web app template's data layer. As a generated artifact, it depends on fragment definitions produced elsewhere in the codebase rather than defining its own logic directly, reflecting the typical pattern of GraphQL code generation tools that emit typed fragment references alongside consuming components.
+description: This is a generated GraphQL artifact for `ctf-navigation`, part of the Next.js marketing web app template. As a generated file, it exists to provide typed fragment data used elsewhere in the navigation component's implementation, rather than to define original logic itself.
 level: component
 owner: contentful/team-workflows
 ---
 
-This is a generated file within the `ctf-navigation` module, part of the Next.js marketing web app template's data layer. As a generated artifact, it depends on fragment definitions produced elsewhere in the codebase rather than defining its own logic directly, reflecting the typical pattern of GraphQL code generation tools that emit typed fragment references alongside consuming components.
+This is a generated GraphQL artifact for `ctf-navigation`, part of the Next.js marketing web app template. As a generated file, it exists to provide typed fragment data used elsewhere in the navigation component's implementation, rather than to define original logic itself.
 
-The module draws on two shared fragment definitions to assemble the data shape it needs. It imports page link fields from a page-link fragment module, suggesting that navigation entries resolve to internal or external page destinations. It also imports menu group fields from a shared fragments library, indicating that navigation content is organized into grouped menu structures reused across the broader application rather than defined locally.
+It draws on two related fragments to assemble its data shape: page link fields, used for representing individual navigation links, and menu group fields, used for representing grouped sets of navigation items. Together these dependencies suggest that the navigation component composes both flat links and grouped link collections, likely to support dropdown or multi-level menu structures in the site's header or navigation bar.
 
 # Relations
 
-- [Page Link.Generated](page-link.generated.md) — Resolves navigation links to their target pages {kind: sync}
-- [Ctf MenuGroup.Generated](ctf-menuGroup.generated.md) — Groups navigation items into menus {kind: sync}
+- [Page Link.Generated](page-link.generated.md) — Supplies typed page link data for navigation items {kind: sync}
+- [Ctf MenuGroup.Generated](ctf-menuGroup.generated.md) — Supplies typed menu group data for grouped navigation items {kind: sync}

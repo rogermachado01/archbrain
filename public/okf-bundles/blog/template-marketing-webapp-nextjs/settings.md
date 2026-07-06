@@ -1,14 +1,14 @@
 ---
 type: React Component
 title: Settings
-description: `settings` is a React component in the marketing web app template, serving as the page-level entry point for the settings section of the site. Its role is to compose the settings experience by bringing in the dedicated form component responsible for handling the actual settings inputs and interactions.
+description: The settings concept is a React component that serves as the page-level entry point for the settings section of the marketing web app template. Its primary responsibility is to assemble and render the settings experience for the user by delegating to a dedicated form component rather than implementing settings fields or logic itself.
 level: component
 owner: contentful/team-workflows
 ---
 
-`settings` is a React component in the marketing web app template, serving as the page-level entry point for the settings section of the site. Its role is to compose the settings experience by bringing in the dedicated form component responsible for handling the actual settings inputs and interactions.
+The settings concept is a React component that serves as the page-level entry point for the settings section of the marketing web app template. Its primary responsibility is to assemble and render the settings experience for the user by delegating to a dedicated form component rather than implementing settings fields or logic itself.
 
-This component imports `SettingsForm` from the features/settings module, delegating the rendering and behavior of the settings interface to that component. This keeps the `settings` concept itself focused on page-level composition, while the form logic and fields live in `SettingsForm`.
+To do this, it imports SettingsForm from the settings feature module and uses it to present the actual settings interface. This keeps the component focused on composition, acting as a thin wrapper that connects the routing or page layer to the reusable settings form implementation.
 
 # Relations
 

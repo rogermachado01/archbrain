@@ -1,16 +1,16 @@
 ---
 type: React Component
 title: Ctf Product Table
-description: ctf-product-table is a React component that renders a product table block sourced from Contentful, using the marketing web app template's content-fetching conventions. Its shape is defined by a generated GraphQL fragment type, ProductTableFieldsFragment, which describes the fields available on the underlying Contentful content type for this component.
+description: ctf-product-table is a React component responsible for rendering a product table as part of the marketing web app's Contentful-driven component library. It relies on a generated type, ProductTableFieldsFragment, to shape the data it receives from Contentful, ensuring the component's props match the underlying content model for product table entries.
 level: component
 owner: contentful/team-workflows
 ---
 
-ctf-product-table is a React component that renders a product table block sourced from Contentful, using the marketing web app template's content-fetching conventions. Its shape is defined by a generated GraphQL fragment type, ProductTableFieldsFragment, which describes the fields available on the underlying Contentful content type for this component.
+ctf-product-table is a React component responsible for rendering a product table as part of the marketing web app's Contentful-driven component library. It relies on a generated type, ProductTableFieldsFragment, to shape the data it receives from Contentful, ensuring the component's props match the underlying content model for product table entries.
 
-To render descriptive or supplementary text within the table (such as product descriptions or notes), the component delegates to CtfRichtext, the shared rich text renderer used across the Contentful component library. This keeps rich text rendering consistent with how other Contentful-driven components display formatted content.
+To render rich text content within the table, such as descriptions or formatted notes associated with a product, the component uses the CtfRichtext component. This allows product-related copy authored in Contentful's rich text format to be displayed consistently with the rest of the site's content rendering conventions.
 
 # Relations
 
-- [Ctf Product Table.Generated](ctf-product-table.generated.md) — Types its props from the generated product table fragment {kind: sync}
-- [Ctf Richtext](ctf-richtext.md) — Renders rich text content within the table {kind: sync}
+- [Ctf Product Table.Generated](ctf-product-table.generated.md) — Uses generated types to shape incoming product table data {kind: sync}
+- [Ctf Richtext](ctf-richtext.md) — Renders rich text content within the product table {kind: sync}

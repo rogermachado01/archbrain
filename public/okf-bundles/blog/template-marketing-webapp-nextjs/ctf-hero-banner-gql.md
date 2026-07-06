@@ -1,16 +1,16 @@
 ---
 type: React Component
 title: Ctf Hero Banner Gql
-description: ctf-hero-banner-gql is a React component that acts as the GraphQL-connected wrapper for the hero banner feature in this Next.js marketing template. Rather than rendering markup itself, its role is to bring together the generated query hook and the presentational component needed to display a hero banner backed by Contentful data.
+description: ctf-hero-banner-gql is a React component that acts as the GraphQL-connected wrapper for the hero banner feature. It sits alongside the presentational ctf-hero-banner component, responsible for fetching the data needed to render a hero banner and passing it down to that component for display.
 level: component
 owner: contentful/team-workflows
 ---
 
-ctf-hero-banner-gql is a React component that acts as the GraphQL-connected wrapper for the hero banner feature in this Next.js marketing template. Rather than rendering markup itself, its role is to bring together the generated query hook and the presentational component needed to display a hero banner backed by Contentful data.
+ctf-hero-banner-gql is a React component that acts as the GraphQL-connected wrapper for the hero banner feature. It sits alongside the presentational ctf-hero-banner component, responsible for fetching the data needed to render a hero banner and passing it down to that component for display.
 
-It imports useCtfHeroBannerQuery from the generated GraphQL artifacts, giving it the means to fetch hero banner content, and it imports the CtfHeroBanner component to handle the actual presentation of that content. Together these two relations describe a typical container/presentational split: this concept fetches the data and passes it through to the component responsible for rendering it.
+To do this, it relies on a generated query hook, useCtfHeroBannerQuery, produced by the project's GraphQL code generation setup. This hook handles the actual data-fetching logic, allowing ctf-hero-banner-gql to focus on orchestrating the query and delegating the rendering work to the CtfHeroBanner component it imports.
 
 # Relations
 
-- [Ctf Hero Banner.Generated](ctf-hero-banner.generated.md) — Fetches hero banner content via generated query hook {kind: sync}
-- [Ctf Hero Banner](ctf-hero-banner.md) — Passes fetched data to the presentational hero banner component {kind: sync}
+- [Ctf Hero Banner.Generated](ctf-hero-banner.generated.md) — Fetches hero banner data via generated query hook {kind: sync}
+- [Ctf Hero Banner](ctf-hero-banner.md) — Passes fetched data to the hero banner view for rendering {kind: sync}

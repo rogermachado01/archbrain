@@ -1,17 +1,17 @@
 ---
 type: React Component
 title: Ctf Asset
-description: `ctf-asset` is a React component responsible for rendering a Contentful-managed media asset within the marketing webapp template. It works with the `AssetFieldsFragment` type generated from a GraphQL fragment, giving it access to the shape of asset data fetched from Contentful so that it can render assets in a type-safe way.
+description: `ctf-asset` is a React component that renders a Contentful asset, dispatching to either an image or video presentation depending on the asset's content type. It relies on the `AssetFieldsFragment` type generated from its GraphQL fragment definition to type the asset data it receives as props.
 level: component
 owner: contentful/team-workflows
 ---
 
-`ctf-asset` is a React component responsible for rendering a Contentful-managed media asset within the marketing webapp template. It works with the `AssetFieldsFragment` type generated from a GraphQL fragment, giving it access to the shape of asset data fetched from Contentful so that it can render assets in a type-safe way.
+`ctf-asset` is a React component that renders a Contentful asset, dispatching to either an image or video presentation depending on the asset's content type. It relies on the `AssetFieldsFragment` type generated from its GraphQL fragment definition to type the asset data it receives as props.
 
-Rather than handling all media rendering itself, `ctf-asset` delegates the actual display work to more specialized components: it uses `CtfImage` for rendering image assets and `CtfVideo` for rendering video assets. This makes `ctf-asset` effectively a dispatcher within the Contentful component ecosystem, selecting the appropriate presentational component based on the type of asset being rendered.
+To handle the two supported media kinds, the component delegates rendering to two specialized child components: `CtfImage` for image assets and `CtfVideo` for video assets. This makes `ctf-asset` a thin routing layer that normalizes how Contentful asset data is consumed elsewhere in the marketing site, while the actual rendering logic for each media type lives in its respective dedicated component.
 
 # Relations
 
-- [Ctf Asset.Generated](ctf-asset.generated.md) — Uses generated fragment types to type asset data {kind: sync}
-- [Ctf Image](ctf-image.md) — Delegates image assets to the image renderer {kind: sync}
-- [Ctf Video](ctf-video.md) — Delegates video assets to the video renderer {kind: sync}
+- [Ctf Asset.Generated](ctf-asset.generated.md) — Types the asset props using the generated fragment {kind: sync}
+- [Ctf Image](ctf-image.md) — Renders image assets via CtfImage {kind: sync}
+- [Ctf Video](ctf-video.md) — Renders video assets via CtfVideo {kind: sync}

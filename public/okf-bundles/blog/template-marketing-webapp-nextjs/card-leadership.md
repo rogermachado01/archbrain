@@ -1,17 +1,17 @@
 ---
 type: React Component
 title: Card Leadership
-description: "CardLeadership is a React component used to present an individual leadership team member within a marketing web page. It is built by composing several content-driven building blocks: it uses a person data fragment to supply the underlying leadership profile fields, renders an associated image or media asset through the CtfAsset component, and displays formatted biographical or descriptive text using the CtfRichtext component."
+description: card-leadership is a React component that renders a leadership profile card, most likely used to present a person from a team or leadership listing within the marketing web app. It brings together a person's visual asset, their descriptive text content, and structured person field data to compose a cohesive card view.
 level: component
 owner: contentful/team-workflows
 ---
 
-CardLeadership is a React component used to present an individual leadership team member within a marketing web page. It is built by composing several content-driven building blocks: it uses a person data fragment to supply the underlying leadership profile fields, renders an associated image or media asset through the CtfAsset component, and displays formatted biographical or descriptive text using the CtfRichtext component.
+card-leadership is a React component that renders a leadership profile card, most likely used to present a person from a team or leadership listing within the marketing web app. It brings together a person's visual asset, their descriptive text content, and structured person field data to compose a cohesive card view.
 
-In practice, this component acts as a presentation layer that pulls together a person's photo and written content into a single card layout, likely used in a grid or list of leadership team members on an "About Us" or "Team" style page. It relies on the shared Contentful component ecosystem (ctf-asset and ctf-richtext) to remain consistent with how other content types render media and rich text elsewhere in the site.
+The component relies on CtfAsset to display imagery associated with the leadership profile, such as a portrait or headshot. It uses CtfRichtext to render any accompanying rich text content, like a bio or descriptive blurb. It also imports PersonFieldsFragment, a generated type, to type the person data fields it receives and works with, ensuring the card's props align with the underlying content model.
 
 # Relations
 
-- [Ctf Asset](ctf-asset.md) — Displays the leadership member's photo or media asset {kind: sync}
-- [Ctf Person.Generated](ctf-person.generated.md) — Supplies the leadership member's profile data fields {kind: sync}
-- [Ctf Richtext](ctf-richtext.md) — Renders the leadership member's rich text bio content {kind: sync}
+- [Ctf Asset](ctf-asset.md) — Displays the person's portrait image {kind: sync}
+- [Ctf Person.Generated](ctf-person.generated.md) — Renders the person's bio or descriptive text {kind: sync}
+- [Ctf Richtext](ctf-richtext.md) — Types the incoming person field data {kind: sync}

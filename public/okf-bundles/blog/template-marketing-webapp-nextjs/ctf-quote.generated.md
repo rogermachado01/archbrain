@@ -1,16 +1,16 @@
 ---
 type: React Component
 title: Ctf Quote.Generated
-description: This is a generated GraphQL artifact for the Quote component within the Next.js marketing web app template, providing the typed fragment definitions used to fetch and render quote content sourced from Contentful. As a generated file, it exists to support the component map system that resolves rich text or dynamic component references into the correct React component at render time — in this case, the Quote component.
+description: `ctf-quote.generated` is a generated artifact supporting the Quote component used in this Next.js marketing template. It's not a hand-written React component itself but rather generated code (likely GraphQL fragment types and related definitions) that backs the `ComponentQuote` type referenced elsewhere in the content model, such as in the component map used for rendering polymorphic content blocks from Contentful.
 level: component
 owner: contentful/team-workflows
 ---
 
-This is a generated GraphQL artifact for the Quote component within the Next.js marketing web app template, providing the typed fragment definitions used to fetch and render quote content sourced from Contentful. As a generated file, it exists to support the component map system that resolves rich text or dynamic component references into the correct React component at render time — in this case, the Quote component.
+`ctf-quote.generated` is a generated artifact supporting the Quote component used in this Next.js marketing template. It's not a hand-written React component itself but rather generated code (likely GraphQL fragment types and related definitions) that backs the `ComponentQuote` type referenced elsewhere in the content model, such as in the component map used for rendering polymorphic content blocks from Contentful.
 
-The file pulls in shared fragment definitions from two places: the component reference fields fragments, which enumerate all the possible component types (CTA, Duplex, HeroBanner, InfoBlock, ProductTable, Quote, TextBlock, and various topic and menu fragments) that can appear in a referenced component map, and the asset fields fragment, which provides the typed shape for media assets (such as an avatar or attributed image) that a quote entry might include. Together these imports let the Quote component's generated GraphQL types stay consistent with the broader shared schema used across the template.
+To support its data needs, this file pulls in shared component reference fields from the central component map generated module, which defines fragments for all the various content types (CTA, Duplex, HeroBanner, InfoBlock, ProductTable, Quote, TextBlock, and others) that can appear as referenced components on a page. It also imports asset field definitions, which suggests the Quote component may include or reference an image or other media asset, such as an avatar or illustration accompanying the quoted text.
 
 # Relations
 
-- [Ctf ComponentMap.Generated](ctf-componentMap.generated.md) — Resolves quote entries within the shared component map used across page content {kind: sync}
-- [Ctf Asset.Generated](ctf-asset.generated.md) — Includes associated media asset data for quote attribution {kind: sync}
+- [Ctf ComponentMap.Generated](ctf-componentMap.generated.md) — Shares generated component-reference fragments used across content block types {kind: sync}
+- [Ctf Asset.Generated](ctf-asset.generated.md) — Includes generated asset fields for media referenced by the quote {kind: sync}

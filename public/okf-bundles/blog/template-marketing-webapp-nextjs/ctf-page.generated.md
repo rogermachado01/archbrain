@@ -1,15 +1,15 @@
 ---
 type: React Component
 title: Ctf Page.Generated
-description: `ctf-page.generated` is a generated React component module belonging to the marketing webapp Next.js template. As a generated artifact, its contents are produced from an upstream schema or query definition rather than hand-authored, and it is intended to be consumed by other parts of the application rather than edited directly.
+description: `ctf-page.generated` is a generated React Component that represents the Page entity from the marketing web app template, produced by GraphQL code generation. As a `.generated` module, its role is to expose typed fragments and related artifacts that other parts of the app can import and compose, rather than containing hand-written logic.
 level: component
 owner: contentful/team-workflows
 ---
 
-`ctf-page.generated` is a generated React component module belonging to the marketing webapp Next.js template. As a generated artifact, its contents are produced from an upstream schema or query definition rather than hand-authored, and it is intended to be consumed by other parts of the application rather than edited directly.
+`ctf-page.generated` is a generated React Component that represents the Page entity from the marketing web app template, produced by GraphQL code generation. As a `.generated` module, its role is to expose typed fragments and related artifacts that other parts of the app can import and compose, rather than containing hand-written logic.
 
-This module depends on the generated asset module, pulling in `AssetFieldsFragment` and `AssetFieldsFragmentDoc` from `ctf-asset.generated`. This suggests that a page rendered by this component can include associated media assets, with the fragment defining the shape of asset data and the fragment document used to compose or execute a GraphQL query that fetches it.
+It depends on `ctf-asset.generated`, from which it imports `AssetFieldsFragment` and `AssetFieldsFragmentDoc`. This indicates that a Page includes asset data (such as images or media) as part of its content model, and the generated Page code reuses the shared asset fragment definitions to query and type that data consistently with the rest of the app.
 
 # Relations
 
-- [Ctf Asset.Generated](ctf-asset.generated.md) — Includes asset data for media used on the page {kind: sync}
+- [Ctf Asset.Generated](ctf-asset.generated.md) — Includes asset data via the shared asset fragment {kind: sync}

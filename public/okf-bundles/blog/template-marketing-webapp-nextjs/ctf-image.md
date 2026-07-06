@@ -1,11 +1,11 @@
 ---
 type: React Component
 title: Ctf Image
-description: The `ctf-image` component is a React component within the marketing webapp Next.js template, intended for rendering image content within the application's UI. As part of the template's component set, it provides a reusable building block that other parts of the marketing site can incorporate wherever image display is needed.
+description: CtfImage is a React component belonging to the marketing webapp Next.js template, used to render image content within the "call to action" (CTF, likely short for "Content Type Framework" or similar content-typed) section of a marketing page. As a component in this template's architecture, it serves as a building block responsible for displaying image assets consistently wherever this content type is used across the site.
 level: component
 owner: contentful/team-workflows
 ---
 
-The `ctf-image` component is a React component within the marketing webapp Next.js template, intended for rendering image content within the application's UI. As part of the template's component set, it provides a reusable building block that other parts of the marketing site can incorporate wherever image display is needed.
+CtfImage is a React component belonging to the marketing webapp Next.js template, used to render image content within the "call to action" (CTF, likely short for "Content Type Framework" or similar content-typed) section of a marketing page. As a component in this template's architecture, it serves as a building block responsible for displaying image assets consistently wherever this content type is used across the site.
 
-Given its naming, this component is associated with content sourced from a CMS-style data structure (suggested by the "ctf" prefix), and it would be used in the architecture wherever such image data needs to be presented consistently across the marketing webapp.
+In practice, CtfImage is invoked by parent components or page templates that assemble marketing pages from structured content, passing in image-related data so it can be rendered appropriately within the page layout. Its role is scoped specifically to image presentation, keeping image-rendering logic separate from other concerns handled by sibling components in the same template.
