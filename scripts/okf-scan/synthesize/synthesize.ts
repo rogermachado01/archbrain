@@ -96,8 +96,10 @@ function assertNoReservedGroupsCollision(concepts: ConceptFacts[]): void {
 }
 
 /** Containers at or below this many children skip the organizer entirely — a
- *  view this small is already scannable, and grouping it adds noise. Matches
- *  the layout renderer's maxRowsPerLayer default plus headroom. */
+ *  view this small is already scannable, and grouping it adds noise. Loosely
+ *  anchored to the layout renderer's maxRowsPerLayer default (6) plus some
+ *  headroom — not a precise derivation, just a rough "more than one row's
+ *  worth" threshold. */
 const ORGANIZE_MIN_CHILDREN = 9;
 
 type RegenerateResult =
