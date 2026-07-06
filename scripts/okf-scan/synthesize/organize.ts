@@ -8,6 +8,7 @@ import type { DddSubdomain } from "../../../src/lib/types";
 
 const MODEL = "claude-sonnet-5";
 const MAX_ATTEMPTS = 3;
+const MAX_TOKENS = 8192;
 const MARKER = "CONTEXT ASSIGNMENTS:";
 const VALID_SUBDOMAINS = new Set<DddSubdomain>(["core", "supporting", "generic"]);
 
@@ -96,7 +97,7 @@ export function createAnthropicOrganizerClient(
         try {
           const response = await client.messages.create({
             model: MODEL,
-            max_tokens: 2048,
+            max_tokens: MAX_TOKENS,
             thinking: { type: "disabled" },
             messages: [{ role: "user", content: buildPrompt(containerId, children) }],
           });
