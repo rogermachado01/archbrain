@@ -6,6 +6,8 @@ export type SidePanelTab = "resource" | "wiki";
 
 interface SidePanelProps {
   node: ArchNode | null;
+  /** Resolved member nodes, only set when `node` is a bounded-context cluster pseudo-node. */
+  clusterMembers?: ArchNode[];
   wikiAvailable: boolean;
   wikiBasePath?: string;
   /** relative .md path to open, derived from whatever the diagram currently has in focus */
@@ -23,6 +25,7 @@ interface SidePanelProps {
  */
 export default function SidePanel({
   node,
+  clusterMembers,
   wikiAvailable,
   wikiBasePath,
   wikiEntryPath,
@@ -60,7 +63,7 @@ export default function SidePanel({
           <OkfWikiViewer key={wikiEntryPath} basePath={wikiBasePath} initialPath={wikiEntryPath} />
         ) : (
           <div className="details-panel">
-            <DetailsPanel node={node} />
+            <DetailsPanel node={node} clusterMembers={clusterMembers} />
           </div>
         )}
       </div>
