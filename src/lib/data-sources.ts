@@ -25,24 +25,41 @@ export const DATA_SOURCES: DataSource[] = [
     id: "ecommerce-saga-json",
     label: "E-commerce Saga (JSON)",
     load: () =>
-      import("@/data/sample-architecture.json").then((m) => validateArchModel(m.default as ArchModel)),
+      import("@/data/sample-architecture.json").then((m) =>
+        validateArchModel(m.default as ArchModel),
+      ),
   },
   {
     id: "order-system-okf",
     label: "Order System (OKF bundle)",
-    load: () => importOkfBundle("/okf-bundles/order-system").then(validateArchModel),
+    load: () =>
+      importOkfBundle("/okf-bundles/order-system").then(validateArchModel),
     okfBasePath: "/okf-bundles/order-system",
   },
   {
     id: "frontend-ecommerce-json",
     label: "Loja Web — Frontend (JSON)",
     load: () =>
-      import("@/data/frontend-ecommerce.json").then((m) => validateArchModel(m.default as ArchModel)),
+      import("@/data/frontend-ecommerce.json").then((m) =>
+        validateArchModel(m.default as ArchModel),
+      ),
   },
   {
     id: "webapp-frontend-okf",
     label: "Loja Web — Frontend (OKF bundle)",
     load: () => importOkfBundle("/okf-bundles/webapp").then(validateArchModel),
     okfBasePath: "/okf-bundles/webapp",
+  },
+  {
+    id: "blog",
+    label: "blog",
+    load: () => importOkfBundle("/okf-bundles/blog").then(validateArchModel),
+    okfBasePath: "/okf-bundles/blog",
+  },
+  {
+    id: "blog2",
+    label: "blog2 (estilo webapp)",
+    load: () => importOkfBundle("/okf-bundles/blog2").then(validateArchModel),
+    okfBasePath: "/okf-bundles/blog2",
   },
 ];

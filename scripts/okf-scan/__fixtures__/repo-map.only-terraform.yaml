@@ -1,0 +1,6 @@
+terraform:
+  path: ../infra-terraform
+  envFiles:
+    dev: dev.tf
+    hml: hml.tf
+    prd: prd.tf

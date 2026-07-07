@@ -1,0 +1,3 @@
+frontend:
+  - repo: ./example/template-marketing-webapp-nextjs
+    branch: { dev: main, hml: main, prd: main }

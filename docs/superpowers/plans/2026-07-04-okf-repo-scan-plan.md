@@ -12,6 +12,38 @@
 
 ---
 
+## Progress status (as of 2026-07-04, subagent-driven-development execution) — PLAN COMPLETE
+
+**All 21 tasks (Milestones 0-7) done, each implemented via TDD and code-reviewed (spec compliance + code quality):**
+
+| Task | Commit(s) | Review status |
+|---|---|---|
+| 1. Vitest test runner | `108aa46` | ✅ spec + quality approved |
+| 2. Core types | `2f1762f` | ✅ spec + quality approved |
+| 3. Content hashing helper | `5848b84` | ✅ spec + quality approved (batch review w/ 4-6) |
+| 4. Bounded-concurrency pool | `015ef7c` | ✅ spec + quality approved (batch review w/ 3,5,6) |
+| 5. Scan manifest load/save | `fd4cbe4` | ✅ spec + quality approved (batch review w/ 3,4,6) |
+| 6. repo-map.yaml loader | `5cfa847` | ✅ spec + quality approved (batch review w/ 3-5) |
+| 7. HCL→JSON parsing wrapper | `b211c06` | ✅ spec + quality approved (batch review w/ 8-9) |
+| 8. Terraform resource-type lookup | `da69b95` | ✅ spec + quality approved (batch review w/ 7,9) |
+| 9. Terraform fact extraction | `5165969` | ✅ spec + quality approved (batch review w/ 7-8) |
+| 10. git ls-remote wrapper | `07e3291` | ✅ spec + quality approved (batch review w/ 11-12) |
+| 11. Repo-level freshness check | `3c80d40` | ✅ spec + quality approved (batch review w/ 10,12) |
+| 12. Isolated worktree resolution | `980d5b7`, fixed in `e24f96b` | ✅ spec approved; quality review found a **critical Windows path-separator bug** in `worktreeExists` (reuse path always fell through to `git worktree add`, crashing on repeat runs) — fixed in `e24f96b` with a regression test, re-reviewed and approved. One follow-up noted but not blocking: no test coverage yet for the "worktree registered but directory manually deleted" prune-fallback branch. |
+| 13. Shared TypeScript AST helpers | `2471639` | ✅ spec + quality approved (batch review w/ 14-15) |
+| 14. Lambda repo scanner | `f9479d3` | ✅ spec + quality approved (batch review w/ 13,15) |
+| 15. Frontend repo scanner | `c12832d` | ✅ spec + quality approved (batch review w/ 13-14); required an unplanned one-line `tsconfig.json` exclude fix (`89cc069`) since the Lambda fixture intentionally imports uninstalled AWS SDK packages, which is fine for vitest's syntactic parsing but broke the whole-project `tsc --noEmit` pass — verified necessary and narrowly scoped by both reviewers. |
+| 16. CODEOWNERS parsing | `6174a6e` | ✅ spec + quality approved (reviewed retroactively at the start of the next session — was previously implemented but unreviewed). Quality follow-ups noted but not blocking: no test coverage for the `.github/CODEOWNERS`/`docs/CODEOWNERS` fallback paths or for an unowned-pattern line resetting a broader rule's match. |
+| 17. OKF markdown read/write/merge | `8c83b36`, fixed in `b22ad89` | ✅ spec approved; quality review found real issues — `readPreserved`'s ad-hoc `# Links` parsing duplicated more-robust logic already in `okf-import.ts` (extracted to shared `src/lib/okf-sections.ts`), `groupBundlePath` had no cycle guard / silently produced a bogus path on a missing group id (now throws clearly), and `stringifyFrontmatter` didn't escape values that wouldn't round-trip through `parseFrontmatter` (newlines, empty strings, `true`/`false`-looking strings — now quoted/escaped). All fixed in `b22ad89` with added test coverage, re-reviewed and approved. |
+| 18. LLM prose client | `5be9b70`, fixed in `f57570a` | ✅ spec approved; quality review found a real prompt-building bug (`.filter(Boolean)` silently stripped the blank-line separator between facts and the final instruction) and a real correctness risk (Claude Sonnet 5 runs adaptive thinking by default when `thinking` is omitted, sharing the same `max_tokens` budget as visible output — risked truncating the small 400-token response). Fixed in `f57570a`: explicit `thinking: {type: "disabled"}` (this task needs no reasoning), `max_tokens` raised to 1024, a `stop_reason === "max_tokens"` truncation check, plus negative-path test coverage (non-429 errors, exhausted retries, no-text-content response) and fake timers to remove real wall-clock delay from the retry test. Re-reviewed and approved. |
+| 19. Synthesis orchestration with incremental skip | `0286cda`, fixed in `4970e70` | ✅ spec approved; quality review found 4 real Important issues — `writeChildIndexes` grouped children by string-splitting `id` instead of the authoritative `parentId` (could silently orphan non-conventionally-named concepts), `writeGroupFiles` had no cycle guard (mirroring the same gap fixed in Task 17's `groupBundlePath`, and could crash the whole run via an uncaught throw deep in `buildConceptMarkdown`), a concept literally id'd `"groups"` could silently overwrite the reserved AWS-groups directory's `index.md`, and one concept's LLM failure aborted the entire batch (losing already-completed work/manifest updates for other concepts). All fixed in `4970e70`: grouping by `parentId`, an early `validateGroups()` cycle/dangling-ref check mirroring `groupBundlePath`'s algorithm, an early reserved-name collision check, and per-concept error isolation via a new `SynthesizeSummary.failed` field — plus `force`-option, groups-happy-path, and `needsReview`-surfacing test coverage. Re-reviewed and approved. |
+| 20. CLI entrypoint | `f8450e9`, fixed in `b7ac297` | ✅ spec approved; quality review found a **critical bug** — `main()` reused its stale pre-synthesis manifest object for the final save, clobbering the concept-level inputHash/facts updates `synthesize()` had already persisted, silently defeating the entire incremental-rerun design (every run would redo full LLM synthesis). Fixed in `b7ac297` by reloading the manifest from disk after `synthesize()` returns, before applying `main()`'s own `_repos`/`lambdaEnvVarBindings` updates and saving. Re-reviewed and approved. Tracked-but-not-blocking follow-ups: AWS network-group boxes are dropped from a regenerated bundle on a run where only a Lambda/frontend repo changed (Terraform's cached groups aren't persisted in the manifest), and `--concurrency-*` flags aren't validated as numbers (garbage input produces `NaN`). |
+| 21. End-to-end fixture test through the real validator | `5adf363` | ✅ spec + quality approved. Required one legitimate infrastructure fix alongside the test itself: `vitest.config.ts` needed a `resolve.alias` for `@` → `./src` (mirroring `tsconfig.json`), since this was the first `scripts/**/*.test.ts` file to transitively import from `src/lib/` (`okf-import.ts` → `aws-icons.ts`'s `@/data/aws-icon-manifest.json`) and vitest doesn't read tsconfig `paths` on its own. No real bugs found in `synthesize.ts`/`markdown.ts` during this integration pass — all prior quality-fix-pass guards (cycle detection, reserved-name collision, frontmatter escaping) behaved correctly against the fixture. |
+
+**Final state:** 71/71 tests passing across 20 test files, `npx tsc --noEmit -p .` clean, `npm run lint` clean (one pre-existing unrelated warning in a Lambda scanner test fixture). The `scripts/okf-scan` CLI is feature-complete per this plan — see `docs/superpowers/specs/2026-07-03-okf-repo-scan-design.md` for usage/design background. Not yet exercised against a real `repo-map.yaml`/live git remotes/a real `ANTHROPIC_API_KEY` (by design — Task 20/21 scoped that to manual verification and fixture-based testing respectively, since automating it would require real credentials and external repos).
+
+---
+
 ## Milestone 0: Test runner
 
 ### Task 1: Add Vitest as the test runner
@@ -23,11 +55,11 @@ CLAUDE.md notes "no test runner is configured yet." Every later task in this pla
 - Create: `vitest.config.ts`
 - Create: `scripts/okf-scan/__tests__/smoke.test.ts`
 
-- [ ] **Step 1: Install Vitest**
+- [x] **Step 1: Install Vitest**
 
 Run: `npm install -D vitest`
 
-- [ ] **Step 2: Add test scripts to `package.json`**
+- [x] **Step 2: Add test scripts to `package.json`**
 
 Add these two entries to the `"scripts"` block (alongside the existing `dev`/`build`/`start`/`lint`/`validate`):
 
@@ -36,7 +68,7 @@ Add these two entries to the `"scripts"` block (alongside the existing `dev`/`bu
     "test:watch": "vitest"
 ```
 
-- [ ] **Step 3: Create the Vitest config**
+- [x] **Step 3: Create the Vitest config**
 
 ```typescript
 // vitest.config.ts
@@ -49,7 +81,7 @@ export default defineConfig({
 });
 ```
 
-- [ ] **Step 4: Write a smoke test**
+- [x] **Step 4: Write a smoke test**
 
 ```typescript
 // scripts/okf-scan/__tests__/smoke.test.ts
@@ -62,12 +94,12 @@ describe("vitest setup", () => {
 });
 ```
 
-- [ ] **Step 5: Run the test suite**
+- [x] **Step 5: Run the test suite**
 
 Run: `npm test`
 Expected: 1 file, 1 test, PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add package.json package-lock.json vitest.config.ts scripts/okf-scan/__tests__/smoke.test.ts
@@ -87,7 +119,7 @@ Pure type declarations — no runtime behavior to test, so this task type-checks
 **Files:**
 - Create: `scripts/okf-scan/types.ts`
 
-- [ ] **Step 1: Write the shared types**
+- [x] **Step 1: Write the shared types**
 
 ```typescript
 // scripts/okf-scan/types.ts
@@ -181,12 +213,12 @@ export function emptyManifest(): ScanManifest {
 }
 ```
 
-- [ ] **Step 2: Type-check**
+- [x] **Step 2: Type-check**
 
 Run: `npx tsc --noEmit -p .`
 Expected: no errors.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add scripts/okf-scan/types.ts
@@ -199,7 +231,7 @@ git commit -m "feat: add shared types for the okf-scan pipeline"
 - Create: `scripts/okf-scan/hash.ts`
 - Test: `scripts/okf-scan/hash.test.ts`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```typescript
 // scripts/okf-scan/hash.test.ts
@@ -229,12 +261,12 @@ describe("hashJson", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npm test -- hash.test.ts`
 Expected: FAIL with "Cannot find module './hash'"
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 ```typescript
 // scripts/okf-scan/hash.ts
@@ -249,12 +281,12 @@ export function hashJson(value: unknown): string {
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npm test -- hash.test.ts`
 Expected: PASS (4 tests).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add scripts/okf-scan/hash.ts scripts/okf-scan/hash.test.ts
@@ -267,7 +299,7 @@ git commit -m "feat: add content hashing helper for incremental scanning"
 - Create: `scripts/okf-scan/concurrency.ts`
 - Test: `scripts/okf-scan/concurrency.test.ts`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```typescript
 // scripts/okf-scan/concurrency.test.ts
@@ -309,12 +341,12 @@ describe("mapWithConcurrency", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npm test -- concurrency.test.ts`
 Expected: FAIL with "Cannot find module './concurrency'"
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 ```typescript
 // scripts/okf-scan/concurrency.ts
@@ -343,12 +375,12 @@ export async function mapWithConcurrency<T, R>(
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npm test -- concurrency.test.ts`
 Expected: PASS (3 tests).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add scripts/okf-scan/concurrency.ts scripts/okf-scan/concurrency.test.ts
@@ -361,7 +393,7 @@ git commit -m "feat: add bounded-concurrency pool for parallel scanning"
 - Create: `scripts/okf-scan/manifest.ts`
 - Test: `scripts/okf-scan/manifest.test.ts`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```typescript
 // scripts/okf-scan/manifest.test.ts
@@ -412,12 +444,12 @@ describe("manifest", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npm test -- manifest.test.ts`
 Expected: FAIL with "Cannot find module './manifest'"
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 ```typescript
 // scripts/okf-scan/manifest.ts
@@ -446,12 +478,12 @@ export async function saveManifest(bundleDir: string, manifest: ScanManifest): P
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npm test -- manifest.test.ts`
 Expected: PASS (2 tests). Note: `saveManifest` writes into `dir` directly, which doesn't exist as a real bundle dir in this test — `mkdtemp` already creates `dir` itself, so no separate `mkdir` is needed here.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add scripts/okf-scan/manifest.ts scripts/okf-scan/manifest.test.ts
@@ -465,11 +497,11 @@ git commit -m "feat: add scan manifest load/save for incremental scanning"
 - Create: `scripts/okf-scan/__fixtures__/repo-map.example.yaml`
 - Test: `scripts/okf-scan/repo-map.test.ts`
 
-- [ ] **Step 1: Install the `yaml` package**
+- [x] **Step 1: Install the `yaml` package**
 
 Run: `npm install yaml`
 
-- [ ] **Step 2: Create the example fixture (also doubles as the user-facing example)**
+- [x] **Step 2: Create the example fixture (also doubles as the user-facing example)**
 
 ```yaml
 # scripts/okf-scan/__fixtures__/repo-map.example.yaml
@@ -493,7 +525,7 @@ frontend:
     branch: { dev: develop, hml: staging, prd: main }
 ```
 
-- [ ] **Step 3: Write the failing test**
+- [x] **Step 3: Write the failing test**
 
 ```typescript
 // scripts/okf-scan/repo-map.test.ts
@@ -522,7 +554,7 @@ describe("loadRepoMap", () => {
 });
 ```
 
-- [ ] **Step 4: Add the second fixture used by the error-path test**
+- [x] **Step 4: Add the second fixture used by the error-path test**
 
 ```yaml
 # scripts/okf-scan/__fixtures__/repo-map.missing-field.yaml
@@ -541,12 +573,12 @@ resources:
 frontend: []
 ```
 
-- [ ] **Step 5: Run test to verify it fails**
+- [x] **Step 5: Run test to verify it fails**
 
 Run: `npm test -- repo-map.test.ts`
 Expected: FAIL with "Cannot find module './repo-map'"
 
-- [ ] **Step 6: Write the implementation**
+- [x] **Step 6: Write the implementation**
 
 ```typescript
 // scripts/okf-scan/repo-map.ts
@@ -593,12 +625,12 @@ export async function loadRepoMap(filePath: string): Promise<RepoMapConfig> {
 }
 ```
 
-- [ ] **Step 7: Run test to verify it passes**
+- [x] **Step 7: Run test to verify it passes**
 
 Run: `npm test -- repo-map.test.ts`
 Expected: PASS (2 tests).
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add scripts/okf-scan/repo-map.ts scripts/okf-scan/repo-map.test.ts scripts/okf-scan/__fixtures__/repo-map.example.yaml scripts/okf-scan/__fixtures__/repo-map.missing-field.yaml package.json package-lock.json
@@ -617,11 +649,11 @@ git commit -m "feat: add repo-map.yaml loader with validation"
 - Create: `scripts/okf-scan/terraform/__fixtures__/hcl-merge/b.tf`
 - Test: `scripts/okf-scan/terraform/hcl.test.ts`
 
-- [ ] **Step 1: Install `@cdktf/hcl2json`**
+- [x] **Step 1: Install `@cdktf/hcl2json`**
 
 Run: `npm install @cdktf/hcl2json`
 
-- [ ] **Step 2: Add fixture files that declare the same resource type across two files**
+- [x] **Step 2: Add fixture files that declare the same resource type across two files**
 
 ```hcl
 # scripts/okf-scan/terraform/__fixtures__/hcl-merge/a.tf
@@ -641,7 +673,7 @@ resource "aws_dynamodb_table" "payments_table" {
 }
 ```
 
-- [ ] **Step 3: Write the failing test**
+- [x] **Step 3: Write the failing test**
 
 ```typescript
 // scripts/okf-scan/terraform/hcl.test.ts
@@ -661,12 +693,12 @@ describe("parseTerraformDir", () => {
 });
 ```
 
-- [ ] **Step 4: Run test to verify it fails**
+- [x] **Step 4: Run test to verify it fails**
 
 Run: `npm test -- terraform/hcl.test.ts`
 Expected: FAIL with "Cannot find module './hcl'"
 
-- [ ] **Step 5: Write the implementation**
+- [x] **Step 5: Write the implementation**
 
 ```typescript
 // scripts/okf-scan/terraform/hcl.ts
@@ -716,12 +748,12 @@ export async function parseTerraformDir(dir: string, files: string[]): Promise<P
 }
 ```
 
-- [ ] **Step 6: Run test to verify it passes**
+- [x] **Step 6: Run test to verify it passes**
 
 Run: `npm test -- terraform/hcl.test.ts`
 Expected: PASS (1 test).
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add scripts/okf-scan/terraform/hcl.ts scripts/okf-scan/terraform/hcl.test.ts scripts/okf-scan/terraform/__fixtures__/hcl-merge package.json package-lock.json
@@ -734,7 +766,7 @@ git commit -m "feat: add Terraform HCL to JSON parsing wrapper"
 - Create: `scripts/okf-scan/terraform/resource-types.ts`
 - Test: `scripts/okf-scan/terraform/resource-types.test.ts`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```typescript
 // scripts/okf-scan/terraform/resource-types.test.ts
@@ -752,12 +784,12 @@ describe("resourceTypeInfo", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npm test -- terraform/resource-types.test.ts`
 Expected: FAIL with "Cannot find module './resource-types'"
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 ```typescript
 // scripts/okf-scan/terraform/resource-types.ts
@@ -788,12 +820,12 @@ export function resourceTypeInfo(terraformType: string): ResourceTypeInfo | unde
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npm test -- terraform/resource-types.test.ts`
 Expected: PASS (2 tests).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add scripts/okf-scan/terraform/resource-types.ts scripts/okf-scan/terraform/resource-types.test.ts
@@ -809,7 +841,7 @@ git commit -m "feat: add Terraform resource type to OKF label lookup table"
 - Create: `scripts/okf-scan/terraform/__fixtures__/env-scan/hml.tf`
 - Test: `scripts/okf-scan/terraform/scan-terraform.test.ts`
 
-- [ ] **Step 1: Add fixture Terraform files**
+- [x] **Step 1: Add fixture Terraform files**
 
 ```hcl
 # scripts/okf-scan/terraform/__fixtures__/env-scan/main.tf
@@ -852,7 +884,7 @@ resource "aws_lambda_function" "orders_hml_only" {
 }
 ```
 
-- [ ] **Step 2: Write the failing test**
+- [x] **Step 2: Write the failing test**
 
 ```typescript
 // scripts/okf-scan/terraform/scan-terraform.test.ts
@@ -897,12 +929,12 @@ describe("scanTerraform", () => {
 });
 ```
 
-- [ ] **Step 3: Run test to verify it fails**
+- [x] **Step 3: Run test to verify it fails**
 
 Run: `npm test -- terraform/scan-terraform.test.ts`
 Expected: FAIL with "Cannot find module './scan-terraform'"
 
-- [ ] **Step 4: Write the implementation**
+- [x] **Step 4: Write the implementation**
 
 ```typescript
 // scripts/okf-scan/terraform/scan-terraform.ts
@@ -1039,12 +1071,12 @@ export async function scanTerraform(config: RepoMapConfig["terraform"], env: Env
 }
 ```
 
-- [ ] **Step 5: Run test to verify it passes**
+- [x] **Step 5: Run test to verify it passes**
 
 Run: `npm test -- terraform/scan-terraform.test.ts`
 Expected: PASS (1 test).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add scripts/okf-scan/terraform/scan-terraform.ts scripts/okf-scan/terraform/scan-terraform.test.ts scripts/okf-scan/terraform/__fixtures__/env-scan
@@ -1061,11 +1093,11 @@ git commit -m "feat: extract Terraform resources into concept facts per environm
 - Create: `scripts/okf-scan/git/ls-remote.ts`
 - Test: `scripts/okf-scan/git/ls-remote.test.ts`
 
-- [ ] **Step 1: Install `simple-git`**
+- [x] **Step 1: Install `simple-git`**
 
 Run: `npm install simple-git`
 
-- [ ] **Step 2: Write the failing test**
+- [x] **Step 2: Write the failing test**
 
 This test builds a real throwaway local git repo (acting as the remote) with two branches, so the assertion is against real git behavior, not a mock.
 
@@ -1115,12 +1147,12 @@ describe("getRemoteBranchSha", () => {
 });
 ```
 
-- [ ] **Step 3: Run test to verify it fails**
+- [x] **Step 3: Run test to verify it fails**
 
 Run: `npm test -- git/ls-remote.test.ts`
 Expected: FAIL with "Cannot find module './ls-remote'"
 
-- [ ] **Step 4: Write the implementation**
+- [x] **Step 4: Write the implementation**
 
 ```typescript
 // scripts/okf-scan/git/ls-remote.ts
@@ -1145,12 +1177,12 @@ export async function getRemoteBranchSha(repoPath: string, branch: string): Prom
 }
 ```
 
-- [ ] **Step 5: Run test to verify it passes**
+- [x] **Step 5: Run test to verify it passes**
 
 Run: `npm test -- git/ls-remote.test.ts`
 Expected: PASS (2 tests).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add scripts/okf-scan/git/ls-remote.ts scripts/okf-scan/git/ls-remote.test.ts package.json package-lock.json
@@ -1163,7 +1195,7 @@ git commit -m "feat: add git ls-remote wrapper for cheap repo freshness checks"
 - Create: `scripts/okf-scan/check-repo-freshness.ts`
 - Test: `scripts/okf-scan/check-repo-freshness.test.ts`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```typescript
 // scripts/okf-scan/check-repo-freshness.test.ts
@@ -1223,12 +1255,12 @@ describe("checkRepoFreshness", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npm test -- check-repo-freshness.test.ts`
 Expected: FAIL with "Cannot find module './check-repo-freshness'"
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 ```typescript
 // scripts/okf-scan/check-repo-freshness.ts
@@ -1297,12 +1329,12 @@ export async function checkRepoFreshness(
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npm test -- check-repo-freshness.test.ts`
 Expected: PASS (1 test).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add scripts/okf-scan/check-repo-freshness.ts scripts/okf-scan/check-repo-freshness.test.ts
@@ -1315,7 +1347,7 @@ git commit -m "feat: add repo-level freshness short-circuit before scanning"
 - Create: `scripts/okf-scan/git/worktree.ts`
 - Test: `scripts/okf-scan/git/worktree.test.ts`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```typescript
 // scripts/okf-scan/git/worktree.test.ts
@@ -1375,12 +1407,12 @@ describe("syncWorktree", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npm test -- git/worktree.test.ts`
 Expected: FAIL with "Cannot find module './worktree'"
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 ```typescript
 // scripts/okf-scan/git/worktree.ts
@@ -1422,12 +1454,12 @@ export async function syncWorktree(repoPath: string, repoKey: string, branch: st
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npm test -- git/worktree.test.ts`
 Expected: PASS (1 test).
 
-- [ ] **Step 5: Add the worktree cache dir to `.gitignore`**
+- [x] **Step 5: Add the worktree cache dir to `.gitignore`**
 
 Append to `.gitignore`:
 
@@ -1435,7 +1467,7 @@ Append to `.gitignore`:
 .okf-scan-cache/
 ```
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add scripts/okf-scan/git/worktree.ts scripts/okf-scan/git/worktree.test.ts .gitignore
@@ -1454,7 +1486,7 @@ git commit -m "feat: resolve per-environment branches into isolated git worktree
 - Create: `scripts/okf-scan/code/__fixtures__/source-walk/node_modules/skip-me.ts`
 - Test: `scripts/okf-scan/code/ts-source.test.ts`
 
-- [ ] **Step 1: Add fixture files**
+- [x] **Step 1: Add fixture files**
 
 ```typescript
 // scripts/okf-scan/code/__fixtures__/source-walk/included.ts
@@ -1467,7 +1499,7 @@ export const subtract = (a: number, b: number) => a - b;
 export const shouldNeverBeListed = true;
 ```
 
-- [ ] **Step 2: Write the failing test**
+- [x] **Step 2: Write the failing test**
 
 ```typescript
 // scripts/okf-scan/code/ts-source.test.ts
@@ -1494,12 +1526,12 @@ describe("parseSourceFile + findDescendants", () => {
 });
 ```
 
-- [ ] **Step 3: Run test to verify it fails**
+- [x] **Step 3: Run test to verify it fails**
 
 Run: `npm test -- code/ts-source.test.ts`
 Expected: FAIL with "Cannot find module './ts-source'"
 
-- [ ] **Step 4: Write the implementation**
+- [x] **Step 4: Write the implementation**
 
 ```typescript
 // scripts/okf-scan/code/ts-source.ts
@@ -1544,12 +1576,12 @@ export function findDescendants<T extends ts.Node>(root: ts.Node, test: (node: t
 }
 ```
 
-- [ ] **Step 5: Run test to verify it passes**
+- [x] **Step 5: Run test to verify it passes**
 
 Run: `npm test -- code/ts-source.test.ts`
 Expected: PASS (2 tests).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add scripts/okf-scan/code/ts-source.ts scripts/okf-scan/code/ts-source.test.ts scripts/okf-scan/code/__fixtures__/source-walk
@@ -1565,7 +1597,7 @@ Detects exported handlers and one hop of AWS SDK v3 `.send(new XCommand(...))` c
 - Create: `scripts/okf-scan/code/__fixtures__/lambda-repo/handler.ts`
 - Test: `scripts/okf-scan/code/scan-lambda-repo.test.ts`
 
-- [ ] **Step 1: Add the fixture Lambda handler**
+- [x] **Step 1: Add the fixture Lambda handler**
 
 ```typescript
 // scripts/okf-scan/code/__fixtures__/lambda-repo/handler.ts
@@ -1582,7 +1614,7 @@ export const handler = async (event: unknown) => {
 };
 ```
 
-- [ ] **Step 2: Write the failing test**
+- [x] **Step 2: Write the failing test**
 
 ```typescript
 // scripts/okf-scan/code/scan-lambda-repo.test.ts
@@ -1619,12 +1651,12 @@ describe("scanLambdaRepo", () => {
 });
 ```
 
-- [ ] **Step 3: Run test to verify it fails**
+- [x] **Step 3: Run test to verify it fails**
 
 Run: `npm test -- code/scan-lambda-repo.test.ts`
 Expected: FAIL with "Cannot find module './scan-lambda-repo'"
 
-- [ ] **Step 4: Write the implementation**
+- [x] **Step 4: Write the implementation**
 
 ```typescript
 // scripts/okf-scan/code/scan-lambda-repo.ts
@@ -1758,12 +1790,12 @@ export async function scanLambdaRepo(ctx: LambdaScanContext): Promise<ConceptFac
 }
 ```
 
-- [ ] **Step 5: Run test to verify it passes**
+- [x] **Step 5: Run test to verify it passes**
 
 Run: `npm test -- code/scan-lambda-repo.test.ts`
 Expected: PASS (1 test).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add scripts/okf-scan/code/scan-lambda-repo.ts scripts/okf-scan/code/scan-lambda-repo.test.ts scripts/okf-scan/code/__fixtures__/lambda-repo
@@ -1777,7 +1809,7 @@ git commit -m "feat: scan Lambda repos for handlers and AWS SDK call relations"
 - Create: `scripts/okf-scan/code/__fixtures__/frontend-repo/CheckoutScreen.tsx`
 - Test: `scripts/okf-scan/code/scan-frontend-repo.test.ts`
 
-- [ ] **Step 1: Add the fixture component**
+- [x] **Step 1: Add the fixture component**
 
 ```typescript
 // scripts/okf-scan/code/__fixtures__/frontend-repo/CheckoutScreen.tsx
@@ -1788,7 +1820,7 @@ export function CheckoutScreen() {
 }
 ```
 
-- [ ] **Step 2: Write the failing test**
+- [x] **Step 2: Write the failing test**
 
 ```typescript
 // scripts/okf-scan/code/scan-frontend-repo.test.ts
@@ -1824,12 +1856,12 @@ describe("scanFrontendRepo", () => {
 });
 ```
 
-- [ ] **Step 3: Run test to verify it fails**
+- [x] **Step 3: Run test to verify it fails**
 
 Run: `npm test -- code/scan-frontend-repo.test.ts`
 Expected: FAIL with "Cannot find module './scan-frontend-repo'"
 
-- [ ] **Step 4: Write the implementation**
+- [x] **Step 4: Write the implementation**
 
 ```typescript
 // scripts/okf-scan/code/scan-frontend-repo.ts
@@ -1905,12 +1937,12 @@ export async function scanFrontendRepo(ctx: FrontendScanContext): Promise<Concep
 }
 ```
 
-- [ ] **Step 5: Run test to verify it passes**
+- [x] **Step 5: Run test to verify it passes**
 
 Run: `npm test -- code/scan-frontend-repo.test.ts`
 Expected: PASS (1 test).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add scripts/okf-scan/code/scan-frontend-repo.ts scripts/okf-scan/code/scan-frontend-repo.test.ts scripts/okf-scan/code/__fixtures__/frontend-repo
@@ -1926,7 +1958,7 @@ git commit -m "feat: scan frontend repos for components and API-call relations"
 - Create: `scripts/okf-scan/code/__fixtures__/codeowners-repo/CODEOWNERS`
 - Test: `scripts/okf-scan/code/codeowners.test.ts`
 
-- [ ] **Step 1: Add the fixture CODEOWNERS file**
+- [x] **Step 1: Add the fixture CODEOWNERS file**
 
 ```
 # scripts/okf-scan/code/__fixtures__/codeowners-repo/CODEOWNERS
@@ -1934,7 +1966,7 @@ git commit -m "feat: scan frontend repos for components and API-call relations"
 /src/orders/ @orders-team
 ```
 
-- [ ] **Step 2: Write the failing test**
+- [x] **Step 2: Write the failing test**
 
 ```typescript
 // scripts/okf-scan/code/codeowners.test.ts
@@ -1960,12 +1992,12 @@ describe("ownerForFile", () => {
 });
 ```
 
-- [ ] **Step 3: Run test to verify it fails**
+- [x] **Step 3: Run test to verify it fails**
 
 Run: `npm test -- code/codeowners.test.ts`
 Expected: FAIL with "Cannot find module './codeowners'"
 
-- [ ] **Step 4: Write the implementation**
+- [x] **Step 4: Write the implementation**
 
 ```typescript
 // scripts/okf-scan/code/codeowners.ts
@@ -2020,12 +2052,12 @@ export async function ownerForFile(repoDir: string, filePath: string): Promise<s
 }
 ```
 
-- [ ] **Step 5: Run test to verify it passes**
+- [x] **Step 5: Run test to verify it passes**
 
 Run: `npm test -- code/codeowners.test.ts`
 Expected: PASS (2 tests).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add scripts/okf-scan/code/codeowners.ts scripts/okf-scan/code/codeowners.test.ts scripts/okf-scan/code/__fixtures__/codeowners-repo
@@ -2044,7 +2076,7 @@ The bundle's directory convention mirrors `public/okf-bundles/order-system/`: a 
 - Create: `scripts/okf-scan/synthesize/markdown.ts`
 - Test: `scripts/okf-scan/synthesize/markdown.test.ts`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```typescript
 // scripts/okf-scan/synthesize/markdown.test.ts
@@ -2162,12 +2194,12 @@ describe("buildConceptMarkdown", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npm test -- synthesize/markdown.test.ts`
 Expected: FAIL with "Cannot find module './markdown'"
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 ```typescript
 // scripts/okf-scan/synthesize/markdown.ts
@@ -2315,12 +2347,12 @@ export function buildConceptMarkdown(options: BuildConceptMarkdownOptions): stri
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npm test -- synthesize/markdown.test.ts`
 Expected: PASS (9 tests).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add scripts/okf-scan/synthesize/markdown.ts scripts/okf-scan/synthesize/markdown.test.ts
@@ -2333,11 +2365,11 @@ git commit -m "feat: add OKF concept markdown writer with ddd/Links-preserving m
 - Create: `scripts/okf-scan/synthesize/llm.ts`
 - Test: `scripts/okf-scan/synthesize/llm.test.ts`
 
-- [ ] **Step 1: Install `@anthropic-ai/sdk`**
+- [x] **Step 1: Install `@anthropic-ai/sdk`**
 
 Run: `npm install @anthropic-ai/sdk`
 
-- [ ] **Step 2: Write the failing test**
+- [x] **Step 2: Write the failing test**
 
 ```typescript
 // scripts/okf-scan/synthesize/llm.test.ts
@@ -2404,12 +2436,12 @@ describe("createAnthropicLlmClient", () => {
 });
 ```
 
-- [ ] **Step 3: Run test to verify it fails**
+- [x] **Step 3: Run test to verify it fails**
 
 Run: `npm test -- synthesize/llm.test.ts`
 Expected: FAIL with "Cannot find module './llm'"
 
-- [ ] **Step 4: Write the implementation**
+- [x] **Step 4: Write the implementation**
 
 ```typescript
 // scripts/okf-scan/synthesize/llm.ts
@@ -2472,12 +2504,12 @@ export function createAnthropicLlmClient(apiKey: string | undefined = process.en
 }
 ```
 
-- [ ] **Step 5: Run test to verify it passes**
+- [x] **Step 5: Run test to verify it passes**
 
 Run: `npm test -- synthesize/llm.test.ts`
 Expected: PASS (3 tests). Note the retry test takes ~0.5s of real wall-clock time (the backoff delay) — acceptable for one test, not worth the complexity of injecting a fake clock here.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add scripts/okf-scan/synthesize/llm.ts scripts/okf-scan/synthesize/llm.test.ts package.json package-lock.json
@@ -2490,7 +2522,7 @@ git commit -m "feat: add Claude-backed LLM prose client with 429 retry"
 - Create: `scripts/okf-scan/synthesize/synthesize.ts`
 - Test: `scripts/okf-scan/synthesize/synthesize.test.ts`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```typescript
 // scripts/okf-scan/synthesize/synthesize.test.ts
@@ -2612,12 +2644,12 @@ describe("synthesize", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npm test -- synthesize/synthesize.test.ts`
 Expected: FAIL with "Cannot find module './synthesize'"
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 ```typescript
 // scripts/okf-scan/synthesize/synthesize.ts
@@ -2788,12 +2820,12 @@ async function writeGroupFiles(bundleDir: string, groups: GroupFact[]): Promise<
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npm test -- synthesize/synthesize.test.ts`
 Expected: PASS (3 tests).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add scripts/okf-scan/synthesize/synthesize.ts scripts/okf-scan/synthesize/synthesize.test.ts
@@ -2813,7 +2845,7 @@ Wires every prior milestone together: freshness check → worktrees (changed rep
 - Test: `scripts/okf-scan/index.test.ts`
 - Modify: `package.json`
 
-- [ ] **Step 1: Write the failing test for `parseArgs`**
+- [x] **Step 1: Write the failing test for `parseArgs`**
 
 ```typescript
 // scripts/okf-scan/index.test.ts
@@ -2856,12 +2888,12 @@ describe("parseArgs", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npm test -- index.test.ts`
 Expected: FAIL with "Cannot find module './index'"
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 ```typescript
 // scripts/okf-scan/index.ts
@@ -3020,12 +3052,12 @@ if (require.main === module) {
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npm test -- index.test.ts`
 Expected: PASS (4 tests).
 
-- [ ] **Step 5: Add the npm script**
+- [x] **Step 5: Add the npm script**
 
 Add to `package.json`'s `"scripts"` block:
 
@@ -3033,14 +3065,14 @@ Add to `package.json`'s `"scripts"` block:
     "okf-scan": "tsx scripts/okf-scan/index.ts"
 ```
 
-- [ ] **Step 6: Manually verify the wiring compiles and the fixtures still parse end-to-end**
+- [x] **Step 6: Manually verify the wiring compiles and the fixtures still parse end-to-end**
 
 Run: `npx tsc --noEmit -p .`
 Expected: no errors — this confirms every module `index.ts` imports lines up (same types, same exported names) across all prior tasks.
 
 This step intentionally does not run `index.ts` against real git remotes or a real `ANTHROPIC_API_KEY` — Task 21 covers the synthesize → validate integration seam with fixtures, which is the part of this pipeline that's practical to automate.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add scripts/okf-scan/index.ts scripts/okf-scan/index.test.ts package.json
@@ -3054,7 +3086,7 @@ Exercises the seam the unit tests above don't: a full `ScanResult` (with a conta
 **Files:**
 - Test: `scripts/okf-scan/e2e.test.ts`
 
-- [ ] **Step 1: Write the test**
+- [x] **Step 1: Write the test**
 
 ```typescript
 // scripts/okf-scan/e2e.test.ts
@@ -3169,12 +3201,12 @@ describe("okf-scan end-to-end", () => {
 });
 ```
 
-- [ ] **Step 2: Run the test**
+- [x] **Step 2: Run the test**
 
 Run: `npm test -- e2e.test.ts`
 Expected: PASS (1 test). If it fails on a dangling-relation or missing-node error from `validateArchModel`, the most likely cause is a directory/index.md mismatch between what `synthesize.ts` wrote and what `okf-import.ts` expects — re-check Task 19's `writeChildIndexes` and `writeGroupFiles` against `public/okf-bundles/order-system/`'s actual layout before changing test expectations.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add scripts/okf-scan/e2e.test.ts

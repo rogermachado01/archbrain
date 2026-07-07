@@ -6,6 +6,7 @@ level: container
 aws_resource_type: AWS::Lambda::Function
 group: ../groups/region-use1/vpc-main/az-a/subnet-private-a.md
 owner: Orders Team
+ddd_context: Orders
 ---
 
 # Schema
@@ -17,7 +18,7 @@ owner: Orders Team
 # Relations
 
 - [Order Table](order-table.md) — Creates order (PENDING)
-- [Order Queue](order-queue.md) — Publishes refund check {kind: async-event}
+- [Order Queue](order-queue.md) — OrderAccepted {kind: async-event}
 - [Refund Worker](refund-worker.md) — Compensates on failure {kind: compensation}
 
 # Links

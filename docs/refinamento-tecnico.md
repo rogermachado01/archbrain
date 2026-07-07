@@ -1,6 +1,9 @@
 # Refinamento Técnico — ArchViz como fonte da verdade do time
 
-> Status: proposta / refinamento. Nenhum item deste documento está implementado.
+> Status: **itens 1, 2, 3, 4, 5, 7, 8 e 9 implementados** (fases F1+F2+F3 do roadmap ao final
+> deste doc). Só o item 6 (importadores Terraform/CDK, fase F4) segue como proposta — exige
+> state real de IaC que não existe neste repositório. Ver `CLAUDE.md` para onde cada peça
+> vive no código atual.
 > Escopo: evoluir o ArchViz do MVP atual (visualização somente) para uma ferramenta de
 > **fonte da verdade** de arquitetura serverless, de uso diário pelo time de arquitetura
 > e desenvolvimento.

@@ -42,7 +42,7 @@ function schemaFromAttrs(attrs: TfBlock, skip: Set<string>): Record<string, stri
   return schema;
 }
 
-export async function scanTerraform(config: RepoMapConfig["terraform"], env: Environment): Promise<ScanResult> {
+export async function scanTerraform(config: NonNullable<RepoMapConfig["terraform"]>, env: Environment): Promise<ScanResult> {
   const entries = await readdir(config.path);
   const excludedEnvFiles = new Set(
     Object.entries(config.envFiles)

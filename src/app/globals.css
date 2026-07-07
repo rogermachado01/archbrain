@@ -257,6 +257,15 @@ a {
   padding: 2px 0;
 }
 
+.relation-legend-abbrev {
+  display: inline-block;
+  width: 28px;
+  flex-shrink: 0;
+  font-weight: 700;
+  color: #7d3ac1;
+  text-align: center;
+}
+
 .side-panel {
   width: 320px;
   flex-shrink: 0;
@@ -367,6 +376,31 @@ a {
   border-radius: 4px;
   padding: 2px 8px;
   margin-bottom: 8px;
+}
+
+.details-ddd-subdomain {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  border-radius: 4px;
+  padding: 2px 8px;
+  margin-bottom: 8px;
+}
+
+.details-ddd-subdomain--core {
+  color: #d13212;
+  background: #fdf0ee;
+}
+
+.details-ddd-subdomain--supporting {
+  color: #1168bd;
+  background: #f0f5ff;
+}
+
+.details-ddd-subdomain--generic {
+  color: #687078;
+  background: #f2f3f4;
 }
 
 .details-links {
@@ -503,6 +537,54 @@ a {
   border-radius: 6px;
   overflow: hidden;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.zoom-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding-right: 8px;
+  border-right: 1px solid #d8dee6;
+}
+
+.zoom-controls button {
+  font: inherit;
+  cursor: pointer;
+  border: 1px solid #d8dee6;
+  border-radius: 4px;
+  background: #ffffff;
+  color: #5a6b82;
+}
+
+.zoom-controls button:hover:not(:disabled) {
+  background: #f0f5ff;
+  color: #1168bd;
+}
+
+.zoom-controls button:disabled {
+  color: #c3ccd6;
+  cursor: not-allowed;
+}
+
+.zoom-controls .zoom-step {
+  width: 24px;
+  height: 24px;
+  font-size: 14px;
+  line-height: 1;
+  padding: 0;
+}
+
+.zoom-controls .zoom-level {
+  font-size: 12px;
+  color: #5a6b82;
+  min-width: 38px;
+  text-align: center;
+  user-select: none;
+}
+
+.zoom-controls .zoom-fit {
+  font-size: 11px;
+  padding: 4px 8px;
 }
 
 .path-mode-control {

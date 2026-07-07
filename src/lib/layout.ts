@@ -16,7 +16,12 @@ interface LayoutOptions {
   nodeHeight: number;
   columnGap: number;
   rowGap: number;
+  /** caps how many nodes stack in one column before wrapping into a new
+   *  sub-column within the same topological layer (default 6). */
+  maxRowsPerLayer?: number;
 }
+
+const DEFAULT_MAX_ROWS_PER_LAYER = 6;
 
 /**
  * Positions nodes left-to-right by topological layer (longest path from a
@@ -27,7 +32,7 @@ interface LayoutOptions {
 export function computeLayeredPositions(
   nodes: ArchNode[],
   relations: ArchRelation[],
-  { nodeWidth, nodeHeight, columnGap, rowGap }: LayoutOptions
+  { nodeWidth, nodeHeight, columnGap, rowGap, maxRowsPerLayer = DEFAULT_MAX_ROWS_PER_LAYER }: LayoutOptions
 ): LayoutPosition[] {
   const visibleIds = new Set(nodes.map((n) => n.id));
   const edges = relations.filter(
@@ -69,16 +74,52 @@ export function computeLayeredPositions(
     if (!layer.has(n.id)) layer.set(n.id, 0);
   });
 
-  const rowByLayer = new Map<number, number>();
-  return nodes.map((node) => {
-    const nodeLayer = layer.get(node.id) ?? 0;
-    const row = rowByLayer.get(nodeLayer) ?? 0;
-    rowByLayer.set(nodeLayer, row + 1);
-    return {
-      node,
-      x: nodeLayer * (nodeWidth + columnGap),
-      y: row * (nodeHeight + rowGap),
-      layer: nodeLayer,
-    };
+  // A node with no incoming edges has no predecessor constraint, so it's
+  // always safe to pull it down closer to its nearest successor instead of
+  // leaving it parked at layer 0 — the new layer is still guaranteed to be
+  // less than every successor's layer (min(successorLayers) - 1 < all of
+  // them), so this can never introduce a backward-pointing edge. Nodes with
+  // at least one incoming edge already sit at the tightest valid layer
+  // (max(predecessor layers) + 1) and are left untouched.
+  nodes.forEach((n) => {
+    if ((inDegree.get(n.id) ?? 0) !== 0) return;
+    const successorLayers = (outgoing.get(n.id) ?? []).map((id) => layer.get(id) ?? 0);
+    if (successorLayers.length === 0) return;
+    const pulled = Math.min(...successorLayers) - 1;
+    if (pulled > (layer.get(n.id) ?? 0)) layer.set(n.id, pulled);
   });
+
+  // Group nodes by their final layer, then lay each layer out as a grid
+  // capped at maxRowsPerLayer rows, wrapping into extra sub-columns instead
+  // of one ever-taller single column. `layer` itself (used elsewhere to
+  // detect edges that skip more than one layer) stays the pure topological
+  // value — only the visual x/y placement changes.
+  const nodesByLayer = new Map<number, ArchNode[]>();
+  nodes.forEach((n) => {
+    const l = layer.get(n.id) ?? 0;
+    if (!nodesByLayer.has(l)) nodesByLayer.set(l, []);
+    nodesByLayer.get(l)!.push(n);
+  });
+
+  const positionsById = new Map<string, LayoutPosition>();
+  let cumulativeX = 0;
+  [...nodesByLayer.keys()]
+    .sort((a, b) => a - b)
+    .forEach((l) => {
+      const layerNodes = nodesByLayer.get(l)!;
+      layerNodes.forEach((n, i) => {
+        const row = i % maxRowsPerLayer;
+        const subColumn = Math.floor(i / maxRowsPerLayer);
+        positionsById.set(n.id, {
+          node: n,
+          x: cumulativeX + subColumn * (nodeWidth + columnGap),
+          y: row * (nodeHeight + rowGap),
+          layer: l,
+        });
+      });
+      const subColumns = Math.ceil(layerNodes.length / maxRowsPerLayer);
+      cumulativeX += subColumns * (nodeWidth + columnGap);
+    });
+
+  return nodes.map((n) => positionsById.get(n.id)!);
 }

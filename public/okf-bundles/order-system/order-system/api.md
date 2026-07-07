@@ -4,6 +4,8 @@ title: API Gateway
 description: Public REST entry point for the order system.
 level: container
 aws_resource_type: AWS::ApiGateway::RestApi
+ddd_context: Orders
+owner: Orders Team
 ---
 
 # Schema

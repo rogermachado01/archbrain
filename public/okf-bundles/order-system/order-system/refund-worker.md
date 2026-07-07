@@ -5,6 +5,8 @@ description: Compensating transaction that reverts an order when the saga fails.
 level: container
 aws_resource_type: AWS::Lambda::Function
 group: ../groups/region-use1/vpc-main/az-a/subnet-private-a.md
+ddd_context: Orders
+owner: Orders Team
 ---
 
 # Schema

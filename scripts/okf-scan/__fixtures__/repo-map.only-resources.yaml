@@ -1,0 +1,4 @@
+resources:
+  aws_lambda_function.orders:
+    repo: ../orders-service
+    branch: { dev: develop, hml: staging, prd: main }

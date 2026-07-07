@@ -94,10 +94,37 @@ describe("syncWorktree", () => {
       .filter((line) => line.startsWith("worktree ") && line.replace(/\\/g, "/").includes(second.replace(/\\/g, "/"))).length;
     expect(registeredCount).toBe(1);
 
-    const worktreeBranch = (await simpleGit(second).branch()).current;
-    expect(worktreeBranch).toBe("develop");
+    // Detached HEAD (not a checkout of local branch "develop" by name) —
+    // see syncWorktree's reuse path for why.
+    const worktreeHead = (await simpleGit(second).revparse(["HEAD"])).trim();
+    const upstreamDevelopHead = (await simpleGit(upstreamDir).revparse(["develop"])).trim();
+    expect(worktreeHead).toBe(upstreamDevelopHead);
 
     const worktreeContent = (await readFile(path.join(second, "app.txt"), "utf-8")).replace(/\r\n/g, "\n");
     expect(worktreeContent).toBe("develop content v2\n");
+  });
+
+  it("reuses the worktree when synced to the same branch the local clone itself has checked out", async () => {
+    // git refuses to check out a branch by name in a second worktree while
+    // it's already checked out in another one — reproduces the real-world
+    // case where repo-map.yaml points at an ordinary (non-bare) checkout
+    // that's sitting on the same branch the scan wants (e.g. "main" for
+    // every env): the reuse path must not do `checkout(branch)` by name.
+    const first = await syncWorktree(localDir, "orders-service", "main", "dev");
+    expect(first).toBe(worktreePath("orders-service", "dev"));
+
+    const upstreamGit = simpleGit(upstreamDir);
+    await writeFile(path.join(upstreamDir, "app.txt"), "main content v2\n");
+    await upstreamGit.add("./*");
+    await upstreamGit.commit("second commit on main");
+
+    const second = await syncWorktree(localDir, "orders-service", "main", "dev");
+    expect(second).toBe(first);
+
+    const localBranch = (await simpleGit(localDir).branch()).current;
+    expect(localBranch).toBe("main");
+
+    const worktreeContent = (await readFile(path.join(second, "app.txt"), "utf-8")).replace(/\r\n/g, "\n");
+    expect(worktreeContent).toBe("main content v2\n");
   });
 });

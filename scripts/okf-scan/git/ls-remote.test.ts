@@ -39,4 +39,14 @@ describe("getRemoteBranchSha", () => {
   it("throws a descriptive error for a branch that doesn't exist", async () => {
     await expect(getRemoteBranchSha(repoDir, "does-not-exist")).rejects.toThrow(/does-not-exist/);
   });
+
+  it("works when repoPath is relative to the current working directory", async () => {
+    const git = simpleGit(repoDir);
+    const expectedSha = (await git.revparse(["develop"])).trim();
+    const relativeRepoPath = path.relative(process.cwd(), repoDir);
+
+    const sha = await getRemoteBranchSha(relativeRepoPath, "develop");
+
+    expect(sha).toBe(expectedSha);
+  });
 });

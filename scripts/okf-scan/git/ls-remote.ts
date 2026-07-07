@@ -9,7 +9,7 @@ import simpleGit from "simple-git";
  * working tree yet.
  */
 export async function getRemoteBranchSha(repoPath: string, branch: string): Promise<string> {
-  const git = simpleGit(repoPath);
+  const git = simpleGit();
   const output = await git.listRemote(["--heads", repoPath, branch]);
   const line = output.trim().split("\n")[0];
   if (!line) {

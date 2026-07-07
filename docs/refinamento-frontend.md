@@ -1,6 +1,9 @@
 # Refinamento Técnico — Mapeando arquitetura de **frontend** no ArchViz
 
-> Status: proposta / refinamento. Complementa `docs/refinamento-tecnico.md` (foco backend).
+> Status: **passos 1-4 do roadmap implementados** (dataset piloto `frontend-ecommerce.json`,
+> boundary configurável, ícones de frontend, bundle OKF `webapp/`). Passo 5 (gerador de
+> esqueleto a partir do código do app) segue como proposta. Complementa
+> `docs/refinamento-tecnico.md` (foco backend).
 > Escopo: usar o sistema **atual** para desenhar e navegar a arquitetura de um frontend
 > (telas, componentes, serviços, estado global — Redux/Context/similar), apontando o que
 > já funciona sem mudança, o que precisa de pequenas extensões, e as convenções de

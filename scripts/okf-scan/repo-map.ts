@@ -9,25 +9,35 @@ const BranchMapSchema = z.object({
   prd: z.string().min(1),
 });
 
-const RepoMapSchema = z.object({
-  terraform: z.object({
-    path: z.string().min(1),
-    envFiles: BranchMapSchema,
-  }),
-  resources: z.record(
-    z.string(),
-    z.object({
-      repo: z.string().min(1),
-      branch: BranchMapSchema,
-    })
-  ),
-  frontend: z.array(
-    z.object({
-      repo: z.string().min(1),
-      branch: BranchMapSchema,
-    })
-  ),
-});
+const RepoMapSchema = z
+  .object({
+    terraform: z
+      .object({
+        path: z.string().min(1),
+        envFiles: BranchMapSchema,
+      })
+      .optional(),
+    resources: z
+      .record(
+        z.string(),
+        z.object({
+          repo: z.string().min(1),
+          branch: BranchMapSchema,
+        })
+      )
+      .optional(),
+    frontend: z
+      .array(
+        z.object({
+          repo: z.string().min(1),
+          branch: BranchMapSchema,
+        })
+      )
+      .optional(),
+  })
+  .refine((data) => data.terraform !== undefined || data.resources !== undefined || data.frontend !== undefined, {
+    message: "repo-map.yaml must define at least one of: terraform, resources, frontend",
+  });
 
 export async function loadRepoMap(filePath: string): Promise<RepoMapConfig> {
   const raw = await readFile(filePath, "utf-8");

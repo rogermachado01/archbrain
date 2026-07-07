@@ -1,0 +1,1332 @@
+{
+  "_repos": {
+    "template-marketing-webapp-nextjs": {
+      "lastScannedRef": "2106648e06fb9d2c68711f6bffe08197392e6a9e",
+      "env": "dev"
+    }
+  },
+  "concepts": {
+    "template-marketing-webapp-nextjs": {
+      "inputHash": "c9a54d4e87f704b913c8ac9ff1215387702ff3d4fe2f79f1d0bb6b4a7c4104b5",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs",
+        "type": "Frontend Application",
+        "level": "context",
+        "parentId": null,
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.020Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/author": {
+      "inputHash": "b66e7b5b5435d643a88407481c0f9a3e03821640a12078395ec4bb923e859560",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/author",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-person",
+            "kind": "sync",
+            "evidence": "imports PersonFieldsFragment from \"@src/components/features/ctf-components/ctf-person/__generated/ctf-person.generated\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\author\\author.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/avatar": {
+      "inputHash": "3bf728f6dbf0d51bb9f8f7c5a8ca2066b70c2caf5938f9beb5fde3beebee4189",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/avatar",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\avatar\\avatar.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/card-leadership": {
+      "inputHash": "d289f546d128d89215320daa3e1ae74005c860bba09b251024e3c45eb0a1b839",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/card-leadership",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-asset",
+            "kind": "sync",
+            "evidence": "imports CtfAsset from \"@src/components/features/ctf-components/ctf-asset/ctf-asset\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-person",
+            "kind": "sync",
+            "evidence": "imports PersonFieldsFragment from \"@src/components/features/ctf-components/ctf-person/__generated/ctf-person.generated\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-richtext",
+            "kind": "sync",
+            "evidence": "imports CtfRichtext from \"@src/components/features/ctf-components/ctf-richtext/ctf-richtext\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\card-leadership\\card-leadership.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/card-person": {
+      "inputHash": "cce39321511041270cd3f29962630f522d965157c48a9791097f5b93e1c579da",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/card-person",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-person",
+            "kind": "sync",
+            "evidence": "imports PersonFieldsFragment from \"@src/components/features/ctf-components/ctf-person/__generated/ctf-person.generated\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-richtext",
+            "kind": "sync",
+            "evidence": "imports CtfRichtext from \"@src/components/features/ctf-components/ctf-richtext/ctf-richtext\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\card-person\\card-person.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/ctf-asset": {
+      "inputHash": "caba44a3f4c3d2a8271e57336c9ec4ffb21d79b6dab5e3b0cc32dc05ebc4495d",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/ctf-asset",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-image",
+            "kind": "sync",
+            "evidence": "imports CtfImage from \"@src/components/features/ctf-components/ctf-image/ctf-image\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-video",
+            "kind": "sync",
+            "evidence": "imports CtfVideo from \"@src/components/features/ctf-components/ctf-video/ctf-video\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-asset\\ctf-asset.tsx",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-asset\\__generated\\ctf-asset.generated.ts"
+        ],
+        "usedByRoutes": [
+          "/",
+          "/[slug]"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/business-info.generated": {
+      "inputHash": "ec966cdfb6309facd39d50e0cef46c6fb90a90726a17595c7752427d0e4c43da",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/business-info.generated",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-asset",
+            "kind": "sync",
+            "evidence": "imports AssetFieldsFragment, AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-componentMap.generated",
+            "kind": "sync",
+            "evidence": "imports ComponentReferenceFields_ComponentCta_Fragment, ComponentReferenceFields_ComponentDuplex_Fragment, ComponentReferenceFields_ComponentHeroBanner_Fragment, ComponentReferenceFields_ComponentInfoBlock_Fragment, ComponentReferenceFields_ComponentProductTable_Fragment, ComponentReferenceFields_ComponentQuote_Fragment, ComponentReferenceFields_ComponentTextBlock_Fragment, ComponentReferenceFields_FooterMenu_Fragment, ComponentReferenceFields_MenuGroup_Fragment, ComponentReferenceFields_NavigationMenu_Fragment, ComponentReferenceFields_Page_Fragment, ComponentReferenceFields_Seo_Fragment, ComponentReferenceFields_TopicBusinessInfo_Fragment, ComponentReferenceFields_TopicPerson_Fragment, ComponentReferenceFields_TopicProduct_Fragment, ComponentReferenceFields_TopicProductFeature_Fragment, ComponentReferenceFieldsFragmentDoc from \"../../../../../lib/shared-fragments/__generated/ctf-componentMap.generated\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-business-info\\__generated\\business-info.generated.ts"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/ctf-business-info-gql": {
+      "inputHash": "e8afe1bd2e4265a64b7a225c8cafb28f6a07eb79ffdf9d0e9af842818d71f366",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/ctf-business-info-gql",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/business-info.generated",
+            "kind": "sync",
+            "evidence": "imports useCtfBusinessInfoQuery from \"./__generated/business-info.generated\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/entry-not-found",
+            "kind": "sync",
+            "evidence": "imports EntryNotFound from \"@src/components/features/errors/entry-not-found\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/contentful-context",
+            "kind": "sync",
+            "evidence": "imports useContentfulContext from \"@src/contentful-context\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-business-info\\ctf-business-info-gql.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/ctf-cta": {
+      "inputHash": "f4db0d307b3ebf5b32777d8da0048d097be79e79c25c4e08063261df0a3108ad",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/ctf-cta",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-richtext",
+            "kind": "sync",
+            "evidence": "imports CtfRichtext from \"@src/components/features/ctf-components/ctf-richtext/ctf-richtext\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/theme",
+            "kind": "sync",
+            "evidence": "imports getColorConfigFromPalette from \"@src/theme\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/page-link",
+            "kind": "sync",
+            "evidence": "imports PageLinkFieldsFragment, PageLinkFieldsFragmentDoc from \"../../../page-link/__generated/page-link.generated\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-cta\\ctf-cta.tsx",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-cta\\__generated\\ctf-cta.generated.ts",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-cta\\ctf-cta-gql.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/ctf-duplex": {
+      "inputHash": "bebd128bf700fcc7f439b146747e3f5c4cd0e4f9caa1926473f755bc563f321e",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/ctf-duplex",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-image",
+            "kind": "sync",
+            "evidence": "imports CtfImage from \"@src/components/features/ctf-components/ctf-image/ctf-image\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-richtext",
+            "kind": "sync",
+            "evidence": "imports CtfRichtext from \"@src/components/features/ctf-components/ctf-richtext/ctf-richtext\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/theme",
+            "kind": "sync",
+            "evidence": "imports getColorConfigFromPalette from \"@src/theme\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/page-link",
+            "kind": "sync",
+            "evidence": "imports PageLinkFieldsFragment, PageLinkFieldsFragmentDoc from \"../../../page-link/__generated/page-link.generated\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-asset",
+            "kind": "sync",
+            "evidence": "imports AssetFieldsFragment, AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-duplex\\ctf-duplex.tsx",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-duplex\\__generated\\ctf-duplex.generated.ts",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-duplex\\ctf-duplex-gql.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/ctf-footer": {
+      "inputHash": "dc4063e5583e72de8808e56f8cc6af479991257b14c2ace53d349c8ffd6f640c",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/ctf-footer",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/link",
+            "kind": "sync",
+            "evidence": "imports Link from \"@src/components/shared/link\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/contentful-context",
+            "kind": "sync",
+            "evidence": "imports useContentfulContext from \"@src/contentful-context\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/theme",
+            "kind": "sync",
+            "evidence": "imports CONTAINER_WIDTH from \"@src/theme\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-menuGroup.generated",
+            "kind": "sync",
+            "evidence": "imports MenuGroupFieldsFragment, MenuGroupFieldsFragmentDoc from \"../../../../../lib/shared-fragments/__generated/ctf-menuGroup.generated\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/page-link",
+            "kind": "sync",
+            "evidence": "imports PageLinkFieldsFragment, PageLinkFieldsFragmentDoc from \"../../../page-link/__generated/page-link.generated\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-footer\\ctf-footer.tsx",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-footer\\__generated\\ctf-footer.generated.ts",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-footer\\ctf-footer-gql.tsx"
+        ],
+        "needsReview": [
+          "<Link href={...}> with a non-literal value does not resolve to a static path"
+        ],
+        "usedByRoutes": [
+          "/",
+          "/[slug]"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/ctf-hero-banner": {
+      "inputHash": "42e2328d417a83889cb133ab7a8505b03f37a76d50e9068e717eee53744d86d0",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/ctf-hero-banner",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-richtext",
+            "kind": "sync",
+            "evidence": "imports CtfRichtext from \"@src/components/features/ctf-components/ctf-richtext/ctf-richtext\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/theme",
+            "kind": "sync",
+            "evidence": "imports getColorConfigFromPalette, HEADER_HEIGHT_MD, HEADER_HEIGHT from \"@src/theme\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/page-link",
+            "kind": "sync",
+            "evidence": "imports PageLinkFieldsFragment, PageLinkFieldsFragmentDoc from \"../../../page-link/__generated/page-link.generated\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-asset",
+            "kind": "sync",
+            "evidence": "imports AssetFieldsFragment, AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-hero-banner\\ctf-hero-banner.tsx",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-hero-banner\\__generated\\ctf-hero-banner.generated.ts",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-hero-banner\\ctf-hero-banner-gql.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/ctf-image": {
+      "inputHash": "a85e75d36b11d0f7fb7a19b5912175c6f24619c755c894c8c7b31c5f82f28868",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/ctf-image",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-image\\ctf-image.tsx"
+        ],
+        "usedByRoutes": [
+          "/",
+          "/[slug]"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/ctf-info-block": {
+      "inputHash": "5f6e830c4dc4726af60b1551b6ec023fc5ea73fd15109652a21ba0a7a06620d8",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/ctf-info-block",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-asset",
+            "kind": "sync",
+            "evidence": "imports CtfAsset from \"@src/components/features/ctf-components/ctf-asset/ctf-asset\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-richtext",
+            "kind": "sync",
+            "evidence": "imports CtfRichtext from \"@src/components/features/ctf-components/ctf-richtext/ctf-richtext\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/theme",
+            "kind": "sync",
+            "evidence": "imports getColorConfigFromPalette from \"@src/theme\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-info-block\\ctf-info-block.tsx",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-info-block\\__generated\\ctf-info-block.generated.ts",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-info-block\\ctf-info-block-gql.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/ctf-mobile-menu": {
+      "inputHash": "e19b247e5fb6c19d5ec8584333b63b0673668b882edfa74ad571ff5b2fcab7e5",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/ctf-mobile-menu",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-navigation",
+            "kind": "sync",
+            "evidence": "imports NavigationFieldsFragment from \"@src/components/features/ctf-components/ctf-navigation/__generated/ctf-navigation.generated\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/link",
+            "kind": "sync",
+            "evidence": "imports Link from \"@src/components/shared/link\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/contentful-context",
+            "kind": "sync",
+            "evidence": "imports useContentfulContext from \"@src/contentful-context\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-mobile-menu\\ctf-mobile-menu.tsx",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-mobile-menu\\ctf-mobile-menu-gql.tsx"
+        ],
+        "needsReview": [
+          "<Link href={...}> with a non-literal value does not resolve to a static path",
+          "<Link href={...}> with a non-literal value does not resolve to a static path"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/ctf-navigation": {
+      "inputHash": "7cd95e5d982974dd8ac0800417532e6c76449fd162d69914c6988d8de11a48eb",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/ctf-navigation",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/link",
+            "kind": "sync",
+            "evidence": "imports Link from \"@src/components/shared/link\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/page-link",
+            "kind": "sync",
+            "evidence": "imports PageLinkFieldsFragment, PageLinkFieldsFragmentDoc from \"../../../page-link/__generated/page-link.generated\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-menuGroup.generated",
+            "kind": "sync",
+            "evidence": "imports MenuGroupFieldsFragment, MenuGroupFieldsFragmentDoc from \"../../../../../lib/shared-fragments/__generated/ctf-menuGroup.generated\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/contentful-context",
+            "kind": "sync",
+            "evidence": "imports useContentfulContext from \"@src/contentful-context\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-navigation\\ctf-navigation.tsx",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-navigation\\__generated\\ctf-navigation.generated.ts",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-navigation\\ctf-navigation-gql.tsx"
+        ],
+        "needsReview": [
+          "<Link href={...}> with a non-literal value does not resolve to a static path",
+          "<Link href={...}> with a non-literal value does not resolve to a static path"
+        ],
+        "usedByRoutes": [
+          "/",
+          "/[slug]"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/ctf-page.generated": {
+      "inputHash": "9781f8dad687943eb294a8ab6e90c9265acc43cf94b67b973f72a80079e6319b",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/ctf-page.generated",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-asset",
+            "kind": "sync",
+            "evidence": "imports AssetFieldsFragment, AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-page\\__generated\\ctf-page.generated.ts"
+        ],
+        "usedByRoutes": [
+          "/",
+          "/[slug]"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/ctf-person": {
+      "inputHash": "f2862e80e42d9335e8e7f41ff0d29bf748517214a8eea0cc256918b6abfb4a53",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/ctf-person",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-asset",
+            "kind": "sync",
+            "evidence": "imports AssetFieldsFragment, AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-person\\ctf-person.tsx",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-person\\__generated\\ctf-person.generated.ts",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-person\\ctf-person-gql.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/ctf-product-feature.generated": {
+      "inputHash": "a409faeaf9f1fb7816bf3122ee510140a57bf6fe4f77eafe178d835d769cbafa",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/ctf-product-feature.generated",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-asset",
+            "kind": "sync",
+            "evidence": "imports AssetFieldsFragment, AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-product-feature\\__generated\\ctf-product-feature.generated.ts"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/ctf-product-table": {
+      "inputHash": "fd74e15c0dbf347d36b4a57baed5e8dde6d8c86a8c8ff5e71efa3b8bfc6d0870",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/ctf-product-table",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-richtext",
+            "kind": "sync",
+            "evidence": "imports CtfRichtext from \"@src/components/features/ctf-components/ctf-richtext/ctf-richtext\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-product",
+            "kind": "sync",
+            "evidence": "imports ProductFieldsFragment, ProductFieldsFragmentDoc from \"../../ctf-product/__generated/ctf-product.generated\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-asset",
+            "kind": "sync",
+            "evidence": "imports AssetFieldsFragment, AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-product-feature.generated",
+            "kind": "sync",
+            "evidence": "imports ProductFeatureFieldsFragment, ProductFeatureFieldsFragmentDoc from \"../../ctf-product-feature/__generated/ctf-product-feature.generated\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/entry-not-found",
+            "kind": "sync",
+            "evidence": "imports EntryNotFound from \"@src/components/features/errors/entry-not-found\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-product-table\\ctf-product-table.tsx",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-product-table\\__generated\\ctf-product-table.generated.ts",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-product-table\\ctf-product-table-gql.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/ctf-product": {
+      "inputHash": "08027a648615c351fd2cd886fef3df2cbd384d09890f3bb84804c1f276f190f8",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/ctf-product",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-asset",
+            "kind": "sync",
+            "evidence": "imports CtfAsset from \"@src/components/features/ctf-components/ctf-asset/ctf-asset\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-richtext",
+            "kind": "sync",
+            "evidence": "imports CtfRichtext from \"@src/components/features/ctf-components/ctf-richtext/ctf-richtext\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-product-feature.generated",
+            "kind": "sync",
+            "evidence": "imports ProductFeatureFieldsFragment, ProductFeatureFieldsFragmentDoc from \"../../ctf-product-feature/__generated/ctf-product-feature.generated\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/entry-not-found",
+            "kind": "sync",
+            "evidence": "imports EntryNotFound from \"@src/components/features/errors/entry-not-found\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-product\\ctf-product.tsx",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-product\\__generated\\ctf-product.generated.ts",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-product\\ctf-product-gql.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/ctf-quote": {
+      "inputHash": "fba0e18af0a85b618c49709c440c30d4e2ae3d951635522c7ef464b35af38c2d",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/ctf-quote",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-richtext",
+            "kind": "sync",
+            "evidence": "imports CtfRichtext from \"@src/components/features/ctf-components/ctf-richtext/ctf-richtext\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/theme",
+            "kind": "sync",
+            "evidence": "imports getColorConfigFromPalette from \"@src/theme\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-componentMap.generated",
+            "kind": "sync",
+            "evidence": "imports ComponentReferenceFields_ComponentCta_Fragment, ComponentReferenceFields_ComponentDuplex_Fragment, ComponentReferenceFields_ComponentHeroBanner_Fragment, ComponentReferenceFields_ComponentInfoBlock_Fragment, ComponentReferenceFields_ComponentProductTable_Fragment, ComponentReferenceFields_ComponentQuote_Fragment, ComponentReferenceFields_ComponentTextBlock_Fragment, ComponentReferenceFields_FooterMenu_Fragment, ComponentReferenceFields_MenuGroup_Fragment, ComponentReferenceFields_NavigationMenu_Fragment, ComponentReferenceFields_Page_Fragment, ComponentReferenceFields_Seo_Fragment, ComponentReferenceFields_TopicBusinessInfo_Fragment, ComponentReferenceFields_TopicPerson_Fragment, ComponentReferenceFields_TopicProduct_Fragment, ComponentReferenceFields_TopicProductFeature_Fragment, ComponentReferenceFieldsFragmentDoc from \"../../../../../lib/shared-fragments/__generated/ctf-componentMap.generated\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-asset",
+            "kind": "sync",
+            "evidence": "imports AssetFieldsFragment, AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-quote\\ctf-quote.tsx",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-quote\\__generated\\ctf-quote.generated.ts",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-quote\\ctf-quote-gql.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/ctf-richtext": {
+      "inputHash": "06e5eb38b99e84e8f96cb1075534442c491c19275af8541a368fb06e87455789",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/ctf-richtext",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-asset",
+            "kind": "sync",
+            "evidence": "imports CtfAsset from \"../ctf-asset/ctf-asset\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/component-resolver",
+            "kind": "sync",
+            "evidence": "imports ComponentResolver from \"@src/components/shared/component-resolver\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/contentful-context",
+            "kind": "sync",
+            "evidence": "imports useContentfulContext from \"@src/contentful-context\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/page-link",
+            "kind": "sync",
+            "evidence": "imports PageLinkFieldsFragment, PageLinkFieldsFragmentDoc from \"../../../page-link/__generated/page-link.generated\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-richtext\\ctf-richtext.tsx",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-richtext\\__generated\\ctf-richtext.generated.ts"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/ctf-text-block": {
+      "inputHash": "7487b5107c175da6904de5ca6f17f42cc4a0b13aed0bdaf1e9464670a595d501",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/ctf-text-block",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-richtext",
+            "kind": "sync",
+            "evidence": "imports CtfRichtext from \"@src/components/features/ctf-components/ctf-richtext/ctf-richtext\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/theme",
+            "kind": "sync",
+            "evidence": "imports getColorConfigFromPalette from \"@src/theme\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-componentMap.generated",
+            "kind": "sync",
+            "evidence": "imports ComponentReferenceFields_ComponentCta_Fragment, ComponentReferenceFields_ComponentDuplex_Fragment, ComponentReferenceFields_ComponentHeroBanner_Fragment, ComponentReferenceFields_ComponentInfoBlock_Fragment, ComponentReferenceFields_ComponentProductTable_Fragment, ComponentReferenceFields_ComponentQuote_Fragment, ComponentReferenceFields_ComponentTextBlock_Fragment, ComponentReferenceFields_FooterMenu_Fragment, ComponentReferenceFields_MenuGroup_Fragment, ComponentReferenceFields_NavigationMenu_Fragment, ComponentReferenceFields_Page_Fragment, ComponentReferenceFields_Seo_Fragment, ComponentReferenceFields_TopicBusinessInfo_Fragment, ComponentReferenceFields_TopicPerson_Fragment, ComponentReferenceFields_TopicProduct_Fragment, ComponentReferenceFields_TopicProductFeature_Fragment, ComponentReferenceFieldsFragmentDoc from \"../../../../../lib/shared-fragments/__generated/ctf-componentMap.generated\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-asset",
+            "kind": "sync",
+            "evidence": "imports AssetFieldsFragment, AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-text-block\\ctf-text-block.tsx",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-text-block\\__generated\\ctf-text-block.generated.ts",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-text-block\\ctf-text-block-gql.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/ctf-video": {
+      "inputHash": "a138b99cb9674126cf5a372980382ed470f83d1b61602779dbf176e37295deda",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/ctf-video",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-asset",
+            "kind": "sync",
+            "evidence": "imports AssetFieldsFragment from \"@src/components/features/ctf-components/ctf-asset/__generated/ctf-asset.generated\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-video\\ctf-video.tsx"
+        ],
+        "usedByRoutes": [
+          "/",
+          "/[slug]"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/entry-not-found": {
+      "inputHash": "7e517202bf59525dcee2641c6dd4258428ebe8defaaebd9b6e3c5908e17878c8",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/entry-not-found",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/error-box",
+            "kind": "sync",
+            "evidence": "imports ErrorBox from \"@src/components/shared/error-box\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\errors\\entry-not-found.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/page-error": {
+      "inputHash": "1407a67b0ec8dbfd8581fe3cf49a3d205ecb2918c9eb9521b4d486549af8bebe",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/page-error",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/theme",
+            "kind": "sync",
+            "evidence": "imports colorfulTheme from \"@src/theme\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\errors\\page-error.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/page-graphql-error": {
+      "inputHash": "f6cd99ad5c892f6b83915c72aa1dea00d3c4933073739318652e2dbb3fbc70b7",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/page-graphql-error",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/graphql-error",
+            "kind": "sync",
+            "evidence": "imports GraphqlError from \"@src/components/shared/graphql-error\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\errors\\page-graphql-error.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/format-currency": {
+      "inputHash": "fb778d2ed888dd585682b7f7cbed931dcfdf6cb57616f87ea21614084f22c5aa",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/format-currency",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/contentful-context",
+            "kind": "sync",
+            "evidence": "imports useContentfulContext from \"@src/contentful-context\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\format-currency\\format-currency.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/LanguageSelector": {
+      "inputHash": "7fc73449d5cdcdc72420e6c8ed7c4fa37603cf954fceb07adffe25fb41ae0c2f",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/LanguageSelector",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\language-selector\\LanguageSelector.tsx"
+        ],
+        "needsReview": [
+          "router.push(...) with a non-literal value does not resolve to a static path"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/markdown": {
+      "inputHash": "e5f0912171fc8176dd028ecde4946b2aa82f691d92bb4bb76cffb652e37cb510",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/markdown",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\markdown.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/category-link.generated": {
+      "inputHash": "5b3f15fa4cf789c9d17e45bf4da49b68343f8c2e3b0e3d524022346f0c849b4f",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/category-link.generated",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\page-link\\__generated\\category-link.generated.ts"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/post-link.generated": {
+      "inputHash": "a75ee4adc868abb436a27a9c7f6aeafb3659e9f372dd163eb243605dbc804723",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/post-link.generated",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\page-link\\__generated\\post-link.generated.ts"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/page-link": {
+      "inputHash": "e6f6a1284547af5eb65ddcc67614af3f037dfe196997d842f13eeb2345b8d92a",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/page-link",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/link",
+            "kind": "sync",
+            "evidence": "imports Link, LinkProps from \"@src/components/shared/link\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\page-link\\page-link.tsx",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\page-link\\__generated\\page-link.generated.ts"
+        ],
+        "usedByRoutes": [
+          "/",
+          "/[slug]"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/section-headlines": {
+      "inputHash": "6e8a1b53fe0d4e2005b6d65b9ca47e346d33ed9f77488833fa99203499f5a8a9",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/section-headlines",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/markdown",
+            "kind": "sync",
+            "evidence": "imports Markdown from \"@src/components/features/markdown\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\section-headlines\\section-headlines.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/settings-form": {
+      "inputHash": "a54d3708ceff60b8404c148aa0bb575252c490007f2d688e21470132fd09b2a3",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/settings-form",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/contentful-context",
+            "kind": "sync",
+            "evidence": "imports useContentfulContext from \"@src/contentful-context\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\settings\\settings-form.tsx"
+        ],
+        "needsReview": [
+          "router.push(...) with a non-literal value does not resolve to a static path"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/settings": {
+      "inputHash": "b7095466bae8a5dc0a4910f91384836425eb5bb2a0e7db5101c6a76612a50c58",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/settings",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/settings-form",
+            "kind": "sync",
+            "evidence": "imports SettingsForm from \"@src/components/features/settings/settings-form\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\settings\\settings.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/component-resolver": {
+      "inputHash": "ae41e497b6bf78a1685f8badabc56cccb9eee8b52c362a617c2ca71b2509ec57",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/component-resolver",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/contentful-context",
+            "kind": "sync",
+            "evidence": "imports useContentfulContext from \"@src/contentful-context\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\shared\\component-resolver.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/error-box": {
+      "inputHash": "5398e93b69af1278d9e1e3d3ee3f845723db2c396d9f5e8e8803b09e34ef4ef5",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/error-box",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\shared\\error-box.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/graphql-error": {
+      "inputHash": "e51973723ec512e2581cf6911205dc507cae0f83a70e6973c36d256d31c95d77",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/graphql-error",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\shared\\graphql-error.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/link": {
+      "inputHash": "6aca66aa41d96c6be4123f35d0eeb39761d6ca41d134ca07fb447e66773a6d87",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/link",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\shared\\link.tsx"
+        ],
+        "usedByRoutes": [
+          "/",
+          "/[slug]"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/header": {
+      "inputHash": "5f9aee038ea9635bc1271a5a997aea5e5c1dbaf7cc40eae6f68df43ea9d7af3a",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/header",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-navigation",
+            "kind": "sync",
+            "evidence": "imports CtfNavigationGql from \"@src/components/features/ctf-components/ctf-navigation/ctf-navigation-gql\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/link",
+            "kind": "sync",
+            "evidence": "imports Link from \"@src/components/shared/link\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/theme",
+            "kind": "sync",
+            "evidence": "imports HEADER_HEIGHT, HEADER_HEIGHT_MD, CONTAINER_WIDTH from \"@src/theme\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/index-page",
+            "kind": "sync",
+            "evidence": "<Link href=\"/\"> resolves to page \"template-marketing-webapp-nextjs/index-page\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\templates\\header\\header.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/layout": {
+      "inputHash": "a7a45189178108b249b698687e13b27cef2c7bcbe9fe2c7ad497370bb4f14d1f",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/layout",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-footer",
+            "kind": "sync",
+            "evidence": "imports CtfFooterGql from \"@src/components/features/ctf-components/ctf-footer/ctf-footer-gql\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-mobile-menu",
+            "kind": "sync",
+            "evidence": "imports CtfMobileMenuGql from \"@src/components/features/ctf-components/ctf-mobile-menu/ctf-mobile-menu-gql\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\templates\\layout\\layout.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/page-container": {
+      "inputHash": "0762a5789ddd14a007eac95b1018dd6bea79b23eea8652630f4fbb196f0cab87",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/page-container",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\templates\\page-container\\page-container.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/contentful-context": {
+      "inputHash": "3917943e0a538af3e93925e78f5f4d2788b565c16b8f86abadc3811ef947e097",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/contentful-context",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\contentful-context.tsx"
+        ],
+        "usedByRoutes": [
+          "/",
+          "/[slug]"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/ctf-componentMap.generated": {
+      "inputHash": "4d34bd786e507a7353c9277446613f07f15255bd8caeb506dbb675755a73cffe",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/ctf-componentMap.generated",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\lib\\shared-fragments\\__generated\\ctf-componentMap.generated.ts"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/ctf-menuGroup.generated": {
+      "inputHash": "f2fefca5b8534c1f03db6c5517805ea6d1aa94edb20bf4b757ceecf188a20893",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/ctf-menuGroup.generated",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/page-link",
+            "kind": "sync",
+            "evidence": "imports PageLinkFieldsFragment, PageLinkFieldsFragmentDoc from \"../../../components/features/page-link/__generated/page-link.generated\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\lib\\shared-fragments\\__generated\\ctf-menuGroup.generated.ts"
+        ],
+        "usedByRoutes": [
+          "/",
+          "/[slug]"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/[slug]": {
+      "inputHash": "0a1a518889e33673d2cc7a05dd221ec69deea904ffe5e034818b3478d7e846c8",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/[slug]",
+        "type": "Next.js Page",
+        "level": "container",
+        "parentId": "template-marketing-webapp-nextjs",
+        "routePath": "/[slug]",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-footer",
+            "kind": "sync",
+            "evidence": "imports useCtfFooterQuery from \"@src/components/features/ctf-components/ctf-footer/__generated/ctf-footer.generated\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-navigation",
+            "kind": "sync",
+            "evidence": "imports useCtfNavigationQuery from \"@src/components/features/ctf-components/ctf-navigation/__generated/ctf-navigation.generated\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-page.generated",
+            "kind": "sync",
+            "evidence": "imports useCtfPageQuery from \"@src/components/features/ctf-components/ctf-page/__generated/ctf-page.generated\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\pages\\[slug].tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/index-page": {
+      "inputHash": "b53f981b34109e6d6a9c9f5c25dedfdd5d350d28da07cdf9c1afe8d740605b28",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/index-page",
+        "type": "Next.js Page",
+        "level": "container",
+        "parentId": "template-marketing-webapp-nextjs",
+        "routePath": "/",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-footer",
+            "kind": "sync",
+            "evidence": "imports useCtfFooterQuery from \"@src/components/features/ctf-components/ctf-footer/__generated/ctf-footer.generated\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-navigation",
+            "kind": "sync",
+            "evidence": "imports useCtfNavigationQuery from \"@src/components/features/ctf-components/ctf-navigation/__generated/ctf-navigation.generated\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-page.generated",
+            "kind": "sync",
+            "evidence": "imports useCtfPageQuery from \"@src/components/features/ctf-components/ctf-page/__generated/ctf-page.generated\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\pages\\index.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui/theme": {
+      "inputHash": "41454439c09f66c08e74bcad26406af8287d6a70482af3e82a22e761a35e6414",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui/theme",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/shared-ui",
+        "relations": [],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\theme.ts"
+        ],
+        "usedByRoutes": [
+          "/",
+          "/[slug]"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    },
+    "template-marketing-webapp-nextjs/shared-ui": {
+      "inputHash": "82340fba330f1b629b8a04685f5e9e5e7b566fca09f9a4e3bc58d94993614a34",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/shared-ui",
+        "type": "Shared UI & Utilities",
+        "level": "container",
+        "parentId": "template-marketing-webapp-nextjs",
+        "sourceFiles": [],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+    }
+  },
+  "lambdaEnvVarBindings": {}
+}

@@ -1,5 +1,10 @@
 import type { ArchRelation } from "@/lib/types";
-import { AGGREGATED_RELATION_LEGEND, getVisibleRelationKinds, hasAggregatedRelations } from "@/lib/relation-style";
+import {
+  AGGREGATED_RELATION_LEGEND,
+  getVisiblePatterns,
+  getVisibleRelationKinds,
+  hasAggregatedRelations,
+} from "@/lib/relation-style";
 
 interface RelationLegendProps {
   relations: ArchRelation[];
@@ -8,7 +13,8 @@ interface RelationLegendProps {
 export default function RelationLegend({ relations }: RelationLegendProps) {
   const styles = getVisibleRelationKinds(relations);
   const showAggregated = hasAggregatedRelations(relations);
-  if (styles.length === 0 && !showAggregated) return null;
+  const patterns = getVisiblePatterns(relations);
+  if (styles.length === 0 && !showAggregated && patterns.length === 0) return null;
 
   return (
     <div className="relation-legend">
@@ -36,6 +42,12 @@ export default function RelationLegend({ relations }: RelationLegendProps) {
           <span>{AGGREGATED_RELATION_LEGEND.label}</span>
         </div>
       )}
+      {patterns.map((p) => (
+        <div key={p.pattern} className="relation-legend-row">
+          <span className="relation-legend-abbrev">[{p.abbrev}]</span>
+          <span>{p.label}</span>
+        </div>
+      ))}
     </div>
   );
 }

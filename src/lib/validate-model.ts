@@ -11,6 +11,12 @@ const LinkSchema = z.object({
   url: z.url(),
 });
 
+const DddInfoSchema = z.object({
+  subdomain: z.enum(["core", "supporting", "generic"]).optional(),
+  context: z.string().min(1).optional(),
+  role: z.string().min(1).optional(),
+});
+
 const ArchNodeSchema = z.object({
   id: z.string().min(1),
   name: z.string().min(1),
@@ -24,6 +30,7 @@ const ArchNodeSchema = z.object({
   groupId: z.string().nullable().optional(),
   owner: z.string().optional(),
   links: z.array(LinkSchema).optional(),
+  ddd: DddInfoSchema.optional(),
 });
 
 const ArchRelationSchema = z.object({
@@ -35,6 +42,9 @@ const ArchRelationSchema = z.object({
   async: z.boolean().optional(),
   kind: z.enum(["sync", "async-event", "compensation"]).optional(),
   aggregated: z.boolean().optional(),
+  pattern: z
+    .enum(["partnership", "shared-kernel", "customer-supplier", "conformist", "acl", "ohs", "published-language", "ohs-pl"])
+    .optional(),
 });
 
 const AwsGroupSchema = z.object({

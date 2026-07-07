@@ -1,8 +1,16 @@
 import type { ArchNode, AwsGroup } from "./types";
 import type { LayoutPosition } from "./layout";
 
-export interface GroupBox {
-  group: AwsGroup;
+/** Structural shape both AwsGroup and the synthesized bounded-context groups satisfy. */
+export interface GroupLike {
+  id: string;
+  name: string;
+  /** id of the group this one nests inside; omit/null for a root-level group */
+  parentGroupId?: string | null;
+}
+
+export interface GroupBox<G extends GroupLike = AwsGroup> {
+  group: G;
   /** 0 = outermost (e.g. region), increases inward */
   depth: number;
   x: number;
@@ -18,6 +26,8 @@ interface GroupBoxOptions {
   padding: number;
   /** extra top margin reserved for each level's own label */
   labelBand: number;
+  /** which group a node belongs to; defaults to the AWS network group (node.groupId) */
+  getGroupId?: (node: ArchNode) => string | null | undefined;
 }
 
 interface Bbox {
@@ -42,20 +52,23 @@ function unionBbox(a: Bbox | null, b: Bbox): Bbox {
  * or any subset) for the currently visible nodes, as a purely additive visual
  * overlay on top of already-computed layout positions — this never re-runs
  * or influences computeLayeredPositions, so layout stays group-agnostic.
+ *
+ * Generic over the group type so the same folding math also powers
+ * computeBoundedContextBoxes below, via the `getGroupId` option.
  */
-export function computeGroupBoxes(
+export function computeGroupBoxes<G extends GroupLike = AwsGroup>(
   nodes: ArchNode[],
   positions: LayoutPosition[],
-  groups: AwsGroup[],
-  { nodeWidth, nodeHeight, padding, labelBand }: GroupBoxOptions
-): GroupBox[] {
+  groups: G[],
+  { nodeWidth, nodeHeight, padding, labelBand, getGroupId = (n) => n.groupId }: GroupBoxOptions
+): GroupBox<G>[] {
   if (groups.length === 0) return [];
 
   const positionById = new Map(positions.map((p) => [p.node.id, p]));
   const groupById = new Map(groups.map((g) => [g.id, g]));
 
   const depthById = new Map<string, number>();
-  function depthOf(group: AwsGroup): number {
+  function depthOf(group: G): number {
     const cached = depthById.get(group.id);
     if (cached !== undefined) return cached;
     const parent = group.parentGroupId ? groupById.get(group.parentGroupId) : undefined;
@@ -68,8 +81,9 @@ export function computeGroupBoxes(
   // Own bbox per group, from its direct member nodes only.
   const ownBboxByGroupId = new Map<string, Bbox>();
   nodes.forEach((node) => {
-    if (!node.groupId) return;
-    const group = groupById.get(node.groupId);
+    const groupId = getGroupId(node);
+    if (!groupId) return;
+    const group = groupById.get(groupId);
     const pos = positionById.get(node.id);
     if (!group || !pos) return;
     const nodeBbox: Bbox = { minX: pos.x, minY: pos.y, maxX: pos.x + nodeWidth, maxY: pos.y + nodeHeight };
@@ -78,13 +92,13 @@ export function computeGroupBoxes(
 
   // Process innermost-first so each group can fold in its already-computed children.
   const orderedGroups = [...groups].sort((a, b) => depthOf(b) - depthOf(a));
-  const boxByGroupId = new Map<string, GroupBox>();
+  const boxByGroupId = new Map<string, GroupBox<G>>();
 
   orderedGroups.forEach((group) => {
     const childBoxes = groups
       .filter((g) => g.parentGroupId === group.id)
       .map((g) => boxByGroupId.get(g.id))
-      .filter((b): b is GroupBox => Boolean(b));
+      .filter((b): b is GroupBox<G> => Boolean(b));
 
     let bbox = ownBboxByGroupId.get(group.id) ?? null;
     childBoxes.forEach((child) => {
@@ -110,6 +124,41 @@ export function computeGroupBoxes(
 
   return groups
     .map((g) => boxByGroupId.get(g.id))
-    .filter((b): b is GroupBox => Boolean(b))
+    .filter((b): b is GroupBox<G> => Boolean(b))
     .sort((a, b) => a.depth - b.depth);
+}
+
+/** Prefix for synthesized bounded-context group ids, so they can never collide with real AwsGroup/ArchNode ids. */
+export const BC_GROUP_ID_PREFIX = "__bc__:";
+
+/** A bounded-context box is a flat (non-nestable) group synthesized from ArchNode.ddd.context. */
+export interface BoundedContextGroup extends GroupLike {
+  id: string;
+  name: string;
+}
+
+/**
+ * Synthesizes one flat group per distinct `node.ddd.context` value and folds
+ * member positions into a box via the same math as computeGroupBoxes — a
+ * bounded context is a linguistic boundary, not a network one, so it's
+ * computed independently of (and can overlap) AWS network groups.
+ */
+export function computeBoundedContextBoxes(
+  nodes: ArchNode[],
+  positions: LayoutPosition[],
+  options: { nodeWidth: number; nodeHeight: number; padding: number; labelBand: number }
+): GroupBox<BoundedContextGroup>[] {
+  const contextNames = new Set<string>();
+  nodes.forEach((node) => {
+    if (node.ddd?.context) contextNames.add(node.ddd.context);
+  });
+  const groups: BoundedContextGroup[] = [...contextNames].map((name) => ({
+    id: `${BC_GROUP_ID_PREFIX}${name}`,
+    name,
+  }));
+
+  return computeGroupBoxes(nodes, positions, groups, {
+    ...options,
+    getGroupId: (node) => (node.ddd?.context ? `${BC_GROUP_ID_PREFIX}${node.ddd.context}` : null),
+  });
 }

@@ -1,0 +1,3 @@
+frontend:
+  - repo: ../web-storefront
+    branch: { dev: develop, hml: staging, prd: main }

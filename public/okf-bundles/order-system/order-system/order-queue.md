@@ -4,6 +4,8 @@ title: Order Queue
 description: Buffers refund-check events for asynchronous processing.
 level: container
 aws_resource_type: AWS::SQS::Queue
+ddd_context: Orders
+owner: Orders Team
 ---
 
 # Schema
@@ -13,4 +15,4 @@ aws_resource_type: AWS::SQS::Queue
 
 # Relations
 
-- [Refund Worker](refund-worker.md) — Triggers {kind: async-event}
+- [Refund Worker](refund-worker.md) — RefundRequested {kind: async-event}

@@ -2,7 +2,18 @@ import { parseFrontmatter } from "./frontmatter";
 import { findAwsIcon } from "./aws-icons";
 import { extractSection, parseLinksSection } from "./okf-sections";
 import { resolveRelativePath } from "./paths";
-import type { ArchModel, ArchNode, ArchRelation, AwsGroup, AwsGroupKind, C4Level, RelationKind } from "./types";
+import type {
+  ArchModel,
+  ArchNode,
+  ArchRelation,
+  AwsGroup,
+  AwsGroupKind,
+  C4Level,
+  ContextMapPattern,
+  DddInfo,
+  DddSubdomain,
+  RelationKind,
+} from "./types";
 
 /**
  * File-access abstraction so the parsing logic below can run both in the
@@ -47,12 +58,14 @@ const browserIo: OkfIo = {
  *    nesting becomes our `ArchNode.parentId` chain.
  * 2. Adds our own convention on top, using fields/sections OKF explicitly
  *    allows producers to add: a `# Relations` section (bullet list of
- *    `[label](link.md)` with an optional `{kind: async-event}` suffix) for
- *    typed ArchRelations, a `# Links` section (bullet list of
- *    `[label](https://...)`, absolute URLs only) for operational links, and
- *    custom frontmatter (`level`, `icon`, `group`, `owner`, `aws_resource_type`,
- *    plus `kind`/`subnet_type` on group concepts) for everything OKF has no
- *    native field for.
+ *    `[label](link.md)` with an optional trailing `{kind: async-event}` and/or
+ *    `{pattern: acl}` suffix — both optional, order-independent, and combinable
+ *    in one brace group e.g. `{kind: async-event, pattern: ohs-pl}`) for typed
+ *    ArchRelations, a `# Links` section (bullet list of `[label](https://...)`,
+ *    absolute URLs only) for operational links, and custom frontmatter
+ *    (`level`, `icon`, `group`, `owner`, `aws_resource_type`, `ddd_subdomain`,
+ *    `ddd_context`, `ddd_role`, plus `kind`/`subnet_type` on group concepts)
+ *    for everything OKF has no native field for.
  *
  * A concept's `icon` falls back to `findAwsIcon(type)` when omitted, so
  * bundle authors don't need to know our exact icon filenames for AWS
@@ -115,10 +128,15 @@ export async function importOkfBundle(basePath: string, io: OkfIo = browserIo): 
         // prose follows it on the line (after a leading "—"), e.g. "Places
         // orders using". Falls back to the link text if none is given.
         const afterLink = line.slice(line.indexOf(fullMatch) + fullMatch.length).trim();
-        const kindMatch = afterLink.match(/\{\s*kind:\s*([a-z-]+)\s*\}/i);
+        // A single trailing brace group may carry `kind:` and/or `pattern:`, in
+        // either order, e.g. "{kind: async-event, pattern: ohs-pl}" or just "{pattern: acl}".
+        const braceMatch = afterLink.match(/\{([^{}]*)\}/);
+        const braceContent = braceMatch?.[1] ?? "";
+        const kindMatch = braceContent.match(/kind:\s*([a-z-]+)/i);
+        const patternMatch = braceContent.match(/pattern:\s*([a-z-]+)/i);
         const label =
           afterLink
-            .replace(/\{\s*kind:\s*[a-z-]+\s*\}/i, "")
+            .replace(/\{[^{}]*\}/, "")
             .replace(/^[-—–]\s*/, "")
             .trim() || linkText;
         const targetId = pathToId(resolveRelativePath(dirPath, href));
@@ -129,6 +147,7 @@ export async function importOkfBundle(basePath: string, io: OkfIo = browserIo): 
           label: label.trim(),
         };
         if (kindMatch) relation.kind = kindMatch[1] as RelationKind;
+        if (patternMatch) relation.pattern = patternMatch[1] as ContextMapPattern;
         return relation;
       })
       .filter((r): r is ArchRelation => r !== null);
@@ -146,6 +165,14 @@ export async function importOkfBundle(basePath: string, io: OkfIo = browserIo): 
     const owner = typeof data.owner === "string" ? data.owner : undefined;
     const links = parseLinksSection(content);
 
+    const dddSubdomain = typeof data.ddd_subdomain === "string" ? (data.ddd_subdomain as DddSubdomain) : undefined;
+    const dddContext = typeof data.ddd_context === "string" ? data.ddd_context : undefined;
+    const dddRole = typeof data.ddd_role === "string" ? data.ddd_role : undefined;
+    const ddd: DddInfo | undefined =
+      dddSubdomain || dddContext || dddRole
+        ? { subdomain: dddSubdomain, context: dddContext, role: dddRole }
+        : undefined;
+
     nodes.push({
       id,
       name: typeof data.title === "string" ? data.title : fileName,
@@ -159,6 +186,7 @@ export async function importOkfBundle(basePath: string, io: OkfIo = browserIo): 
       aws: awsResourceType ? { resourceType: awsResourceType, properties: parseSchemaSection(content) } : undefined,
       owner,
       links: links.length > 0 ? links : undefined,
+      ddd,
     });
 
     relations.push(...parseRelationsSection(content, id, dirPath));

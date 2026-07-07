@@ -48,8 +48,14 @@ export async function syncWorktree(repoPath: string, repoKey: string, branch: st
   }
 
   if (registered) {
-    await simpleGit(target).checkout(branch);
-    await simpleGit(target).pull("origin", branch);
+    // Checking out `branch` by name here would conflict with it already
+    // being checked out in another of this repo's worktrees (e.g. `repoPath`
+    // itself sitting on that same branch, as an ordinary non-bare checkout
+    // would) — git only allows one worktree per branch at a time. Detaching
+    // onto the (already-fetched) remote-tracking ref instead sidesteps that
+    // restriction entirely and matches the "add" branch below, which also
+    // leaves the worktree in detached HEAD.
+    await simpleGit(target).checkout(["--detach", `origin/${branch}`]);
   } else {
     await git.raw(["worktree", "add", "-f", target, `origin/${branch}`]);
   }

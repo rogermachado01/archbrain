@@ -1,4 +1,4 @@
-import type { ConceptFacts } from "../types";
+import type { ConceptFacts, FactRelation } from "../types";
 import type { ContextAssignment } from "./organize";
 
 /** Containers at or below this many children skip materialization entirely — deliberately higher than synthesize.ts's ORGANIZE_MIN_CHILDREN=9, since tagging is low-risk but restructuring the file tree is not. */
@@ -112,4 +112,64 @@ export function computeMaterializationPlan(
   });
 
   return { containerId, groups, idRemap };
+}
+
+export function applyMaterializationPlan(allConcepts: ConceptFacts[], plan: MaterializationPlan): ConceptFacts[] {
+  const memberToGroup = new Map<string, CapabilityGroup>();
+  for (const group of plan.groups) {
+    for (const memberId of group.memberIds) memberToGroup.set(memberId, group);
+  }
+  // Only meaningful for the promoted case: a promoted group's `containerId` IS
+  // the concept's own new id (there's no separate wrapper container), so its
+  // new parentId must be one level up from the *original* container being
+  // materialized, not `group.containerId` itself — conflating the two was a
+  // real bug caught by this module's own test suite while it was being written.
+  const parentOfContainer = plan.containerId.includes("/")
+    ? plan.containerId.slice(0, plan.containerId.lastIndexOf("/"))
+    : null;
+
+  const rewritten = allConcepts.map((concept) => {
+    const newId = plan.idRemap[concept.id];
+    const relations = concept.relations?.map((rel) => {
+      const remapped = plan.idRemap[rel.targetId];
+      return remapped ? { ...rel, targetId: remapped } : rel;
+    });
+    if (!newId) {
+      return relations ? { ...concept, relations } : concept;
+    }
+    const group = memberToGroup.get(concept.id)!;
+    const newParentId = group.promoted ? parentOfContainer! : group.containerId;
+    return { ...concept, id: newId, parentId: newParentId, relations };
+  });
+
+  const rewrittenById = new Map(rewritten.map((c) => [c.id, c]));
+
+  const newContainers: ConceptFacts[] = plan.groups
+    .filter((g) => !g.promoted)
+    .map((g) => {
+      const seenTargetGroups = new Set<string>();
+      const relations: FactRelation[] = [];
+      for (const oldMemberId of g.memberIds) {
+        const newMemberId = plan.idRemap[oldMemberId];
+        const member = rewrittenById.get(newMemberId);
+        for (const rel of member?.relations ?? []) {
+          const targetGroup = plan.groups.find(
+            (og) => og.containerId !== g.containerId && og.memberIds.some((m) => plan.idRemap[m] === rel.targetId),
+          );
+          if (!targetGroup || seenTargetGroups.has(targetGroup.containerId)) continue;
+          seenTargetGroups.add(targetGroup.containerId);
+          relations.push({ targetId: targetGroup.containerId, kind: rel.kind, evidence: rel.evidence });
+        }
+      }
+      return {
+        id: g.containerId,
+        type: "UI Capability",
+        level: "container" as const,
+        parentId: plan.containerId,
+        relations: relations.length > 0 ? relations : undefined,
+        sourceFiles: [],
+      };
+    });
+
+  return [...rewritten, ...newContainers];
 }

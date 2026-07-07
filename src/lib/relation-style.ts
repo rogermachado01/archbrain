@@ -1,4 +1,4 @@
-import type { ArchRelation, RelationKind } from "./types";
+import type { ArchRelation, ContextMapPattern, RelationKind } from "./types";
 
 export interface RelationStyle {
   kind: RelationKind;
@@ -46,4 +46,31 @@ export function getVisibleRelationKinds(relations: ArchRelation[]): RelationStyl
   return (Object.keys(RELATION_STYLES) as RelationKind[])
     .filter((k) => present.has(k))
     .map((k) => RELATION_STYLES[k]);
+}
+
+/** DDD context-map relationship patterns: abbreviation shown on the edge label + full name for the legend. */
+export const CONTEXT_MAP_PATTERNS: Record<ContextMapPattern, { abbrev: string; label: string }> = {
+  partnership: { abbrev: "P", label: "Partnership" },
+  "shared-kernel": { abbrev: "SK", label: "Shared Kernel" },
+  "customer-supplier": { abbrev: "C/S", label: "Customer-Supplier" },
+  conformist: { abbrev: "CF", label: "Conformist" },
+  acl: { abbrev: "ACL", label: "Anti-Corruption Layer" },
+  ohs: { abbrev: "OHS", label: "Open Host Service" },
+  "published-language": { abbrev: "PL", label: "Published Language" },
+  "ohs-pl": { abbrev: "OHS/PL", label: "Open Host Service / Published Language" },
+};
+
+/** Relation label with the DDD context-map pattern abbreviation appended, e.g. "Charges order [ACL]". */
+export function formatRelationLabel(rel: ArchRelation): string | undefined {
+  const patternInfo = rel.pattern ? CONTEXT_MAP_PATTERNS[rel.pattern] : undefined;
+  if (!patternInfo) return rel.label;
+  return rel.label ? `${rel.label} [${patternInfo.abbrev}]` : `[${patternInfo.abbrev}]`;
+}
+
+/** Distinct DDD context-map patterns present in the given relations, in ContextMapPattern key order. */
+export function getVisiblePatterns(relations: ArchRelation[]): { pattern: ContextMapPattern; abbrev: string; label: string }[] {
+  const present = new Set(relations.map((r) => r.pattern).filter((p): p is ContextMapPattern => Boolean(p)));
+  return (Object.keys(CONTEXT_MAP_PATTERNS) as ContextMapPattern[])
+    .filter((p) => present.has(p))
+    .map((p) => ({ pattern: p, ...CONTEXT_MAP_PATTERNS[p] }));
 }

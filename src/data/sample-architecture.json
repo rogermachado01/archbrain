@@ -9,28 +9,28 @@
   ],
   "nodes": [
     { "id": "user", "name": "Customer", "description": "A person browsing and buying products.", "level": "context", "external": true, "parentId": null, "icon": "user.svg" },
-    { "id": "webapp-system", "name": "E-commerce Platform", "description": "Lets customers browse products and place orders through a saga-based order fulfillment process.", "level": "context", "parentId": null },
-    { "id": "payment-system", "name": "Payment Gateway", "description": "External payment processor.", "level": "context", "external": true, "technology": "Stripe", "parentId": null, "icon": "generic-application.svg" },
+    { "id": "webapp-system", "name": "E-commerce Platform", "description": "Lets customers browse products and place orders through a saga-based order fulfillment process.", "level": "context", "parentId": null, "owner": "Platform Team", "ddd": { "subdomain": "core" } },
+    { "id": "payment-system", "name": "Payment Gateway", "description": "External payment processor.", "level": "context", "external": true, "technology": "Stripe", "parentId": null, "icon": "generic-application.svg", "ddd": { "subdomain": "generic" } },
 
-    { "id": "cloudfront", "name": "CDN", "level": "container", "technology": "Amazon CloudFront", "parentId": "webapp-system", "icon": "amazon-cloudfront.svg",
+    { "id": "cloudfront", "name": "CDN", "level": "container", "technology": "Amazon CloudFront", "parentId": "webapp-system", "icon": "amazon-cloudfront.svg", "owner": "Storefront Squad", "ddd": { "context": "Storefront" },
       "aws": { "resourceType": "AWS::CloudFront::Distribution", "properties": { "priceClass": "PriceClass_100", "httpVersion": "http2", "defaultTtl": 86400 } } },
 
-    { "id": "assets-bucket", "name": "Static Assets", "level": "container", "technology": "Amazon S3", "parentId": "webapp-system", "icon": "amazon-simple-storage-service.svg",
+    { "id": "assets-bucket", "name": "Static Assets", "level": "container", "technology": "Amazon S3", "parentId": "webapp-system", "icon": "amazon-simple-storage-service.svg", "owner": "Storefront Squad", "ddd": { "context": "Storefront" },
       "aws": { "resourceType": "AWS::S3::Bucket", "properties": { "versioning": true, "encryption": "AES256", "publicAccess": false } } },
 
-    { "id": "api-gateway", "name": "API Gateway", "level": "container", "technology": "Amazon API Gateway", "parentId": "webapp-system", "icon": "amazon-api-gateway.svg",
+    { "id": "api-gateway", "name": "API Gateway", "level": "container", "technology": "Amazon API Gateway", "parentId": "webapp-system", "icon": "amazon-api-gateway.svg", "owner": "Storefront Squad", "ddd": { "context": "Storefront" },
       "aws": { "resourceType": "AWS::ApiGateway::RestApi", "properties": { "endpointType": "REGIONAL", "throttlingRateLimit": 1000, "throttlingBurstLimit": 200 } } },
 
-    { "id": "web-lambda", "name": "BFF API", "level": "container", "technology": "AWS Lambda", "parentId": "webapp-system", "icon": "aws-lambda.svg",
+    { "id": "web-lambda", "name": "BFF API", "level": "container", "technology": "AWS Lambda", "parentId": "webapp-system", "icon": "aws-lambda.svg", "owner": "Storefront Squad", "ddd": { "context": "Storefront" },
       "aws": { "resourceType": "AWS::Lambda::Function", "properties": { "runtime": "nodejs20.x", "memorySize": 512, "timeout": 10, "handler": "index.handler" } } },
 
-    { "id": "orders-service", "name": "Order Service", "level": "container", "technology": "AWS Lambda", "parentId": "webapp-system", "icon": "aws-lambda.svg", "description": "Accepts the order request and starts the fulfillment saga.",
+    { "id": "orders-service", "name": "Order Service", "level": "container", "technology": "AWS Lambda", "parentId": "webapp-system", "icon": "aws-lambda.svg", "description": "Accepts the order request and starts the fulfillment saga.", "owner": "Orders Squad", "ddd": { "context": "Orders" },
       "aws": { "resourceType": "AWS::Lambda::Function", "properties": { "runtime": "nodejs20.x", "memorySize": 1024, "timeout": 15, "handler": "orders.handler" } } },
 
-    { "id": "saga-orchestrator", "name": "Order Saga", "level": "container", "technology": "AWS Step Functions", "parentId": "webapp-system", "icon": "aws-step-functions.svg", "description": "Orchestrates payment, inventory and shipping steps, running compensations on failure.",
+    { "id": "saga-orchestrator", "name": "Order Saga", "level": "container", "technology": "AWS Step Functions", "parentId": "webapp-system", "icon": "aws-step-functions.svg", "description": "Orchestrates payment, inventory and shipping steps, running compensations on failure.", "owner": "Orders Squad", "ddd": { "context": "Orders" },
       "aws": { "resourceType": "AWS::StepFunctions::StateMachine", "properties": { "type": "STANDARD", "loggingLevel": "ERROR", "tracingEnabled": true } } },
 
-    { "id": "payment-service", "name": "Payment Step", "level": "container", "technology": "AWS Lambda", "parentId": "webapp-system", "icon": "aws-lambda.svg", "description": "Saga step: reserves payment for the order.", "groupId": "subnet-private-a",
+    { "id": "payment-service", "name": "Payment Step", "level": "container", "technology": "AWS Lambda", "parentId": "webapp-system", "icon": "aws-lambda.svg", "description": "Saga step: reserves payment for the order.", "groupId": "subnet-private-a", "owner": "Payments Squad", "ddd": { "context": "Payments" },
       "aws": { "resourceType": "AWS::Lambda::Function", "properties": { "runtime": "nodejs20.x", "memorySize": 512, "timeout": 10, "handler": "payment.handler" } } },
 
     { "id": "inventory-service", "name": "Inventory Step", "level": "container", "technology": "AWS Lambda", "parentId": "webapp-system", "icon": "aws-lambda.svg", "description": "Saga step: reserves stock for the order.", "groupId": "subnet-private-a",
@@ -48,6 +48,15 @@
     { "id": "saga-events", "name": "Saga Events", "level": "container", "technology": "Amazon EventBridge", "parentId": "webapp-system", "icon": "amazon-eventbridge.svg", "description": "Publishes saga completed/failed events.",
       "aws": { "resourceType": "AWS::Events::EventBus", "properties": { "eventBusName": "order-saga-bus", "archiveEnabled": true } } },
 
+    { "id": "payments-table", "name": "Payments Table", "level": "container", "technology": "Amazon DynamoDB", "parentId": "webapp-system", "icon": "amazon-dynamodb.svg", "owner": "Payments Squad", "ddd": { "context": "Payments" },
+      "aws": { "resourceType": "AWS::DynamoDB::Table", "properties": { "billingMode": "PAY_PER_REQUEST", "partitionKey": "paymentId", "streamEnabled": false } } },
+
+    { "id": "inventory-table", "name": "Inventory Table", "level": "container", "technology": "Amazon DynamoDB", "parentId": "webapp-system", "icon": "amazon-dynamodb.svg",
+      "aws": { "resourceType": "AWS::DynamoDB::Table", "properties": { "billingMode": "PAY_PER_REQUEST", "partitionKey": "sku", "streamEnabled": false } } },
+
+    { "id": "shipments-table", "name": "Shipments Table", "level": "container", "technology": "Amazon DynamoDB", "parentId": "webapp-system", "icon": "amazon-dynamodb.svg",
+      "aws": { "resourceType": "AWS::DynamoDB::Table", "properties": { "billingMode": "PAY_PER_REQUEST", "partitionKey": "shipmentId", "streamEnabled": false } } },
+
     { "id": "notifications-queue", "name": "Notifications Queue", "level": "container", "technology": "Amazon SQS", "parentId": "webapp-system", "icon": "amazon-simple-queue-service.svg",
       "aws": { "resourceType": "AWS::SQS::Queue", "properties": { "visibilityTimeout": 30, "messageRetentionPeriod": 345600, "fifo": false } } },
 
@@ -57,37 +66,31 @@
     { "id": "orders-table", "name": "Orders Table", "level": "container", "technology": "Amazon DynamoDB", "parentId": "webapp-system", "icon": "amazon-dynamodb.svg",
       "aws": { "resourceType": "AWS::DynamoDB::Table", "properties": { "billingMode": "PAY_PER_REQUEST", "partitionKey": "orderId", "streamEnabled": true } } },
 
-    { "id": "payments-table", "name": "Payments Table", "level": "container", "technology": "Amazon DynamoDB", "parentId": "webapp-system", "icon": "amazon-dynamodb.svg",
-      "aws": { "resourceType": "AWS::DynamoDB::Table", "properties": { "billingMode": "PAY_PER_REQUEST", "partitionKey": "paymentId", "streamEnabled": false } } },
-
-    { "id": "inventory-table", "name": "Inventory Table", "level": "container", "technology": "Amazon DynamoDB", "parentId": "webapp-system", "icon": "amazon-dynamodb.svg",
-      "aws": { "resourceType": "AWS::DynamoDB::Table", "properties": { "billingMode": "PAY_PER_REQUEST", "partitionKey": "sku", "streamEnabled": false } } },
-
-    { "id": "shipments-table", "name": "Shipments Table", "level": "container", "technology": "Amazon DynamoDB", "parentId": "webapp-system", "icon": "amazon-dynamodb.svg",
-      "aws": { "resourceType": "AWS::DynamoDB::Table", "properties": { "billingMode": "PAY_PER_REQUEST", "partitionKey": "shipmentId", "streamEnabled": false } } },
-
-    { "id": "order-handler", "name": "OrderHandler", "level": "component", "technology": "TypeScript class", "parentId": "orders-service", "description": "Parses incoming order requests and starts the saga." },
-    { "id": "order-validator", "name": "OrderValidator", "level": "component", "technology": "TypeScript class", "parentId": "orders-service", "description": "Validates order payloads and business rules." },
-    { "id": "order-repository", "name": "OrderRepository", "level": "component", "technology": "TypeScript class", "parentId": "orders-service", "description": "Reads and writes order records to DynamoDB." }
+    { "id": "order-handler", "name": "OrderHandler", "level": "component", "technology": "TypeScript class", "parentId": "orders-service", "description": "Parses incoming order requests and starts the saga.", "ddd": { "context": "Orders", "role": "Application Service" },
+      "aws": { "resourceType": "DDD::ApplicationService", "properties": {} } },
+    { "id": "order-validator", "name": "OrderValidator", "level": "component", "technology": "TypeScript class", "parentId": "orders-service", "description": "Validates order payloads and business rules.", "icon": "ddd-policy.svg", "ddd": { "context": "Orders", "role": "Domain Service" },
+      "aws": { "resourceType": "DDD::DomainService", "properties": {} } },
+    { "id": "order-repository", "name": "OrderRepository", "level": "component", "technology": "TypeScript class", "parentId": "orders-service", "description": "Reads and writes order records to DynamoDB.", "icon": "ddd-read-model.svg", "ddd": { "context": "Orders", "role": "Repository" },
+      "aws": { "resourceType": "DDD::Repository", "properties": {} } }
   ],
   "relations": [
     { "id": "r1", "source": "user", "target": "webapp-system", "label": "Places orders using", "technology": "HTTPS" },
-    { "id": "r2", "source": "webapp-system", "target": "payment-system", "label": "Processes payments using", "technology": "HTTPS/JSON" },
+    { "id": "r2", "source": "webapp-system", "target": "payment-system", "label": "Processes payments using", "technology": "HTTPS/JSON", "kind": "sync", "pattern": "acl" },
 
     { "id": "r3", "source": "cloudfront", "target": "assets-bucket", "label": "Serves static assets from" },
     { "id": "r4", "source": "cloudfront", "target": "api-gateway", "label": "Routes API calls to" },
     { "id": "r5", "source": "api-gateway", "target": "web-lambda", "label": "Invokes" },
     { "id": "r6", "source": "web-lambda", "target": "orders-service", "label": "Calls" },
     { "id": "r7", "source": "orders-service", "target": "orders-table", "label": "Creates order (PENDING)" },
-    { "id": "r8", "source": "orders-service", "target": "saga-orchestrator", "label": "Starts saga execution", "async": true },
+    { "id": "r8", "source": "orders-service", "target": "saga-orchestrator", "label": "OrderPlaced", "kind": "async-event" },
 
-    { "id": "r9", "source": "saga-orchestrator", "target": "payment-service", "label": "Step 1: reserve payment", "async": true },
+    { "id": "r9", "source": "saga-orchestrator", "target": "payment-service", "label": "Step 1: reserve payment", "kind": "async-event" },
     { "id": "r10", "source": "payment-service", "target": "payments-table", "label": "Reads/writes" },
 
-    { "id": "r11", "source": "saga-orchestrator", "target": "inventory-service", "label": "Step 2: reserve inventory", "async": true },
+    { "id": "r11", "source": "saga-orchestrator", "target": "inventory-service", "label": "Step 2: reserve inventory", "kind": "async-event" },
     { "id": "r12", "source": "inventory-service", "target": "inventory-table", "label": "Reads/writes" },
 
-    { "id": "r13", "source": "saga-orchestrator", "target": "shipping-service", "label": "Step 3: schedule shipment", "async": true },
+    { "id": "r13", "source": "saga-orchestrator", "target": "shipping-service", "label": "Step 3: schedule shipment", "kind": "async-event" },
     { "id": "r14", "source": "shipping-service", "target": "shipments-table", "label": "Reads/writes" },
 
     { "id": "r15", "source": "saga-orchestrator", "target": "payment-compensation", "label": "Compensates on failure", "kind": "compensation" },
@@ -96,9 +99,9 @@
     { "id": "r17", "source": "saga-orchestrator", "target": "inventory-compensation", "label": "Compensates on failure", "kind": "compensation" },
     { "id": "r18", "source": "inventory-compensation", "target": "inventory-table", "label": "Releases reservation" },
 
-    { "id": "r19", "source": "saga-orchestrator", "target": "saga-events", "label": "Publishes saga result", "async": true },
-    { "id": "r20", "source": "saga-events", "target": "notifications-queue", "label": "Routes event to", "async": true },
-    { "id": "r21", "source": "notifications-queue", "target": "notifications-lambda", "label": "Triggers", "async": true },
+    { "id": "r19", "source": "saga-orchestrator", "target": "saga-events", "label": "OrderCompleted / OrderFailed", "kind": "async-event" },
+    { "id": "r20", "source": "saga-events", "target": "notifications-queue", "label": "OrderCompleted", "kind": "async-event" },
+    { "id": "r21", "source": "notifications-queue", "target": "notifications-lambda", "label": "Triggers on OrderCompleted", "kind": "async-event" },
     { "id": "r22", "source": "notifications-lambda", "target": "orders-table", "label": "Updates order status" },
 
     { "id": "r23", "source": "payment-service", "target": "payment-system", "label": "Charges card via", "technology": "HTTPS" },

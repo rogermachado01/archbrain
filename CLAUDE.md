@@ -248,6 +248,17 @@ requires a Suspense boundary above in production builds. `ArchVizApp` derives
   `DETOUR_LANE_GAP`); the AWS Cloud boundary's height is computed to include that lane so
   detoured edges stay inside it. **Don't remove this detour logic** without re-checking a
   many-step saga/orchestration dataset — that's exactly the case it fixes.
+  Within one layer, `computeLayeredPositions` wraps nodes into a grid capped at
+  `maxRowsPerLayer` (default 6) sub-columns wide, rather than stacking every same-layer node
+  in one ever-taller column — a container/cluster view with dozens of siblings in the same
+  layer used to render as a single column many screens tall. `layer` itself (what the detour
+  check above compares) stays the pure topological value; only the x/y placement within that
+  layer changes. Separately, a node with **no incoming edges** has no predecessor constraint,
+  so it's pulled down to sit just one layer above its nearest successor instead of always
+  parking at layer 0 — safe because the new layer is still guaranteed less than every
+  successor's layer, so this can never create a backward-pointing edge. Nodes with at least
+  one incoming edge are untouched (already at the tightest valid layer). Both changes are
+  covered by `src/lib/layout.test.ts`.
   Edges are drawn at a *lower* `zIndex` than nodes (nodes: 2, edges: 1, boundary: -1) so that if
   a routed edge still happens to pass under a node, clicks on that node aren't intercepted by
   the edge sitting on top of it — this was a real, reproducible bug (`elementFromPoint` returned

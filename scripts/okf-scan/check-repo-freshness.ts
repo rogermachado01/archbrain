@@ -15,11 +15,14 @@ export interface RepoRef {
 
 /** Every repo a scan run touches, keyed the same way in the manifest and in worktree naming. */
 export function listRepoRefs(config: RepoMapConfig, env: Environment): RepoRef[] {
-  const refs: RepoRef[] = [{ key: "terraform", kind: "terraform", repoPath: config.terraform.path }];
-  for (const [address, entry] of Object.entries(config.resources)) {
+  const refs: RepoRef[] = [];
+  if (config.terraform) {
+    refs.push({ key: "terraform", kind: "terraform", repoPath: config.terraform.path });
+  }
+  for (const [address, entry] of Object.entries(config.resources ?? {})) {
     refs.push({ key: address, kind: "lambda", repoPath: entry.repo, branch: entry.branch[env] });
   }
-  for (const entry of config.frontend) {
+  for (const entry of config.frontend ?? []) {
     refs.push({ key: path.basename(entry.repo), kind: "frontend", repoPath: entry.repo, branch: entry.branch[env] });
   }
   return refs;
@@ -29,7 +32,7 @@ async function currentRefFor(ref: RepoRef, config: RepoMapConfig, env: Environme
   if (ref.kind === "terraform") {
     const entries = await readdir(ref.repoPath);
     const excluded = new Set(
-      Object.entries(config.terraform.envFiles)
+      Object.entries(config.terraform!.envFiles)
         .filter(([e]) => e !== env)
         .map(([, file]) => file)
     );
@@ -55,7 +58,13 @@ export async function checkRepoFreshness(
 ): Promise<FreshnessResult[]> {
   const refs = listRepoRefs(config, env);
   return mapWithConcurrency(refs, concurrency, async (ref) => {
-    const current = await currentRefFor(ref, config, env);
+    let current: string;
+    try {
+      current = await currentRefFor(ref, config, env);
+    } catch (err) {
+      const reason = err instanceof Error ? err.message : String(err);
+      throw new Error(`okf-scan: failed to check freshness for "${ref.key}" (${ref.kind}, path "${ref.repoPath}"): ${reason}`);
+    }
     const previous: ManifestRepoEntry | undefined = manifest._repos[ref.key];
     const changed = !previous || previous.env !== env || previous.lastScannedRef !== current;
     return { ref, currentRef: current, changed };

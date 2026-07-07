@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { ConceptFacts } from "../types";
 import type { ContextAssignment } from "./organize";
-import { computeMaterializationPlan } from "./materialize";
+import { applyMaterializationPlan, computeMaterializationPlan } from "./materialize";
 
 function component(id: string, context: string, relations?: ConceptFacts["relations"]): ConceptFacts {
   return { id, type: "React Component", level: "component", parentId: "app/shared-ui", relations, sourceFiles: [] };
@@ -149,5 +149,101 @@ describe("computeMaterializationPlan", () => {
     const plan = computeMaterializationPlan("app/shared-ui", children, assignments, children);
     expect(plan?.idRemap["app/shared-ui/c0"]).toBeUndefined();
     expect(plan?.groups.every((g) => !g.memberIds.includes("app/shared-ui/c0"))).toBe(true);
+  });
+});
+
+describe("applyMaterializationPlan", () => {
+  it("rewrites member ids/parentIds and remaps their relation targetIds", () => {
+    const children = Array.from({ length: 16 }, (_, i) => component(`app/shared-ui/c${i}`, i < 8 ? "Navigation" : "Content"));
+    children[0].relations = [{ targetId: "app/shared-ui/c8", evidence: "imports" }];
+    const assignments: Record<string, ContextAssignment> = {};
+    children.forEach((c, i) => (assignments[c.id] = { context: i < 8 ? "Navigation" : "Content" }));
+    const plan = computeMaterializationPlan("app/shared-ui", children, assignments, children)!;
+
+    const result = applyMaterializationPlan(children, plan);
+    const c0 = result.find((c) => c.id === "app/shared-ui/navigation/c0")!;
+    expect(c0.parentId).toBe("app/shared-ui/navigation");
+    expect(c0.relations?.[0].targetId).toBe("app/shared-ui/content/c8");
+  });
+
+  it("creates one new capability container per non-promoted group, parented under the original container", () => {
+    const children = Array.from({ length: 16 }, (_, i) => component(`app/shared-ui/c${i}`, i < 8 ? "Navigation" : "Content"));
+    const assignments: Record<string, ContextAssignment> = {};
+    children.forEach((c, i) => (assignments[c.id] = { context: i < 8 ? "Navigation" : "Content" }));
+    const plan = computeMaterializationPlan("app/shared-ui", children, assignments, children)!;
+
+    const result = applyMaterializationPlan(children, plan);
+    const navContainer = result.find((c) => c.id === "app/shared-ui/navigation")!;
+    expect(navContainer.parentId).toBe("app/shared-ui");
+    expect(navContainer.type).toBe("UI Capability");
+    expect(navContainer.level).toBe("container");
+  });
+
+  it("aggregates cross-group relations onto the new capability containers, deduplicated by target group", () => {
+    const children = Array.from({ length: 16 }, (_, i) => component(`app/shared-ui/c${i}`, i < 8 ? "Navigation" : "Content"));
+    children[0].relations = [{ targetId: "app/shared-ui/c8", evidence: "imports" }];
+    children[1].relations = [{ targetId: "app/shared-ui/c9", evidence: "also imports" }];
+    const assignments: Record<string, ContextAssignment> = {};
+    children.forEach((c, i) => (assignments[c.id] = { context: i < 8 ? "Navigation" : "Content" }));
+    const plan = computeMaterializationPlan("app/shared-ui", children, assignments, children)!;
+
+    const result = applyMaterializationPlan(children, plan);
+    const navContainer = result.find((c) => c.id === "app/shared-ui/navigation")!;
+    expect(navContainer.relations).toHaveLength(1);
+    expect(navContainer.relations?.[0].targetId).toBe("app/shared-ui/content");
+  });
+
+  it("does not create a synthetic wrapper container for a promoted single-member group", () => {
+    const children = Array.from({ length: 15 }, (_, i) => {
+      if (i < 5) return component(`app/shared-ui/c${i}`, "A");
+      if (i < 10) return component(`app/shared-ui/c${i}`, "B");
+      if (i < 14) return component(`app/shared-ui/c${i}`, "C");
+      return component(`app/shared-ui/c${i}`, "Theme");
+    });
+    children[0].relations = [{ targetId: "app/shared-ui/c14", evidence: "x" }];
+    children[5].relations = [{ targetId: "app/shared-ui/c14", evidence: "x" }];
+    children[10].relations = [{ targetId: "app/shared-ui/c14", evidence: "x" }];
+    const assignments: Record<string, ContextAssignment> = {};
+    children.forEach((c, i) => {
+      assignments[c.id] = { context: i < 5 ? "A" : i < 10 ? "B" : i < 14 ? "C" : "Theme" };
+    });
+    const plan = computeMaterializationPlan("app/shared-ui", children, assignments, children)!;
+
+    const result = applyMaterializationPlan(children, plan);
+    expect(result.find((c) => c.id === "app/shared-ui/theme")).toBeUndefined();
+    const promoted = result.find((c) => c.id === "app/c14")!;
+    expect(promoted.parentId).toBe("app");
+  });
+
+  it("remaps a relation from a concept outside the materialized container into a moved concept", () => {
+    const children = Array.from({ length: 16 }, (_, i) => component(`app/shared-ui/c${i}`, i < 8 ? "Navigation" : "Content"));
+    const outsideConcept: ConceptFacts = {
+      id: "app/route",
+      type: "Next.js Page",
+      level: "container",
+      parentId: "app",
+      relations: [{ targetId: "app/shared-ui/c0", evidence: "renders" }],
+      sourceFiles: [],
+    };
+    const allConcepts = [...children, outsideConcept];
+    const assignments: Record<string, ContextAssignment> = {};
+    children.forEach((c, i) => (assignments[c.id] = { context: i < 8 ? "Navigation" : "Content" }));
+    const plan = computeMaterializationPlan("app/shared-ui", children, assignments, allConcepts)!;
+
+    const result = applyMaterializationPlan(allConcepts, plan);
+    const route = result.find((c) => c.id === "app/route")!;
+    expect(route.relations?.[0].targetId).toBe("app/shared-ui/navigation/c0");
+  });
+
+  it("passes an unrelated concept through unchanged", () => {
+    const children = Array.from({ length: 16 }, (_, i) => component(`app/shared-ui/c${i}`, i < 8 ? "Navigation" : "Content"));
+    const unrelated: ConceptFacts = { id: "app/other-page", type: "Next.js Page", level: "container", parentId: "app", sourceFiles: [] };
+    const allConcepts = [...children, unrelated];
+    const assignments: Record<string, ContextAssignment> = {};
+    children.forEach((c, i) => (assignments[c.id] = { context: i < 8 ? "Navigation" : "Content" }));
+    const plan = computeMaterializationPlan("app/shared-ui", children, assignments, allConcepts)!;
+
+    const result = applyMaterializationPlan(allConcepts, plan);
+    expect(result.find((c) => c.id === "app/other-page")).toBe(unrelated);
   });
 });

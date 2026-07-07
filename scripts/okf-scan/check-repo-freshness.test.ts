@@ -13,7 +13,7 @@ vi.mock("./git/ls-remote", () => ({
   }),
 }));
 
-const { checkRepoFreshness } = await import("./check-repo-freshness");
+const { checkRepoFreshness, listRepoRefs } = await import("./check-repo-freshness");
 
 const TF_FIXTURE_DIR = path.join(__dirname, "terraform", "__fixtures__", "env-scan");
 
@@ -50,5 +50,43 @@ describe("checkRepoFreshness", () => {
     const changedKeys = results.filter((r) => r.changed).map((r) => r.ref.key);
 
     expect(changedKeys).toEqual(["aws_lambda_function.orders"]);
+  });
+
+  it("wraps the underlying error with the repo ref's key, kind and path for context", async () => {
+    const badConfig: RepoMapConfig = {
+      frontend: [{ repo: "../unknown-repo", branch: { dev: "develop", hml: "staging", prd: "main" } }],
+    };
+    const manifest: ScanManifest = { _repos: {}, concepts: {} };
+
+    await expect(checkRepoFreshness(badConfig, "dev", manifest)).rejects.toThrow(
+      /unknown-repo[\s\S]*frontend[\s\S]*unexpected repoPath \.\.\/unknown-repo/
+    );
+  });
+});
+
+describe("listRepoRefs", () => {
+  it("omits the terraform ref when the config has no terraform section", () => {
+    const refs = listRepoRefs({ frontend: [{ repo: "../web-storefront", branch: { dev: "develop", hml: "staging", prd: "main" } }] }, "dev");
+    expect(refs.map((r) => r.kind)).toEqual(["frontend"]);
+  });
+
+  it("omits lambda refs when the config has no resources section", () => {
+    const refs = listRepoRefs(
+      { terraform: { path: TF_FIXTURE_DIR, envFiles: { dev: "dev.tf", hml: "hml.tf", prd: "prd.tf" } } },
+      "dev"
+    );
+    expect(refs.map((r) => r.kind)).toEqual(["terraform"]);
+  });
+
+  it("omits frontend refs when the config has no frontend section", () => {
+    const refs = listRepoRefs(
+      {
+        resources: {
+          "aws_lambda_function.orders": { repo: "../orders-service", branch: { dev: "develop", hml: "staging", prd: "main" } },
+        },
+      },
+      "dev"
+    );
+    expect(refs.map((r) => r.kind)).toEqual(["lambda"]);
   });
 });
