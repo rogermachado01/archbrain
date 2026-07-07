@@ -1,7 +1,19 @@
-import { describe, expect, it } from "vitest";
-import type { ConceptFacts } from "../types";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { mkdtemp, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import path from "node:path";
+import type { ConceptFacts, ScanResult } from "../types";
 import type { ContextAssignment } from "./organize";
-import { applyMaterializationPlan, computeMaterializationPlan } from "./materialize";
+import type { ActorProposal } from "./actors";
+import {
+  applyMaterializationPlan,
+  applyMaterializationProposal,
+  computeMaterializationPlan,
+  proposeMaterialization,
+  proposalPath,
+  readProposal,
+  writeProposal,
+} from "./materialize";
 
 function component(id: string, context: string, relations?: ConceptFacts["relations"]): ConceptFacts {
   return { id, type: "React Component", level: "component", parentId: "app/shared-ui", relations, sourceFiles: [] };
@@ -245,5 +257,128 @@ describe("applyMaterializationPlan", () => {
 
     const result = applyMaterializationPlan(allConcepts, plan);
     expect(result.find((c) => c.id === "app/other-page")).toBe(unrelated);
+  });
+});
+
+describe("applyMaterializationProposal", () => {
+  it("wires a Person actor's own relation to the single root concept", () => {
+    const root: ConceptFacts = { id: "app", type: "Frontend Application", level: "context", parentId: null, sourceFiles: [] };
+    const scanResult: ScanResult = { concepts: [root], groups: [], lambdaEnvVarBindings: {} };
+    const proposal = {
+      containerPlans: [],
+      actorProposals: [
+        { type: "Person" as const, title: "Visitor", description: "d", relationLabel: "Browses the site", relationKind: "sync" as const },
+      ],
+    };
+
+    const result = applyMaterializationProposal(scanResult, proposal);
+    const visitor = result.concepts.find((c) => c.id === "visitor")!;
+    expect(visitor.type).toBe("Person");
+    expect(visitor.external).toBe(true);
+    expect(visitor.relations).toEqual([{ targetId: "app", label: "Browses the site", kind: "sync", evidence: "Browses the site" }]);
+  });
+
+  it("wires an External System actor's relation onto the root concept instead of the actor itself", () => {
+    const root: ConceptFacts = { id: "app", type: "Frontend Application", level: "context", parentId: null, sourceFiles: [] };
+    const scanResult: ScanResult = { concepts: [root], groups: [], lambdaEnvVarBindings: {} };
+    const proposal = {
+      containerPlans: [],
+      actorProposals: [
+        { type: "External System" as const, title: "Contentful CMS", description: "d", relationLabel: "Fetches content via GraphQL", relationKind: "sync" as const },
+      ],
+    };
+
+    const result = applyMaterializationProposal(scanResult, proposal);
+    const cms = result.concepts.find((c) => c.id === "contentful-cms")!;
+    expect(cms.relations).toBeUndefined();
+    const rootAfter = result.concepts.find((c) => c.id === "app")!;
+    expect(rootAfter.relations).toEqual([{ targetId: "contentful-cms", label: "Fetches content via GraphQL", kind: "sync", evidence: "Fetches content via GraphQL" }]);
+  });
+
+  it("skips wiring any relation when there isn't exactly one top-level concept", () => {
+    const scanResult: ScanResult = {
+      concepts: [
+        { id: "a", type: "X", level: "context", parentId: null, sourceFiles: [] },
+        { id: "b", type: "X", level: "context", parentId: null, sourceFiles: [] },
+      ],
+      groups: [],
+      lambdaEnvVarBindings: {},
+    };
+    const proposal = {
+      containerPlans: [],
+      actorProposals: [{ type: "Person" as const, title: "Visitor", description: "d", relationLabel: "uses", relationKind: "sync" as const }],
+    };
+
+    const result = applyMaterializationProposal(scanResult, proposal);
+    const visitor = result.concepts.find((c) => c.id === "visitor")!;
+    expect(visitor.relations).toBeUndefined();
+    expect(result.concepts.find((c) => c.id === "a")?.relations).toBeUndefined();
+  });
+
+  it("applies every container plan in the proposal", () => {
+    const children = Array.from({ length: 16 }, (_, i) => component(`app/shared-ui/c${i}`, i < 8 ? "Navigation" : "Content"));
+    const root: ConceptFacts = { id: "app", type: "Frontend Application", level: "context", parentId: null, sourceFiles: [] };
+    const scanResult: ScanResult = { concepts: [root, ...children], groups: [], lambdaEnvVarBindings: {} };
+    const assignments: Record<string, ContextAssignment> = {};
+    children.forEach((c, i) => (assignments[c.id] = { context: i < 8 ? "Navigation" : "Content" }));
+    const plan = computeMaterializationPlan("app/shared-ui", children, assignments, [root, ...children])!;
+
+    const result = applyMaterializationProposal(scanResult, { containerPlans: [plan], actorProposals: [] });
+    expect(result.concepts.find((c) => c.id === "app/shared-ui/navigation/c0")).toBeDefined();
+  });
+});
+
+describe("proposal file I/O", () => {
+  let dir: string;
+
+  beforeEach(async () => {
+    dir = await mkdtemp(path.join(tmpdir(), "okf-scan-materialize-"));
+  });
+
+  afterEach(async () => {
+    await rm(dir, { recursive: true, force: true });
+  });
+
+  it("round-trips a proposal through writeProposal/readProposal", async () => {
+    const proposal = {
+      containerPlans: [],
+      actorProposals: [{ type: "Person" as const, title: "Visitor", description: "d", relationLabel: "uses", relationKind: "sync" as const }] as ActorProposal[],
+    };
+    await writeProposal(dir, proposal);
+    const loaded = await readProposal(dir);
+    expect(loaded).toEqual(proposal);
+  });
+});
+
+describe("proposeMaterialization", () => {
+  it("skips a container id already in the alreadyMaterialized set", async () => {
+    const children = Array.from({ length: 16 }, (_, i) => component(`app/shared-ui/c${i}`, "Everything"));
+    const scanResult: ScanResult = { concepts: children, groups: [], lambdaEnvVarBindings: {} };
+    const organizeChildren = vi.fn().mockResolvedValue({});
+    const inferActors = vi.fn().mockResolvedValue([]);
+
+    const proposal = await proposeMaterialization(
+      scanResult,
+      { organizeChildren },
+      { inferActors },
+      new Set(["app/shared-ui"]),
+    );
+
+    expect(organizeChildren).not.toHaveBeenCalled();
+    expect(proposal.containerPlans).toEqual([]);
+  });
+
+  it("calls the organizer for an eligible container and includes its plan when one is produced", async () => {
+    const children = Array.from({ length: 16 }, (_, i) => component(`app/shared-ui/c${i}`, i < 8 ? "Navigation" : "Content"));
+    const scanResult: ScanResult = { concepts: children, groups: [], lambdaEnvVarBindings: {} };
+    const assignments: Record<string, ContextAssignment> = {};
+    children.forEach((c, i) => (assignments[c.id] = { context: i < 8 ? "Navigation" : "Content" }));
+    const organizeChildren = vi.fn().mockResolvedValue(assignments);
+    const inferActors = vi.fn().mockResolvedValue([]);
+
+    const proposal = await proposeMaterialization(scanResult, { organizeChildren }, { inferActors }, new Set());
+
+    expect(organizeChildren).toHaveBeenCalledWith("app/shared-ui", children.map((c) => ({ facts: c })));
+    expect(proposal.containerPlans).toHaveLength(1);
   });
 });

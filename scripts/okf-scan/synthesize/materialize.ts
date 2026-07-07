@@ -1,5 +1,8 @@
-import type { ConceptFacts, FactRelation } from "../types";
-import type { ContextAssignment } from "./organize";
+import { readFile, writeFile } from "node:fs/promises";
+import path from "node:path";
+import type { ConceptFacts, FactRelation, ScanResult } from "../types";
+import type { ContextAssignment, OrganizerClient } from "./organize";
+import type { ActorInferenceClient, ActorProposal } from "./actors";
 
 /** Containers at or below this many children skip materialization entirely — deliberately higher than synthesize.ts's ORGANIZE_MIN_CHILDREN=9, since tagging is low-risk but restructuring the file tree is not. */
 const MATERIALIZE_MIN_CHILDREN = 15;
@@ -172,4 +175,123 @@ export function applyMaterializationPlan(allConcepts: ConceptFacts[], plan: Mate
     });
 
   return [...rewritten, ...newContainers];
+}
+
+export interface MaterializationProposal {
+  containerPlans: MaterializationPlan[];
+  actorProposals: ActorProposal[];
+}
+
+const PROPOSAL_FILENAME = ".materialize-proposal.json";
+
+export function proposalPath(bundleDir: string): string {
+  return path.join(bundleDir, PROPOSAL_FILENAME);
+}
+
+function singleRootConceptId(concepts: ConceptFacts[]): string | null {
+  const topLevel = concepts.filter((c) => c.parentId === null);
+  return topLevel.length === 1 ? topLevel[0].id : null;
+}
+
+/**
+ * Computes what materialization *would* do, without writing any concept
+ * markdown or touching the manifest — the propose half of the review flow.
+ */
+export async function proposeMaterialization(
+  scanResult: ScanResult,
+  organizer: OrganizerClient,
+  actorClient: ActorInferenceClient,
+  alreadyMaterialized: Set<string>,
+): Promise<MaterializationProposal> {
+  const byParent = new Map<string, ConceptFacts[]>();
+  for (const c of scanResult.concepts) {
+    if (c.parentId === null || alreadyMaterialized.has(c.parentId)) continue;
+    byParent.set(c.parentId, [...(byParent.get(c.parentId) ?? []), c]);
+  }
+
+  const containerPlans: MaterializationPlan[] = [];
+  for (const [containerId, children] of byParent) {
+    if (children.length < MATERIALIZE_MIN_CHILDREN) continue;
+    const assignments = await organizer.organizeChildren(
+      containerId,
+      children.map((c) => ({ facts: c })),
+    );
+    const plan = computeMaterializationPlan(containerId, children, assignments, scanResult.concepts);
+    if (plan) containerPlans.push(plan);
+  }
+
+  const actorProposals = await actorClient.inferActors(scanResult.concepts);
+  return { containerPlans, actorProposals };
+}
+
+/**
+ * Applies a (possibly hand-edited) proposal to a ScanResult, producing a new
+ * one with capability containers materialized and actor concepts added. Pure
+ * — the caller is responsible for feeding the result into synthesize() to
+ * actually write markdown.
+ *
+ * Relation direction for actors is decided here, by type, not by the LLM
+ * (see actors.ts's design note): a Person actor gets its own outgoing
+ * relation to the bundle's single root concept; an External System actor
+ * gets no relations of its own — instead the root concept gains an outgoing
+ * relation *to* it. Both only happen when the bundle has exactly one
+ * top-level concept; otherwise the actor is still added, just unwired.
+ */
+export function applyMaterializationProposal(scanResult: ScanResult, proposal: MaterializationProposal): ScanResult {
+  let concepts = scanResult.concepts;
+  for (const plan of proposal.containerPlans) {
+    concepts = applyMaterializationPlan(concepts, plan);
+  }
+
+  const rootId = singleRootConceptId(concepts);
+  const actorConcepts: ConceptFacts[] = [];
+  for (const actor of proposal.actorProposals) {
+    const actorId = slugify(actor.title);
+    if (actor.type === "Person") {
+      actorConcepts.push({
+        id: actorId,
+        type: "Person",
+        level: "context",
+        parentId: null,
+        external: true,
+        relations: rootId
+          ? [{ targetId: rootId, label: actor.relationLabel, kind: actor.relationKind, evidence: actor.relationLabel }]
+          : undefined,
+        sourceFiles: [],
+      });
+    } else {
+      actorConcepts.push({
+        id: actorId,
+        type: "External System",
+        level: "context",
+        parentId: null,
+        external: true,
+        sourceFiles: [],
+      });
+      if (rootId) {
+        concepts = concepts.map((c) =>
+          c.id === rootId
+            ? {
+                ...c,
+                relations: [
+                  ...(c.relations ?? []),
+                  { targetId: actorId, label: actor.relationLabel, kind: actor.relationKind, evidence: actor.relationLabel },
+                ],
+              }
+            : c,
+        );
+      }
+    }
+  }
+
+  return { ...scanResult, concepts: [...concepts, ...actorConcepts] };
+}
+
+export async function writeProposal(bundleDir: string, proposal: MaterializationProposal): Promise<void> {
+  await writeFile(proposalPath(bundleDir), `${JSON.stringify(proposal, null, 2)}\n`, "utf-8");
+}
+
+export async function readProposal(bundleDir: string): Promise<MaterializationProposal> {
+  const raw = await readFile(proposalPath(bundleDir), "utf-8");
+  return JSON.parse(raw) as MaterializationProposal;
 }
