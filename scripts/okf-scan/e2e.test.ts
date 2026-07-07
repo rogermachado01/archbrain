@@ -133,8 +133,9 @@ describe("okf-scan end-to-end", () => {
     expect(model.nodes.find((n) => n.id === "shop")).toMatchObject({ level: "context", parentId: null });
     expect(model.nodes.find((n) => n.id === "shop/index-page")).toMatchObject({ level: "container", parentId: "shop" });
     expect(model.nodes.find((n) => n.id === "shop/index-page/hero")).toMatchObject({ parentId: "shop/index-page" });
-    // frontend-only bundle: no platform node, no default AWS Cloud boundary
+    // frontend-only bundle: no platform node, no default AWS Cloud boundary —
+    // instead a labeled "Browser" boundary (see synthesize.ts's writeRootFiles).
     expect(model.nodes.some((n) => n.id === "platform")).toBe(false);
-    expect(model.boundary).toBe(false);
+    expect(model.boundary).toEqual({ label: "Browser — Shop — Documentation", icon: "generic-application.svg" });
   });
 });

@@ -2,6 +2,7 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { parseFrontmatter } from "../../../src/lib/frontmatter";
 import type { ConceptFacts, GroupFact, ScanResult } from "../types";
 import type { LlmClient } from "./llm";
 import type { ContextAssignment, OrganizerClient } from "./organize";
@@ -413,5 +414,59 @@ describe("synthesize", () => {
     await synthesize({ scanResult, bundleDir, llm: fakeLlm().client, organizer: recordingOrganizer });
 
     expect(organizedContainers).toEqual(["big"]);
+  });
+
+  it("gives a frontend-only bundle a boundary_label instead of disabling the boundary box", async () => {
+    const scanResult: ScanResult = {
+      groups: [],
+      lambdaEnvVarBindings: {},
+      concepts: [{ id: "app", type: "Frontend Application", level: "context", parentId: null, sourceFiles: [] }],
+    };
+    const { client } = fakeLlm();
+    await synthesize({ scanResult, bundleDir, llm: client });
+
+    const index = await readFile(path.join(bundleDir, "index.md"), "utf-8");
+    const { data } = parseFrontmatter(index);
+    expect(data.boundary_label).toBe("Browser — App — Documentation");
+    expect(data.boundary_icon).toBe("generic-application.svg");
+    expect(data.boundary).toBeUndefined();
+  });
+
+  it("derives the root title from the single top-level concept instead of the generic placeholder", async () => {
+    const scanResult: ScanResult = {
+      groups: [],
+      lambdaEnvVarBindings: {},
+      concepts: [{ id: "app", type: "Frontend Application", level: "context", parentId: null, sourceFiles: [] }],
+    };
+    const { client } = fakeLlm();
+    await synthesize({ scanResult, bundleDir, llm: client });
+
+    const index = await readFile(path.join(bundleDir, "index.md"), "utf-8");
+    const { data } = parseFrontmatter(index);
+    expect(data.title).toBe("App — Documentation");
+  });
+
+  it("preserves a hand-edited root title and boundary_label across a re-run instead of overwriting them", async () => {
+    const scanResult: ScanResult = {
+      groups: [],
+      lambdaEnvVarBindings: {},
+      concepts: [{ id: "app", type: "Frontend Application", level: "context", parentId: null, sourceFiles: [] }],
+    };
+    const { client: llm1 } = fakeLlm();
+    await synthesize({ scanResult, bundleDir, llm: llm1 });
+
+    const before = await readFile(path.join(bundleDir, "index.md"), "utf-8");
+    const edited = before
+      .replace("title: App — Documentation", "title: Loja Web — Frontend")
+      .replace(/boundary_label: .+/, "boundary_label: Custom Hand-Edited Label");
+    await writeFile(path.join(bundleDir, "index.md"), edited);
+
+    const { client: llm2 } = fakeLlm();
+    await synthesize({ scanResult, bundleDir, llm: llm2 });
+
+    const after = await readFile(path.join(bundleDir, "index.md"), "utf-8");
+    const { data } = parseFrontmatter(after);
+    expect(data.title).toBe("Loja Web — Frontend");
+    expect(data.boundary_label).toBe("Custom Hand-Edited Label");
   });
 });

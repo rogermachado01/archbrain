@@ -4,7 +4,15 @@ import { mapWithConcurrency } from "../concurrency";
 import { hashJson } from "../hash";
 import { loadManifest, saveManifest } from "../manifest";
 import { emptyManifest, ROOT_CONTEXT_ID, type ConceptFacts, type GroupFact, type ScanManifest, type ScanResult } from "../types";
-import { buildConceptMarkdown, readPreserved, titleize, type ExistingConceptFile } from "./markdown";
+import {
+  buildConceptMarkdown,
+  readPreserved,
+  readPreservedRoot,
+  stringifyFrontmatter,
+  titleize,
+  type ExistingConceptFile,
+} from "./markdown";
+import type { Frontmatter } from "../../../src/lib/frontmatter";
 import type { LlmClient } from "./llm";
 import type { ContextAssignment, OrganizerClient } from "./organize";
 
@@ -316,11 +324,31 @@ async function writeRootFiles(bundleDir: string, scanResult: ScanResult, concept
       ? ["", "# Groups", "", "- [AWS Network Groups](groups/index.md) - region/VPC/AZ/subnet boundaries"]
       : [];
 
+  // A bundle with no platform/lambda children and no AWS network groups is a
+  // pure frontend scan — it gets a labeled "Browser" boundary instead of the
+  // default AWS Cloud box (see CLAUDE.md's "AWS visual style" section), unless
+  // a human already curated something different (checked below via `preserved`).
+  const isFrontendOnly = !hasPlatformChildren && scanResult.groups.length === 0;
+  const existingIndexRaw = await readIfExists(path.join(bundleDir, "index.md"));
+  const preserved = readPreservedRoot(existingIndexRaw);
+  const defaultTitle =
+    topLevel.length === 1 ? `${conceptTitles[topLevel[0].id]} — Documentation` : "Generated Architecture";
+  const title = preserved.title ?? defaultTitle;
+
+  const frontmatter: Frontmatter = { title };
+  if (preserved.description) frontmatter.description = preserved.description;
+  if (preserved.boundary === false) {
+    frontmatter.boundary = false;
+  } else if (preserved.boundaryLabel) {
+    frontmatter.boundary_label = preserved.boundaryLabel;
+    if (preserved.boundaryIcon) frontmatter.boundary_icon = preserved.boundaryIcon;
+  } else if (isFrontendOnly) {
+    frontmatter.boundary_label = `Browser — ${title}`;
+    frontmatter.boundary_icon = "generic-application.svg";
+  }
+
   const indexLines = [
-    "---",
-    'title: "Generated Architecture"',
-    ...(!hasPlatformChildren && scanResult.groups.length === 0 ? ["boundary: false"] : []),
-    "---",
+    stringifyFrontmatter(frontmatter),
     "",
     "# Concepts",
     "",
