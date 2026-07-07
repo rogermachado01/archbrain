@@ -198,6 +198,7 @@ export function buildConceptMarkdown(options: BuildConceptMarkdownOptions): stri
     description: descriptionParagraph,
     level: facts.level,
   };
+  if (typeof facts.external === "boolean") frontmatter.external = facts.external;
   if (facts.awsResourceType) {
     frontmatter.aws_resource_type = facts.awsResourceType;
   } else {

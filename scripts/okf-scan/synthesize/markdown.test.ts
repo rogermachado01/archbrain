@@ -338,4 +338,28 @@ describe("buildConceptMarkdown", () => {
     const { data } = parseFrontmatter(markdown);
     expect(data.icon).toBeUndefined();
   });
+
+  it("sets external: true in frontmatter when facts.external is true", () => {
+    const markdown = buildConceptMarkdown({
+      facts: { id: "visitor", type: "Person", level: "context", parentId: null, external: true, sourceFiles: [] },
+      prose: "A person using the site.",
+      preserved: { links: [] },
+      conceptTitles: {},
+      groups: [],
+    });
+    const { data } = parseFrontmatter(markdown);
+    expect(data.external).toBe(true);
+  });
+
+  it("omits external from frontmatter when facts.external is unset", () => {
+    const markdown = buildConceptMarkdown({
+      facts: { id: "app/header", type: "React Component", level: "component", parentId: "app", sourceFiles: [] },
+      prose: "Renders the header.",
+      preserved: { links: [] },
+      conceptTitles: {},
+      groups: [],
+    });
+    const { data } = parseFrontmatter(markdown);
+    expect(data.external).toBeUndefined();
+  });
 });
