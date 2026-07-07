@@ -77,7 +77,8 @@ async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   const config = await loadRepoMap(args.repoMap);
   const { scanResult, freshness } = await scanRepos(config, args.env, args.out, args.force, args.concurrencyGit, args.concurrencyScan);
-  let { concepts, groups, lambdaEnvVarBindings } = scanResult;
+  const { groups, lambdaEnvVarBindings } = scanResult;
+  let concepts = scanResult.concepts;
 
   if (args.materialize === "propose") {
     const organizer = createAnthropicOrganizerClient();
