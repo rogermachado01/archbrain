@@ -94,7 +94,7 @@ function formatFrontmatterScalar(value: string | number | boolean): string {
   return needsFrontmatterQuoting(value) ? quoteFrontmatterValue(value) : value;
 }
 
-function stringifyFrontmatter(data: Frontmatter): string {
+export function stringifyFrontmatter(data: Frontmatter): string {
   const lines: string[] = ["---"];
   for (const [key, value] of Object.entries(data)) {
     if (value === undefined) continue;
@@ -147,6 +147,31 @@ export function readPreserved(existingRaw: string | null): ExistingConceptFile {
     ddd_context: typeof data.ddd_context === "string" ? data.ddd_context : undefined,
     ddd_role: typeof data.ddd_role === "string" ? data.ddd_role : undefined,
     links: parseLinksSection(content),
+  };
+}
+
+export interface PreservedRootFile {
+  title?: string;
+  description?: string;
+  boundary?: false;
+  boundaryLabel?: string;
+  boundaryIcon?: string;
+}
+
+/**
+ * Mirrors readPreserved's role but for the bundle root index.md, which today
+ * has no preservation at all — every field here would otherwise be silently
+ * clobbered by the next scan.
+ */
+export function readPreservedRoot(existingRaw: string | null): PreservedRootFile {
+  if (!existingRaw) return {};
+  const { data } = parseFrontmatter(existingRaw);
+  return {
+    title: typeof data.title === "string" ? data.title : undefined,
+    description: typeof data.description === "string" ? data.description : undefined,
+    boundary: data.boundary === false ? false : undefined,
+    boundaryLabel: typeof data.boundary_label === "string" ? data.boundary_label : undefined,
+    boundaryIcon: typeof data.boundary_icon === "string" ? data.boundary_icon : undefined,
   };
 }
 

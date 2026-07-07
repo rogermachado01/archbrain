@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { parseFrontmatter } from "../../../src/lib/frontmatter";
 import type { ConceptFacts, GroupFact } from "../types";
-import { buildConceptMarkdown, groupBundlePath, readPreserved, relativeLinkFromTo, titleize } from "./markdown";
+import { buildConceptMarkdown, groupBundlePath, readPreserved, readPreservedRoot, relativeLinkFromTo, titleize } from "./markdown";
 
 describe("titleize", () => {
   it("converts a snake_case leaf id into a title, using only the last path segment", () => {
@@ -88,6 +88,41 @@ describe("readPreserved", () => {
 
     const preserved = readPreserved(existing);
     expect(preserved.links).toEqual([{ label: "Repository", url: "https://github.com/example/orders" }]);
+  });
+});
+
+describe("readPreservedRoot", () => {
+  it("returns nothing when there is no existing root file", () => {
+    expect(readPreservedRoot(null)).toEqual({});
+  });
+
+  it("extracts a hand-set title, description, and boundary_label/boundary_icon", () => {
+    const existing = [
+      "---",
+      "title: Loja Web — Frontend",
+      "description: SPA React.",
+      "boundary_label: Browser — Loja Web (SPA)",
+      "boundary_icon: generic-application.svg",
+      "---",
+      "",
+      "# Concepts",
+    ].join("\n");
+
+    const preserved = readPreservedRoot(existing);
+    expect(preserved.title).toBe("Loja Web — Frontend");
+    expect(preserved.description).toBe("SPA React.");
+    expect(preserved.boundaryLabel).toBe("Browser — Loja Web (SPA)");
+    expect(preserved.boundaryIcon).toBe("generic-application.svg");
+  });
+
+  it("extracts boundary: false", () => {
+    const existing = ["---", "title: Generated Architecture", "boundary: false", "---", ""].join("\n");
+    expect(readPreservedRoot(existing).boundary).toBe(false);
+  });
+
+  it("treats an absent boundary field as undefined, not false", () => {
+    const existing = ["---", "title: Generated Architecture", "---", ""].join("\n");
+    expect(readPreservedRoot(existing).boundary).toBeUndefined();
   });
 });
 
