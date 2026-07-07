@@ -1,7 +1,7 @@
 import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { parseFrontmatter } from "../../../src/lib/frontmatter";
 import type { ConceptFacts, GroupFact, ScanResult } from "../types";
 import type { LlmClient } from "./llm";
@@ -468,5 +468,43 @@ describe("synthesize", () => {
     const { data } = parseFrontmatter(after);
     expect(data.title).toBe("Loja Web — Frontend");
     expect(data.boundary_label).toBe("Custom Hand-Edited Label");
+  });
+
+  it("skips organizing a container already recorded in manifest.materializedContainers", async () => {
+    const children = Array.from({ length: 10 }, (_, i) => ({
+      id: `app/shared-ui/c${i}`,
+      type: "React Component",
+      level: "component" as const,
+      parentId: "app/shared-ui",
+      sourceFiles: [],
+    }));
+    const scanResult: ScanResult = { groups: [], lambdaEnvVarBindings: {}, concepts: children };
+
+    // Pre-seed a manifest recording "app/shared-ui" as already materialized.
+    await mkdir(bundleDir, { recursive: true });
+    await writeFile(
+      path.join(bundleDir, ".scan-manifest.json"),
+      JSON.stringify({ _repos: {}, concepts: {}, materializedContainers: { "app/shared-ui": { appliedAt: "2026-01-01T00:00:00.000Z" } } }),
+    );
+
+    const { client } = fakeLlm();
+    const organizeChildren = vi.fn().mockResolvedValue({});
+    await synthesize({ scanResult, bundleDir, llm: client, organizer: { organizeChildren } });
+
+    expect(organizeChildren).not.toHaveBeenCalled();
+  });
+
+  it("records newlyMaterializedContainerIds into the manifest", async () => {
+    const scanResult: ScanResult = {
+      groups: [],
+      lambdaEnvVarBindings: {},
+      concepts: [{ id: "app", type: "Frontend Application", level: "context", parentId: null, sourceFiles: [] }],
+    };
+    const { client } = fakeLlm();
+    await synthesize({ scanResult, bundleDir, llm: client, newlyMaterializedContainerIds: ["app/shared-ui"] });
+
+    const manifestRaw = await readFile(path.join(bundleDir, ".scan-manifest.json"), "utf-8");
+    const manifest = JSON.parse(manifestRaw);
+    expect(manifest.materializedContainers["app/shared-ui"].appliedAt).toBeDefined();
   });
 });

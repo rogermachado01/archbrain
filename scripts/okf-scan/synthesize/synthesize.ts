@@ -26,6 +26,8 @@ export interface SynthesizeOptions {
   /** max concurrent LLM prose calls; the rate-limit-bound stage, so this stays low by default */
   concurrency?: number;
   now?: () => string;
+  /** Container ids that were just materialized this run (via materialize.ts's apply flow) — recorded into manifest.materializedContainers so neither the organizer nor the materializer ever re-analyzes them again. */
+  newlyMaterializedContainerIds?: string[];
 }
 
 export interface SynthesizeSummary {
@@ -138,6 +140,7 @@ export async function synthesize(options: SynthesizeOptions): Promise<Synthesize
     force = false,
     concurrency = 6,
     now = () => new Date().toISOString(),
+    newlyMaterializedContainerIds = [],
   } = options;
 
   // Validate up front, before any LLM calls or file writes: a bad `groups`
@@ -187,8 +190,12 @@ export async function synthesize(options: SynthesizeOptions): Promise<Synthesize
   // (and thus all skipped, byte-for-byte) would just be a wasted LLM call whose
   // output is never used.
   const regeneratingIds = new Set(toRegenerate.map((r) => r.facts.id));
+  const materializedIds = new Set(Object.keys(manifest.materializedContainers ?? {}));
   const containersNeedingOrganizing = Array.from(childrenByParent.entries()).filter(
-    ([, children]) => children.length >= ORGANIZE_MIN_CHILDREN && children.some((c) => regeneratingIds.has(c.id)),
+    ([parentId, children]) =>
+      children.length >= ORGANIZE_MIN_CHILDREN &&
+      children.some((c) => regeneratingIds.has(c.id)) &&
+      !materializedIds.has(parentId),
   );
 
   const organizedByConceptId = new Map<string, ContextAssignment>();
@@ -268,6 +275,11 @@ export async function synthesize(options: SynthesizeOptions): Promise<Synthesize
 
   await writeRootFiles(bundleDir, scanResult, conceptTitles);
   await writeChildIndexes(bundleDir, scanResult, conceptTitles);
+
+  for (const id of newlyMaterializedContainerIds) {
+    manifest.materializedContainers = { ...(manifest.materializedContainers ?? {}), [id]: { appliedAt: now() } };
+  }
+
   await saveManifest(bundleDir, manifest);
   return summary;
 }
