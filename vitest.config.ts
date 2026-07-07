@@ -10,6 +10,7 @@ export default defineConfig({
     // alias registered here too, or module resolution fails at test time.
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
+      "@okf-scan": fileURLToPath(new URL("./scripts/okf-scan", import.meta.url)),
     },
   },
   test: {

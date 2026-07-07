@@ -19,7 +19,8 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@okf-scan/*": ["./scripts/okf-scan/*"]
     }
   },
   "include": [
