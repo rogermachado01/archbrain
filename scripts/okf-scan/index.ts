@@ -1,13 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { basename } from "node:path";
-import { checkRepoFreshness } from "./check-repo-freshness";
-import { ownerForFile } from "./code/codeowners";
-import { scanFrontendRepo } from "./code/scan-frontend-repo";
-import { scanLambdaRepo } from "./code/scan-lambda-repo";
-import { mapWithConcurrency } from "./concurrency";
-import { syncWorktree } from "./git/worktree";
-import { loadManifest, saveManifest } from "./manifest";
 import { loadRepoMap } from "./repo-map";
+import { recordScanManifest, scanRepos } from "./scan-repos";
 import { createAnthropicActorInferenceClient } from "./synthesize/actors";
 import { createAnthropicLlmClient } from "./synthesize/llm";
 import {
@@ -19,8 +13,8 @@ import {
 } from "./synthesize/materialize";
 import { createAnthropicOrganizerClient } from "./synthesize/organize";
 import { synthesize } from "./synthesize/synthesize";
-import { scanTerraform } from "./terraform/scan-terraform";
-import { emptyManifest, ROOT_CONTEXT_ID, type ConceptFacts, type Environment, type GroupFact, type ScanManifest } from "./types";
+import { loadManifest } from "./manifest";
+import { emptyManifest, type Environment } from "./types";
 
 export interface CliArgs {
   repoMap: string;
@@ -69,19 +63,6 @@ export function parseArgs(argv: string[]): CliArgs {
   };
 }
 
-/** Reuses a repo's previously-scanned concepts from the manifest when its freshness check found no change. */
-function cachedConceptsFor(manifest: ScanManifest, matches: (facts: ConceptFacts) => boolean): ConceptFacts[] {
-  return Object.values(manifest.concepts)
-    .map((entry) => entry.facts)
-    .filter(matches);
-}
-
-async function withOwners(concepts: ConceptFacts[], repoDir: string): Promise<ConceptFacts[]> {
-  return Promise.all(
-    concepts.map(async (c) => ({ ...c, owner: (await ownerForFile(repoDir, c.sourceFiles[0] ?? repoDir)) ?? c.owner }))
-  );
-}
-
 /** Rethrows any error from `fn` prefixed with what step was running, so the CLI's final error message says why it failed, not just the raw git/fs error. */
 async function withContext<T>(step: string, fn: () => Promise<T>): Promise<T> {
   try {
@@ -95,65 +76,8 @@ async function withContext<T>(step: string, fn: () => Promise<T>): Promise<T> {
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   const config = await loadRepoMap(args.repoMap);
-  const manifest: ScanManifest = args.force ? emptyManifest() : await loadManifest(args.out);
-
-  const freshness = await checkRepoFreshness(config, args.env, manifest, args.concurrencyGit);
-  const freshByKey = new Map(freshness.map((f) => [f.ref.key, f]));
-
-  const terraformChanged = args.force || (freshByKey.get("terraform")?.changed ?? false);
-  let concepts: ConceptFacts[] = [];
-  let groups: GroupFact[] = [];
-  let lambdaEnvVarBindings: Record<string, Record<string, string>> = {};
-
-  if (config.terraform) {
-    if (terraformChanged) {
-      const tfResult = await withContext(`scan terraform at "${config.terraform.path}"`, () =>
-        scanTerraform(config.terraform!, args.env)
-      );
-      concepts = tfResult.concepts;
-      groups = tfResult.groups;
-      lambdaEnvVarBindings = tfResult.lambdaEnvVarBindings;
-    } else {
-      concepts = cachedConceptsFor(manifest, (f) => f.parentId === ROOT_CONTEXT_ID);
-      lambdaEnvVarBindings = manifest.lambdaEnvVarBindings ?? {};
-    }
-  }
-
-  const lambdaResults = freshness.filter((f) => f.ref.kind === "lambda");
-  const lambdaConceptLists = await mapWithConcurrency(lambdaResults, args.concurrencyScan, async (result) => {
-    const resourceName = result.ref.key.split(".")[1];
-    if (!result.changed && !terraformChanged) {
-      return cachedConceptsFor(manifest, (f) => f.parentId === resourceName);
-    }
-    const entry = config.resources![result.ref.key];
-    return withContext(`scan lambda repo "${result.ref.key}" (path "${entry.repo}")`, async () => {
-      const worktreeDir = await syncWorktree(entry.repo, result.ref.key, entry.branch[args.env], args.env);
-      const scanned = await scanLambdaRepo({
-        repoDir: worktreeDir,
-        containerId: resourceName,
-        envVarBindings: lambdaEnvVarBindings[resourceName] ?? {},
-      });
-      return withOwners(scanned, worktreeDir);
-    });
-  });
-
-  const frontendResults = freshness.filter((f) => f.ref.kind === "frontend");
-  const frontendConceptLists = await mapWithConcurrency(frontendResults, args.concurrencyScan, async (result) => {
-    if (!result.changed) {
-      // Nested route hierarchy: components' parentId is a route/shared-ui id, not
-      // the repo key — but every concept in this repo's tree has an id under the
-      // repo key's path (ids double as bundle paths).
-      return cachedConceptsFor(manifest, (f) => f.id === result.ref.key || f.id.startsWith(`${result.ref.key}/`));
-    }
-    const entry = config.frontend!.find((f) => basename(f.repo) === result.ref.key)!;
-    return withContext(`scan frontend repo "${result.ref.key}" (path "${entry.repo}")`, async () => {
-      const worktreeDir = await syncWorktree(entry.repo, result.ref.key, entry.branch[args.env], args.env);
-      const scanned = await scanFrontendRepo({ repoDir: worktreeDir, containerId: result.ref.key, apiBaseUrls: {} });
-      return withOwners(scanned, worktreeDir);
-    });
-  });
-
-  concepts = concepts.concat(lambdaConceptLists.flat(), frontendConceptLists.flat());
+  const { scanResult, freshness } = await scanRepos(config, args.env, args.out, args.force, args.concurrencyGit, args.concurrencyScan);
+  let { concepts, groups, lambdaEnvVarBindings } = scanResult;
 
   if (args.materialize === "propose") {
     const organizer = createAnthropicOrganizerClient();
@@ -200,18 +124,7 @@ async function main(): Promise<void> {
     newlyMaterializedContainerIds,
   });
 
-  // synthesize() loads its own copy of the manifest (from an empty one when
-  // `force` is set, same as above), updates `concepts` with fresh per-concept
-  // hash/facts entries, and unconditionally saves that to disk itself before
-  // returning. Reload here rather than reusing this function's pre-synthesis
-  // `manifest` var — otherwise the save below would overwrite synthesize()'s
-  // concept updates with the stale pre-synthesis copy.
-  const postSynthesizeManifest = await loadManifest(args.out);
-  for (const result of freshness) {
-    postSynthesizeManifest._repos[result.ref.key] = { lastScannedRef: result.currentRef, env: args.env };
-  }
-  postSynthesizeManifest.lambdaEnvVarBindings = lambdaEnvVarBindings;
-  await saveManifest(args.out, postSynthesizeManifest);
+  await recordScanManifest(args.out, freshness, args.env, lambdaEnvVarBindings);
 
   console.log(`okf-scan: wrote ${summary.written.length}, skipped ${summary.skipped.length} concept(s) into ${args.out}`);
   if (summary.needsReview.length > 0) {
