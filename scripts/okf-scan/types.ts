@@ -48,6 +48,8 @@ export interface ConceptFacts {
   routePath?: string;
   /** routePaths of every page that reaches this component through static imports — set by buildRouteHierarchy. */
   usedByRoutes?: string[];
+  /** Marks a Person/External-System actor concept synthesized by actor inference (see synthesize/actors.ts) — never set by a code/terraform scanner. */
+  external?: boolean;
 }
 
 export interface GroupFact {
@@ -85,6 +87,15 @@ export interface ScanManifest {
    * that *did* change still has env-var bindings to resolve against.
    */
   lambdaEnvVarBindings?: Record<string, Record<string, string>>;
+  /**
+   * Container ids whose children have already been materialized into
+   * capability sub-containers (see synthesize/materialize.ts). Once a
+   * container id appears here, it's permanently skipped by both the
+   * ddd_context organizer and the materializer on every future run — a
+   * reviewed, one-time grouping decision is never silently re-shuffled by a
+   * later scan.
+   */
+  materializedContainers?: Record<string, { appliedAt: string }>;
 }
 
 export function emptyManifest(): ScanManifest {

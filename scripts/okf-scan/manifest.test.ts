@@ -42,4 +42,17 @@ describe("manifest", () => {
     const loaded = await loadManifest(dir);
     expect(loaded).toEqual(manifest);
   });
+
+  it("round-trips materializedContainers", async () => {
+    const manifest: ScanManifest = {
+      _repos: {},
+      concepts: {},
+      materializedContainers: {
+        "app/shared-ui": { appliedAt: "2026-07-07T00:00:00.000Z" },
+      },
+    };
+    await saveManifest(dir, manifest);
+    const loaded = await loadManifest(dir);
+    expect(loaded).toEqual(manifest);
+  });
 });
