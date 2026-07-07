@@ -176,8 +176,13 @@ async function main(): Promise<void> {
   let newlyMaterializedContainerIds: string[] = [];
   if (args.materialize === "apply") {
     if (!args.plan) throw new Error("--materialize=apply requires --plan <path>");
-    const proposalRaw = await readFile(args.plan, "utf-8");
-    const proposal = JSON.parse(proposalRaw) as MaterializationProposal;
+    // Reads/parses directly rather than calling readProposal(bundleDir): --plan is a free-form
+    // path a human may have relocated or hand-edited, while readProposal is hardwired to the
+    // default in-bundle filename.
+    const proposal = await withContext(`read materialization plan from "${args.plan}"`, async () => {
+      const proposalRaw = await readFile(args.plan!, "utf-8");
+      return JSON.parse(proposalRaw) as MaterializationProposal;
+    });
     const applied = applyMaterializationProposal({ concepts, groups, lambdaEnvVarBindings }, proposal);
     concepts = applied.concepts;
     newlyMaterializedContainerIds = proposal.containerPlans.map((p) => p.containerId);
