@@ -1,7 +1,7 @@
 import type { ConceptFacts } from "../types";
 import type { ContextAssignment } from "./organize";
 
-/** Containers at or below this many children skip materialization entirely — deliberately higher than organize.ts's ORGANIZE_MIN_CHILDREN=9, since tagging is low-risk but restructuring the file tree is not. */
+/** Containers at or below this many children skip materialization entirely — deliberately higher than synthesize.ts's ORGANIZE_MIN_CHILDREN=9, since tagging is low-risk but restructuring the file tree is not. */
 const MATERIALIZE_MIN_CHILDREN = 15;
 
 /** A single-member group referenced by at least this many *other* groups is promoted to a sibling of the container instead of wrapped in its own one-file directory (the shared "theme" case). */
@@ -22,8 +22,12 @@ export interface MaterializationPlan {
   idRemap: Record<string, string>;
 }
 
+const COMBINING_DIACRITICS = new RegExp("[̀-ͯ]", "g");
+
 function slugify(name: string): string {
   return name
+    .normalize("NFD") // decompose accented letters into base letter + combining mark(s), e.g. "ã" -> "a" + U+0303
+    .replace(COMBINING_DIACRITICS, "") // strip the combining marks left behind by NFD, leaving plain ASCII base letters
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
@@ -74,6 +78,10 @@ export function computeMaterializationPlan(
   const parentOfContainer = containerId.includes("/") ? containerId.slice(0, containerId.lastIndexOf("/")) : null;
   const groups: CapabilityGroup[] = [];
   const idRemap: Record<string, string> = {};
+  // Guards against two distinct context names slugifying to the same string
+  // (e.g. "UI/UX" and "UI UX" both -> "ui-ux") producing two CapabilityGroups
+  // with an identical containerId — the later one gets a numeric suffix.
+  const usedContainerIds = new Set<string>();
 
   idsByContext.forEach((memberIds, contextName) => {
     if (memberIds.length === 1 && parentOfContainer !== null) {
@@ -82,13 +90,20 @@ export function computeMaterializationPlan(
       if (referrerCount >= PROMOTION_MIN_EXTERNAL_REFERRERS) {
         const leafSegment = soleId.split("/").pop()!;
         const newId = `${parentOfContainer}/${leafSegment}`;
+        usedContainerIds.add(newId);
         groups.push({ containerId: newId, memberIds, contextName, promoted: true });
         idRemap[soleId] = newId;
         return;
       }
     }
     const slug = slugify(contextName);
-    const newContainerId = `${containerId}/${slug}`;
+    let newContainerId = `${containerId}/${slug}`;
+    let suffix = 2;
+    while (usedContainerIds.has(newContainerId)) {
+      newContainerId = `${containerId}/${slug}-${suffix}`;
+      suffix++;
+    }
+    usedContainerIds.add(newContainerId);
     groups.push({ containerId: newContainerId, memberIds, contextName, promoted: false });
     for (const memberId of memberIds) {
       const leafSegment = memberId.split("/").pop()!;
