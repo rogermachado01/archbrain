@@ -1,5 +1,5 @@
-import { readFile } from "node:fs/promises";
-import { parse } from "yaml";
+import { readFile, writeFile } from "node:fs/promises";
+import { parse, stringify } from "yaml";
 import { z } from "zod";
 import type { RepoMapConfig } from "./types";
 
@@ -9,7 +9,7 @@ const BranchMapSchema = z.object({
   prd: z.string().min(1),
 });
 
-const RepoMapSchema = z
+export const RepoMapSchema = z
   .object({
     terraform: z
       .object({
@@ -39,13 +39,29 @@ const RepoMapSchema = z
     message: "repo-map.yaml must define at least one of: terraform, resources, frontend",
   });
 
-export async function loadRepoMap(filePath: string): Promise<RepoMapConfig> {
-  const raw = await readFile(filePath, "utf-8");
-  const parsed = parse(raw);
+/**
+ * Validates an already-decoded value against the repo-map schema, throwing a
+ * message that names `sourceLabel` (the file path, for both `loadRepoMap`'s
+ * read and `saveRepoMap`'s pre-write check) so a caller sees exactly which
+ * file/save attempt was invalid.
+ */
+export function validateRepoMapConfig(parsed: unknown, sourceLabel: string): RepoMapConfig {
   const result = RepoMapSchema.safeParse(parsed);
   if (!result.success) {
     const messages = result.error.issues.map((issue) => `${issue.path.join(".") || "(root)"}: ${issue.message}`);
-    throw new Error(`Invalid repo-map.yaml at ${filePath}:\n- ${messages.join("\n- ")}`);
+    throw new Error(`Invalid repo-map.yaml at ${sourceLabel}:\n- ${messages.join("\n- ")}`);
   }
   return result.data;
+}
+
+export async function loadRepoMap(filePath: string): Promise<RepoMapConfig> {
+  const raw = await readFile(filePath, "utf-8");
+  const parsed = parse(raw);
+  return validateRepoMapConfig(parsed, filePath);
+}
+
+/** Validates `config` before writing, so a malformed edit from the pipeline UI never overwrites a previously-valid repo-map.yaml on disk. */
+export async function saveRepoMap(filePath: string, config: RepoMapConfig): Promise<void> {
+  const validated = validateRepoMapConfig(config, filePath);
+  await writeFile(filePath, stringify(validated), "utf-8");
 }
