@@ -1,3 +1,4 @@
+import { readFile } from "node:fs/promises";
 import { basename } from "node:path";
 import { checkRepoFreshness } from "./check-repo-freshness";
 import { ownerForFile } from "./code/codeowners";
@@ -7,7 +8,15 @@ import { mapWithConcurrency } from "./concurrency";
 import { syncWorktree } from "./git/worktree";
 import { loadManifest, saveManifest } from "./manifest";
 import { loadRepoMap } from "./repo-map";
+import { createAnthropicActorInferenceClient } from "./synthesize/actors";
 import { createAnthropicLlmClient } from "./synthesize/llm";
+import {
+  applyMaterializationProposal,
+  proposalPath,
+  proposeMaterialization,
+  writeProposal,
+  type MaterializationProposal,
+} from "./synthesize/materialize";
 import { createAnthropicOrganizerClient } from "./synthesize/organize";
 import { synthesize } from "./synthesize/synthesize";
 import { scanTerraform } from "./terraform/scan-terraform";
@@ -21,10 +30,12 @@ export interface CliArgs {
   concurrencyGit: number;
   concurrencyScan: number;
   concurrencyLlm: number;
+  materialize?: "propose" | "apply";
+  plan?: string;
 }
 
 const USAGE =
-  "Usage: okf-scan --repo-map <path> --env <dev|hml|prd> --out <bundleDir> [--force] [--concurrency-git N] [--concurrency-scan N] [--concurrency-llm N]";
+  "Usage: okf-scan --repo-map <path> --env <dev|hml|prd> --out <bundleDir> [--force] [--concurrency-git N] [--concurrency-scan N] [--concurrency-llm N] [--materialize propose|apply] [--plan <path>]";
 
 export function parseArgs(argv: string[]): CliArgs {
   const get = (flag: string): string | undefined => {
@@ -40,6 +51,11 @@ export function parseArgs(argv: string[]): CliArgs {
     throw new Error(`--env must be one of dev, hml, prd (got "${env}")`);
   }
 
+  const materializeRaw = get("--materialize");
+  if (materializeRaw && materializeRaw !== "propose" && materializeRaw !== "apply") {
+    throw new Error(`--materialize must be one of propose, apply (got "${materializeRaw}")`);
+  }
+
   return {
     repoMap,
     env,
@@ -48,6 +64,8 @@ export function parseArgs(argv: string[]): CliArgs {
     concurrencyGit: Number(get("--concurrency-git") ?? 20),
     concurrencyScan: Number(get("--concurrency-scan") ?? 4),
     concurrencyLlm: Number(get("--concurrency-llm") ?? 6),
+    materialize: materializeRaw as "propose" | "apply" | undefined,
+    plan: get("--plan"),
   };
 }
 
@@ -137,6 +155,34 @@ async function main(): Promise<void> {
 
   concepts = concepts.concat(lambdaConceptLists.flat(), frontendConceptLists.flat());
 
+  if (args.materialize === "propose") {
+    const organizer = createAnthropicOrganizerClient();
+    const actorClient = createAnthropicActorInferenceClient();
+    const manifestForSkip = args.force ? emptyManifest() : await loadManifest(args.out);
+    const alreadyMaterialized = new Set(Object.keys(manifestForSkip.materializedContainers ?? {}));
+    const proposal = await proposeMaterialization(
+      { concepts, groups, lambdaEnvVarBindings },
+      organizer,
+      actorClient,
+      alreadyMaterialized,
+    );
+    await writeProposal(args.out, proposal);
+    console.log(
+      `okf-scan: wrote materialization proposal to ${proposalPath(args.out)} (${proposal.containerPlans.length} container plan(s), ${proposal.actorProposals.length} actor proposal(s))`,
+    );
+    return;
+  }
+
+  let newlyMaterializedContainerIds: string[] = [];
+  if (args.materialize === "apply") {
+    if (!args.plan) throw new Error("--materialize=apply requires --plan <path>");
+    const proposalRaw = await readFile(args.plan, "utf-8");
+    const proposal = JSON.parse(proposalRaw) as MaterializationProposal;
+    const applied = applyMaterializationProposal({ concepts, groups, lambdaEnvVarBindings }, proposal);
+    concepts = applied.concepts;
+    newlyMaterializedContainerIds = proposal.containerPlans.map((p) => p.containerId);
+  }
+
   const llm = createAnthropicLlmClient();
   const organizer = createAnthropicOrganizerClient();
   const summary = await synthesize({
@@ -146,6 +192,7 @@ async function main(): Promise<void> {
     organizer,
     force: args.force,
     concurrency: args.concurrencyLlm,
+    newlyMaterializedContainerIds,
   });
 
   // synthesize() loads its own copy of the manifest (from an empty one when

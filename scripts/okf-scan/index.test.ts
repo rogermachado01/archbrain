@@ -34,4 +34,24 @@ describe("parseArgs", () => {
   it("rejects missing required flags", () => {
     expect(() => parseArgs(["--env", "dev"])).toThrow(/Usage/);
   });
+
+  it("parses --materialize propose", () => {
+    const args = parseArgs(["--repo-map", "repo-map.yaml", "--env", "dev", "--out", "out", "--materialize", "propose"]);
+    expect(args.materialize).toBe("propose");
+  });
+
+  it("parses --materialize apply with --plan", () => {
+    const args = parseArgs([
+      "--repo-map", "repo-map.yaml", "--env", "dev", "--out", "out",
+      "--materialize", "apply", "--plan", "out/.materialize-proposal.json",
+    ]);
+    expect(args.materialize).toBe("apply");
+    expect(args.plan).toBe("out/.materialize-proposal.json");
+  });
+
+  it("rejects an invalid --materialize value", () => {
+    expect(() =>
+      parseArgs(["--repo-map", "repo-map.yaml", "--env", "dev", "--out", "out", "--materialize", "nonsense"]),
+    ).toThrow(/propose, apply/);
+  });
 });
