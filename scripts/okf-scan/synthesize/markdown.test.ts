@@ -8,6 +8,11 @@ describe("titleize", () => {
     expect(titleize("orders_table")).toBe("Orders Table");
     expect(titleize("orders/handler")).toBe("Handler");
   });
+
+  it("strips literal brackets from a Next.js dynamic route segment, so the title never breaks the markdown-link regex used elsewhere in the pipeline", () => {
+    expect(titleize("app/[slug]")).toBe("Slug");
+    expect(titleize("app/[...slug]")).toBe("Slug");
+  });
 });
 
 describe("relativeLinkFromTo", () => {

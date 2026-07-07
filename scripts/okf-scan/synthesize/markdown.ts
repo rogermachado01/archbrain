@@ -6,7 +6,8 @@ import type { ConceptFacts, GroupFact } from "../types";
 /** Leaf-segment id -> Title Case, e.g. "orders/handler" -> "Handler". */
 export function titleize(id: string): string {
   const last = id.split("/").pop() ?? id;
-  return last.replace(/[-_]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  const cleaned = last.replace(/[[\]]/g, "").replace(/^\.\.\./, "");
+  return cleaned.replace(/[-_]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 function relativeLinkToPath(sourceId: string, targetPath: string): string {
