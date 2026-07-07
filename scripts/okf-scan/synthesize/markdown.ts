@@ -2,6 +2,7 @@ import path from "node:path/posix";
 import { parseFrontmatter, type Frontmatter } from "../../../src/lib/frontmatter";
 import { parseLinksSection } from "../../../src/lib/okf-sections";
 import type { ConceptFacts, GroupFact } from "../types";
+import { findFrontendIcon } from "./frontend-icons";
 
 /** Leaf-segment id -> Title Case, e.g. "orders/handler" -> "Handler". */
 export function titleize(id: string): string {
@@ -172,7 +173,12 @@ export function buildConceptMarkdown(options: BuildConceptMarkdownOptions): stri
     description: descriptionParagraph,
     level: facts.level,
   };
-  if (facts.awsResourceType) frontmatter.aws_resource_type = facts.awsResourceType;
+  if (facts.awsResourceType) {
+    frontmatter.aws_resource_type = facts.awsResourceType;
+  } else {
+    const icon = findFrontendIcon(facts.type);
+    if (icon) frontmatter.icon = icon;
+  }
   if (facts.groupId) frontmatter.group = relativeGroupLink(facts.id, groups, facts.groupId);
   if (facts.owner) frontmatter.owner = facts.owner;
   if (preserved.ddd_subdomain) frontmatter.ddd_subdomain = preserved.ddd_subdomain;

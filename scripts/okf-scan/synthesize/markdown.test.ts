@@ -272,4 +272,35 @@ describe("buildConceptMarkdown", () => {
     expect(markdown).toContain("description: Only paragraph.");
     expect(markdown.split("Only paragraph.")).toHaveLength(2);
   });
+
+  it("sets a default icon for a non-AWS concept type when none is set explicitly", () => {
+    const markdown = buildConceptMarkdown({
+      facts: { id: "app/header", type: "React Component", level: "component", parentId: "app", sourceFiles: [] },
+      prose: "Renders the header.",
+      preserved: { links: [] },
+      conceptTitles: {},
+      groups: [],
+    });
+    const { data } = parseFrontmatter(markdown);
+    expect(data.icon).toBe("fe-component.svg");
+  });
+
+  it("does not set icon for an AWS-typed concept, relying on the importer's own findAwsIcon fallback instead", () => {
+    const markdown = buildConceptMarkdown({
+      facts: {
+        id: "orders_table",
+        type: "Amazon DynamoDB Table",
+        awsResourceType: "Amazon DynamoDB Table",
+        level: "container",
+        parentId: "platform",
+        sourceFiles: [],
+      },
+      prose: "Stores orders.",
+      preserved: { links: [] },
+      conceptTitles: {},
+      groups: [],
+    });
+    const { data } = parseFrontmatter(markdown);
+    expect(data.icon).toBeUndefined();
+  });
 });
