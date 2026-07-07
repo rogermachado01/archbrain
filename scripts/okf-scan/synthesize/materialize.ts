@@ -117,7 +117,39 @@ export function computeMaterializationPlan(
   return { containerId, groups, idRemap };
 }
 
+/**
+ * A hand-edited proposal (see the propose/apply review flow) can drift out of
+ * sync between a plan's `groups[].memberIds` and its `idRemap` — e.g. a
+ * reviewer removes one id from a group without also removing its idRemap
+ * entry, or vice versa. Left unchecked, that produces a bare
+ * "Cannot read properties of undefined" crash deep in applyMaterializationPlan
+ * instead of a message pointing at the actual problem.
+ */
+function validatePlanConsistency(plan: MaterializationPlan): void {
+  const memberIdsInGroups = new Set<string>();
+  for (const group of plan.groups) {
+    for (const memberId of group.memberIds) memberIdsInGroups.add(memberId);
+  }
+  for (const oldId of Object.keys(plan.idRemap)) {
+    if (!memberIdsInGroups.has(oldId)) {
+      throw new Error(
+        `Malformed materialization plan for container "${plan.containerId}": idRemap has an entry for "${oldId}" but no group's memberIds includes it.`,
+      );
+    }
+  }
+  for (const group of plan.groups) {
+    for (const memberId of group.memberIds) {
+      if (!(memberId in plan.idRemap)) {
+        throw new Error(
+          `Malformed materialization plan for container "${plan.containerId}": group "${group.contextName}" lists member "${memberId}" but idRemap has no entry for it.`,
+        );
+      }
+    }
+  }
+}
+
 export function applyMaterializationPlan(allConcepts: ConceptFacts[], plan: MaterializationPlan): ConceptFacts[] {
+  validatePlanConsistency(plan);
   const memberToGroup = new Map<string, CapabilityGroup>();
   for (const group of plan.groups) {
     for (const memberId of group.memberIds) memberToGroup.set(memberId, group);
@@ -245,8 +277,16 @@ export function applyMaterializationProposal(scanResult: ScanResult, proposal: M
 
   const rootId = singleRootConceptId(concepts);
   const actorConcepts: ConceptFacts[] = [];
+  const usedActorIds = new Set(concepts.map((c) => c.id));
   for (const actor of proposal.actorProposals) {
-    const actorId = slugify(actor.title);
+    const baseActorId = slugify(actor.title);
+    let actorId = baseActorId;
+    let suffix = 2;
+    while (usedActorIds.has(actorId)) {
+      actorId = `${baseActorId}-${suffix}`;
+      suffix++;
+    }
+    usedActorIds.add(actorId);
     if (actor.type === "Person") {
       actorConcepts.push({
         id: actorId,

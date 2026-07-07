@@ -258,6 +258,27 @@ describe("applyMaterializationPlan", () => {
     const result = applyMaterializationPlan(allConcepts, plan);
     expect(result.find((c) => c.id === "app/other-page")).toBe(unrelated);
   });
+
+  it("throws a clear error when idRemap references an id missing from every group's memberIds", () => {
+    const children = Array.from({ length: 16 }, (_, i) => component(`app/shared-ui/c${i}`, i < 8 ? "Navigation" : "Content"));
+    const assignments: Record<string, ContextAssignment> = {};
+    children.forEach((c, i) => (assignments[c.id] = { context: i < 8 ? "Navigation" : "Content" }));
+    const plan = computeMaterializationPlan("app/shared-ui", children, assignments, children)!;
+    const corrupted = { ...plan, idRemap: { ...plan.idRemap, "app/shared-ui/ghost": "app/shared-ui/navigation/ghost" } };
+
+    expect(() => applyMaterializationPlan(children, corrupted)).toThrow(/idRemap has an entry for "app\/shared-ui\/ghost"/);
+  });
+
+  it("throws a clear error when a group's memberIds references an id missing from idRemap", () => {
+    const children = Array.from({ length: 16 }, (_, i) => component(`app/shared-ui/c${i}`, i < 8 ? "Navigation" : "Content"));
+    const assignments: Record<string, ContextAssignment> = {};
+    children.forEach((c, i) => (assignments[c.id] = { context: i < 8 ? "Navigation" : "Content" }));
+    const plan = computeMaterializationPlan("app/shared-ui", children, assignments, children)!;
+    const { "app/shared-ui/c0": _dropped, ...remainingRemap } = plan.idRemap;
+    const corrupted = { ...plan, idRemap: remainingRemap };
+
+    expect(() => applyMaterializationPlan(children, corrupted)).toThrow(/idRemap has no entry for it/);
+  });
 });
 
 describe("applyMaterializationProposal", () => {
@@ -313,6 +334,23 @@ describe("applyMaterializationProposal", () => {
     const visitor = result.concepts.find((c) => c.id === "visitor")!;
     expect(visitor.relations).toBeUndefined();
     expect(result.concepts.find((c) => c.id === "a")?.relations).toBeUndefined();
+  });
+
+  it("dedupes a synthesized actor id that would otherwise collide with an existing concept id", () => {
+    const root: ConceptFacts = { id: "app", type: "Frontend Application", level: "context", parentId: null, sourceFiles: [] };
+    const existingVisitor: ConceptFacts = { id: "visitor", type: "React Component", level: "component", parentId: "app", sourceFiles: [] };
+    const scanResult: ScanResult = { concepts: [root, existingVisitor], groups: [], lambdaEnvVarBindings: {} };
+    const proposal = {
+      containerPlans: [],
+      actorProposals: [
+        { type: "Person" as const, title: "Visitor", description: "d", relationLabel: "Browses the site", relationKind: "sync" as const },
+      ],
+    };
+
+    const result = applyMaterializationProposal(scanResult, proposal);
+    const newActor = result.concepts.find((c) => c.type === "Person");
+    expect(newActor?.id).toBe("visitor-2");
+    expect(result.concepts.filter((c) => c.id === "visitor")).toHaveLength(1);
   });
 
   it("applies every container plan in the proposal", () => {
