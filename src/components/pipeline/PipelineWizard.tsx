@@ -58,6 +58,7 @@ export default function PipelineWizard() {
           onResult={(fields, result) => {
             setRunFields(fields);
             setSummary(result);
+            setProposal(null);
             setError(null);
             setStep("results");
           }}
@@ -82,6 +83,7 @@ export default function PipelineWizard() {
           onProposalLoaded={setProposal}
           onApplied={(result) => {
             setSummary(result);
+            setProposal(null);
             setError(null);
             setStep("validate");
           }}

@@ -13,6 +13,7 @@ export default function ValidateAndSnippet({ runFields, onBack }: ValidateAndSni
   const [checking, setChecking] = useState(false);
   const [result, setResult] = useState<{ valid: boolean; error?: string } | null>(null);
   const [copied, setCopied] = useState(false);
+  const [copyFailed, setCopyFailed] = useState(false);
   const snippet = dataSourceSnippet(runFields.out);
 
   async function handleValidate() {
@@ -31,9 +32,14 @@ export default function ValidateAndSnippet({ runFields, onBack }: ValidateAndSni
   }
 
   async function handleCopy() {
-    await navigator.clipboard.writeText(snippet);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    try {
+      await navigator.clipboard.writeText(snippet);
+      setCopyFailed(false);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopyFailed(true);
+    }
   }
 
   return (
@@ -54,7 +60,7 @@ export default function ValidateAndSnippet({ runFields, onBack }: ValidateAndSni
       <h3>Add this to DATA_SOURCES in src/lib/data-sources.ts</h3>
       <pre className="pipeline-snippet">{snippet}</pre>
       <button type="button" onClick={handleCopy}>
-        {copied ? "Copied!" : "Copy snippet"}
+        {copied ? "Copied!" : copyFailed ? "Copy failed — try selecting the text manually" : "Copy snippet"}
       </button>
     </div>
   );

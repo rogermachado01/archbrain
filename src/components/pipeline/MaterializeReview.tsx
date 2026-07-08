@@ -81,7 +81,18 @@ export default function MaterializeReview({
   }
 
   if (loading) return <p className="pipeline-loading">Proposing materialization…</p>;
-  if (!working) return null;
+  if (!working) {
+    return (
+      <div className="pipeline-summary">
+        <p>Materialization proposal failed to load. See the error above.</p>
+        <div className="pipeline-actions">
+          <button type="button" onClick={onSkip}>
+            Continue to validate without materializing
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (working.containerPlans.length === 0 && working.actorProposals.length === 0) {
     return (
