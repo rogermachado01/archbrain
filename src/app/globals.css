@@ -641,3 +641,163 @@ a {
   background: #ffffff;
   color: inherit;
 }
+
+.pipeline-link {
+  text-decoration: none;
+}
+
+.pipeline-page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 20px 64px;
+}
+
+.pipeline-steps {
+  display: flex;
+  gap: 12px;
+  list-style: none;
+  padding: 0;
+  margin: 16px 0 24px;
+  flex-wrap: wrap;
+}
+
+.pipeline-step {
+  font-size: 12px;
+  color: #8b96a5;
+  padding: 4px 10px;
+  border: 1px solid #d8dee6;
+  border-radius: 6px;
+}
+
+.pipeline-step--active {
+  color: #1a2733;
+  border-color: #5a6b82;
+  font-weight: 600;
+}
+
+.pipeline-error {
+  background: #fdecec;
+  color: #a12626;
+  border: 1px solid #f3b8b8;
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-bottom: 16px;
+  white-space: pre-wrap;
+}
+
+.pipeline-valid {
+  color: #1a7a3c;
+}
+
+.pipeline-loading {
+  color: #8b96a5;
+}
+
+.pipeline-form,
+.pipeline-summary,
+.pipeline-materialize-review {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pipeline-form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  color: #5a6b82;
+}
+
+.pipeline-form-row input,
+.pipeline-form-row select {
+  font: inherit;
+  padding: 6px 8px;
+  border: 1px solid #d8dee6;
+  border-radius: 6px;
+}
+
+.pipeline-form-row--checkbox {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.pipeline-fieldset {
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pipeline-repo-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.pipeline-repo-row input {
+  font: inherit;
+  padding: 6px 8px;
+  border: 1px solid #d8dee6;
+  border-radius: 6px;
+  flex: 1 1 120px;
+}
+
+.pipeline-advanced-toggle {
+  align-self: flex-start;
+  font-size: 12px;
+  background: none;
+  border: none;
+  color: #5a6b82;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.pipeline-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.pipeline-card {
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pipeline-card-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.pipeline-card-row input {
+  font: inherit;
+  padding: 4px 8px;
+  border: 1px solid #d8dee6;
+  border-radius: 6px;
+}
+
+.pipeline-badge {
+  font-size: 11px;
+  background: #f0f5ff;
+  color: #3a5a99;
+  border-radius: 4px;
+  padding: 2px 6px;
+}
+
+.pipeline-snippet {
+  background: #0d1117;
+  color: #d8dee6;
+  padding: 12px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-size: 12px;
+}

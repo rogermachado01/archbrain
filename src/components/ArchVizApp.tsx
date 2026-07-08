@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import ArchitectureGraph from "@/components/ArchitectureGraph";
 import SidePanel, { type SidePanelTab } from "@/components/SidePanel";
 import Breadcrumb from "@/components/Breadcrumb";
@@ -251,6 +252,9 @@ export default function ArchVizApp() {
       <header className="app-header">
         <h1>ArchViz</h1>
         <DataSourceSelector sources={DATA_SOURCES} selectedId={sourceId} onSelect={handleSelectSource} />
+        <Link href="/pipeline" className="search-trigger pipeline-link">
+          Pipeline
+        </Link>
         <Breadcrumb
           trail={breadcrumbTrail}
           onNavigate={handleNavigate}
