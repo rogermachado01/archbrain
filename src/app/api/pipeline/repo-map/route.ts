@@ -20,7 +20,7 @@ export async function GET() {
 export async function PUT(request: Request) {
   try {
     const body = await request.json();
-    await saveRepoMap(REPO_MAP_PATH, body.config);
+    await saveRepoMap(REPO_MAP_PATH, body?.config);
     return NextResponse.json({ ok: true });
   } catch (err) {
     return errorResponse(err, 400);
