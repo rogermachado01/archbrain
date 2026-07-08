@@ -18,7 +18,8 @@ const fsIo: OkfIo = {
 
 function toLogicalBundlePath(out: string): string {
   const relative = path.relative(PUBLIC_DIR, path.resolve(out));
-  if (relative.startsWith("..")) {
+  const isOutside = relative === ".." || relative.startsWith(`..${path.sep}`) || path.isAbsolute(relative);
+  if (isOutside) {
     throw new Error(`"out" must be a path under public/ (got "${out}")`);
   }
   return `/${relative.replace(/\\/g, "/")}`;
