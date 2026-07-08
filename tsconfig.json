@@ -31,5 +31,5 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules", "scripts/okf-scan/code/__fixtures__"]
+  "exclude": ["node_modules", "scripts/okf-scan/code/__fixtures__", "example"]
 }
