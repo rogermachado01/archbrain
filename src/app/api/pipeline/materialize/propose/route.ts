@@ -26,7 +26,20 @@ export async function POST(request: Request) {
       createAnthropicActorInferenceClient(),
       alreadyMaterialized,
     );
-    await writeProposal(fields.out, proposal);
+    try {
+      await writeProposal(fields.out, proposal);
+    } catch (err) {
+      // proposeMaterialization already did the expensive LLM work by this
+      // point — a failure only writing .materialize-proposal.json to disk
+      // shouldn't force the user to pay for a full re-run just to see the
+      // proposal again. The apply route receives the (possibly edited)
+      // proposal back from the client directly, not by re-reading this file,
+      // so returning it here still lets the wizard continue.
+      return NextResponse.json({
+        proposal,
+        warning: `materialization proposed but failed to write .materialize-proposal.json: ${err instanceof Error ? err.message : String(err)}`,
+      });
+    }
     return NextResponse.json({ proposal });
   } catch (err) {
     return errorResponse(err);
