@@ -477,6 +477,51 @@ When adding new node types or AWS resource kinds, you generally only need to tou
 data and reference an icon filename (via `findAwsIcon`) under `node.icon` — the drill-down,
 layout, and selection logic is level-agnostic.
 
+### Visual pipeline UI (`src/app/pipeline/`, `src/app/api/pipeline/`)
+
+`/pipeline` (linked from the "Pipeline" button in the main header) is a wizard
+replacing the CLI-driven `okf-scan` workflow with a visual flow: edit
+`repo-map.yaml`, run a scan, review results, propose/review/apply a
+materialization, validate, and copy the resulting `DATA_SOURCES` snippet. It's
+the one part of the app with real server-side execution — a deliberate,
+scoped exception to "no backend in the MVP" (see "What this is" above) that
+exists only to drive the same local git/filesystem/LLM work `okf-scan` already
+does via the CLI.
+
+The Route Handlers under `src/app/api/pipeline/` (`repo-map`, `scan`,
+`materialize/propose`, `materialize/apply`, `validate`) call directly into
+`scripts/okf-scan/**` — `scanRepos`/`recordScanManifest`
+(`scripts/okf-scan/scan-repos.ts`) is the same freshness-check/scan
+orchestration the CLI's `main()` uses, extracted so both share one
+implementation rather than duplicating it. Reach `scripts/okf-scan/**` via the
+`@okf-scan/*` path alias (`tsconfig.json`/`vitest.config.ts`), not relative
+paths. `next.config.ts`'s `serverExternalPackages` keeps `simple-git`/
+`@cdktf/hcl2json`/`@anthropic-ai/sdk` out of the route handlers' server
+bundles, since all three do real Node-native work (spawning `git`, a native
+HCL parser, Node HTTP streaming) that Next's bundler can mishandle.
+
+The materialization review step (`src/components/pipeline/MaterializeReview.tsx`)
+mirrors the same accept/rename/merge/drop review model
+`.claude/skills/okf-scan-humanize/SKILL.md` already documents as a manual JSON
+edit — `src/lib/pipeline/materialize-review.ts`'s `applyReviewAction` is a pure
+reducer over a `MaterializationProposal`, applied entirely client-side; nothing
+is written to disk until "Apply" calls `/api/pipeline/materialize/apply`,
+which re-writes `.materialize-proposal.json` with the edited copy first (same
+as a human hand-editing the file before running `--materialize apply` today).
+Both the `materialize/propose` and `materialize/apply` (and the plain `scan`)
+routes wrap their final manifest-recording step in its own try/catch, so a
+disk-write failure after the expensive scan/LLM work still returns the
+already-computed result (with a `warning` field) instead of discarding it.
+
+Deliberately does **not** write the `DATA_SOURCES` entry into
+`src/lib/data-sources.ts` automatically — the Validate step shows the same
+copy-paste snippet the CLI already prints (`dataSourceSnippet` in
+`src/lib/pipeline/data-source-snippet.ts`), left for the user to paste by
+hand, since that file requires a dev-server reload to pick up a new dynamic
+import either way. See `docs/superpowers/specs/2026-07-07-pipeline-visual-flow-design.md`
+for the full design and non-goals (no multiple repo-map configs, no live
+progress streaming during a scan).
+
 ## Working with this user (brainstorming/visual companion)
 
 When using the `superpowers:brainstorming` skill's visual companion in this repo: only open it
