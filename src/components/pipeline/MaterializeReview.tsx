@@ -30,14 +30,14 @@ export default function MaterializeReview({
   const [loading, setLoading] = useState(proposal === null);
   const [applying, setApplying] = useState(false);
 
-  // Fetches the proposal once, only if the parent hasn't already cached one
-  // (e.g. from a previous visit to this step) — see the `[proposal]` dep below.
+  // `working`/`loading` already initialize correctly from `proposal` via
+  // useState's lazy-initial-value above — this effect only needs to fetch
+  // when there's nothing to reuse yet. Early-returning here (rather than
+  // calling setWorking/setLoading synchronously in the effect body) avoids
+  // the react-hooks/set-state-in-effect cascading-render risk documented in
+  // CLAUDE.md's "Data sources" section for the same reason.
   useEffect(() => {
-    if (proposal !== null) {
-      setWorking(proposal);
-      setLoading(false);
-      return;
-    }
+    if (proposal !== null) return;
     let cancelled = false;
     fetch("/api/pipeline/materialize/propose", {
       method: "POST",
