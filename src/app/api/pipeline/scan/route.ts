@@ -24,7 +24,19 @@ export async function POST(request: Request) {
       force: fields.force,
       concurrency: fields.concurrencyLlm,
     });
-    await recordScanManifest(fields.out, freshness, fields.env, scanResult.lambdaEnvVarBindings);
+    try {
+      await recordScanManifest(fields.out, freshness, fields.env, scanResult.lambdaEnvVarBindings);
+    } catch (err) {
+      // synthesize() already durably wrote every concept file and its own
+      // manifest entries by this point — a failure here only means the
+      // freshness/lambdaEnvVarBindings bookkeeping didn't get recorded, not
+      // that the scan failed. Return the real summary with a warning instead
+      // of masking a mostly-successful run as a hard failure.
+      return NextResponse.json({
+        summary,
+        warning: `scan completed but recording manifest failed: ${err instanceof Error ? err.message : String(err)}`,
+      });
+    }
     return NextResponse.json({ summary });
   } catch (err) {
     return errorResponse(err);
