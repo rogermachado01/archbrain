@@ -73,6 +73,27 @@ describe("applyReviewAction", () => {
     expect(plan.idRemap["app/shared-ui/header"]).toBe("app/shared-ui/layout-navigation/header");
   });
 
+  it("mergeGroups is a no-op when merging a group with itself", () => {
+    const proposal = baseProposal();
+    const result = applyReviewAction(proposal, {
+      type: "mergeGroups",
+      containerId: "app/shared-ui",
+      intoGroupContainerId: "app/shared-ui/layout-navigation",
+      fromGroupContainerId: "app/shared-ui/layout-navigation",
+    });
+    expect(result).toEqual(proposal);
+  });
+
+  it("dropGroup is a no-op when the group id doesn't exist in the proposal", () => {
+    const proposal = baseProposal();
+    const result = applyReviewAction(proposal, {
+      type: "dropGroup",
+      containerId: "app/shared-ui",
+      groupContainerId: "app/shared-ui/nonexistent",
+    });
+    expect(result).toEqual(proposal);
+  });
+
   it("renameActor and dropActor operate on actorProposals independently of containerPlans", () => {
     const renamed = applyReviewAction(baseProposal(), { type: "renameActor", index: 0, title: "Site Visitor" });
     expect(renamed.actorProposals[0].title).toBe("Site Visitor");

@@ -48,6 +48,7 @@ export function applyReviewAction(
       };
 
     case "mergeGroups":
+      if (action.intoGroupContainerId === action.fromGroupContainerId) return proposal;
       return {
         ...proposal,
         containerPlans: proposal.containerPlans.map((plan) => {
