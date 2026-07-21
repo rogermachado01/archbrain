@@ -536,7 +536,7 @@ precedent for the "AI regeneration without losing manual adjustments" requiremen
 
 Planned phases (order may adjust as earlier phases surface constraints):
 
-1. **Wiki editor** *(in progress — see latest spec in `docs/superpowers/specs/`)* — make
+1. **Wiki editor** *(done — `docs/superpowers/specs/2026-07-20-wiki-editor-design.md`)* — make
    `OkfWikiViewer`'s markdown editable in place and add a save path back to the bundle's `.md`
    files on disk (currently 100% read-only, fetched and rendered via `marked`).
 2. **Persistence/save foundation** — generalize whatever save mechanism the wiki editor phase
