@@ -25,15 +25,19 @@ export interface OkfIo {
   exists(path: string): Promise<boolean>;
 }
 
+// `cache: "no-store"` on both calls: a wiki-editor save (see saveWikiPage in
+// src/lib/wiki/save.ts) can trigger a reload of the same sourceId's
+// ArchModel, and a production (`next start`) serve of public/ risks the
+// browser's HTTP cache returning pre-edit file content without this.
 const browserIo: OkfIo = {
   async readText(path) {
-    const res = await fetch(path);
+    const res = await fetch(path, { cache: "no-store" });
     if (!res.ok) throw new Error(`OKF import: failed to fetch "${path}" (HTTP ${res.status})`);
     return res.text();
   },
   async exists(path) {
     try {
-      const res = await fetch(path);
+      const res = await fetch(path, { cache: "no-store" });
       return res.ok;
     } catch {
       return false;

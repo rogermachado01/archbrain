@@ -14,6 +14,8 @@ interface SidePanelProps {
   wikiEntryPath: string;
   activeTab: SidePanelTab;
   onTabChange: (tab: SidePanelTab) => void;
+  /** called after a successful wiki-page save, so the caller can refresh the loaded ArchModel */
+  onWikiSaved: () => void;
 }
 
 /**
@@ -31,6 +33,7 @@ export default function SidePanel({
   wikiEntryPath,
   activeTab,
   onTabChange,
+  onWikiSaved,
 }: SidePanelProps) {
   const tab: SidePanelTab = activeTab === "wiki" && wikiAvailable ? "wiki" : "resource";
 
@@ -60,7 +63,7 @@ export default function SidePanel({
       </div>
       <div className="side-panel-body">
         {tab === "wiki" && wikiBasePath ? (
-          <OkfWikiViewer key={wikiEntryPath} basePath={wikiBasePath} initialPath={wikiEntryPath} />
+          <OkfWikiViewer key={wikiEntryPath} basePath={wikiBasePath} initialPath={wikiEntryPath} onSaved={onWikiSaved} />
         ) : (
           <div className="details-panel">
             <DetailsPanel node={node} clusterMembers={clusterMembers} />

@@ -56,6 +56,7 @@ export default function ArchVizApp() {
 
   const [loaded, setLoaded] = useState<Loaded | null>(null);
   const [loadFailed, setLoadFailed] = useState<LoadFailed | null>(null);
+  const [reloadNonce, setReloadNonce] = useState(0);
   const [searchOpen, setSearchOpen] = useState(false);
   const [pathMode, setPathMode] = useState<PathMode>("off");
   const [kindFilter, setKindFilter] = useState<RelationKind | null>(null);
@@ -79,7 +80,10 @@ export default function ArchVizApp() {
     return () => {
       cancelled = true;
     };
-  }, [sourceId]);
+    // reloadNonce is a second reason for this effect to re-run — bumped by
+    // triggerWikiReload (below) after a wiki-editor save, so the same
+    // sourceId's model refetches instead of only ever loading once per id.
+  }, [sourceId, reloadNonce]);
 
   // Derived (not reset via setState) so a source switch shows "loading" until
   // its own fetch resolves, without an effect synchronously clearing state.
@@ -236,6 +240,10 @@ export default function ArchVizApp() {
     updateUrl({ panel: tab });
   }
 
+  function triggerWikiReload() {
+    setReloadNonce((n) => n + 1);
+  }
+
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
@@ -329,6 +337,7 @@ export default function ArchVizApp() {
           wikiEntryPath={wikiEntryPath}
           activeTab={activeTab}
           onTabChange={handleTabChange}
+          onWikiSaved={triggerWikiReload}
         />
       </main>
     </div>
