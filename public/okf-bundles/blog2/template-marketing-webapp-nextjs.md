@@ -1,14 +1,13 @@
 ---
 type: Frontend Application
 title: Template Marketing Webapp Nextjs
-description: A Next.js frontend application scaffolded for marketing websites, providing the customer-facing entry point where visitors land, browse content, and convert into leads or customers.
+description: template-marketing-webapp-nextjs is a Next.js frontend application serving as the marketing website. It retrieves its page content from Contentful CMS via GraphQL, allowing marketing pages to be rendered from structured content managed outside the codebase.
 level: context
 owner: contentful/team-workflows
 ---
 
-As a template, it's meant to be cloned and customized per project rather than configured through extensive runtime options, giving teams a consistent starting structure for pages, layouts, and routing conventions common to marketing sites. Its role in an architecture map is as the presentation layer that typically sits in front of a CMS or backend API, rendering pages for end users while delegating content and data concerns elsewhere.
+By pulling content through a GraphQL interface rather than embedding it directly, the application separates presentation logic from content, so page copy, assets, and structured fields can be updated in Contentful without requiring changes to the frontend code itself.
 
 # Relations
 
-- [Visitante](visitante.md) — Navega e visualiza conteúdo {kind: sync}
-- [Contentful CMS](contentful-cms.md) — Busca conteúdo via GraphQL {kind: sync}
+- [Contentful Cms](contentful-cms.md) — Pulls page content for rendering marketing pages {kind: sync}

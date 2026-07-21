@@ -1,0 +1,63 @@
+PS C:\Users\roger\archviz>
+                           npm run okf-scan -- --repo-map repo-map.yaml --env dev --out public/okf-bundles/blog2
+
+> archviz@0.1.0 okf-scan
+> tsx scripts/okf-scan/index.ts --repo-map repo-map.yaml --env dev --out public/okf-bundles/blog2
+
+okf-scan: wrote 51, skipped 0 concept(s) into public/okf-bundles/blog2
+okf-scan: 5 concept(s) need manual review:
+  - template-marketing-webapp-nextjs/shared-ui/ctf-footer:
+      <Link href={...}> with a non-literal value does not resolve to a static path
+  - template-marketing-webapp-nextjs/shared-ui/ctf-mobile-menu:
+      <Link href={...}> with a non-literal value does not resolve to a static path
+      <Link href={...}> with a non-literal value does not resolve to a static path
+  - template-marketing-webapp-nextjs/shared-ui/ctf-navigation:
+      <Link href={...}> with a non-literal value does not resolve to a static path
+      <Link href={...}> with a non-literal value does not resolve to a static path
+  - template-marketing-webapp-nextjs/shared-ui/LanguageSelector:
+      router.push(...) with a non-literal value does not resolve to a static path
+  - template-marketing-webapp-nextjs/shared-ui/settings-form:
+      router.push(...) with a non-literal value does not resolve to a static path
+
+Add this to DATA_SOURCES in src/lib/data-sources.ts:
+
+  {
+    id: "blog2",
+    label: "blog2",
+    load: () => importOkfBundle("/okf-bundles/blog2").then(validateArchModel),
+    okfBasePath: "/okf-bundles/blog2",
+  },
+PS C:\Users\roger\archviz> npm run okf-scan -- --repo-map repo-map.yaml --env dev --out public/okf-bundles/blog2 --force --materialize propose
+
+> archviz@0.1.0 okf-scan
+> tsx scripts/okf-scan/index.ts --repo-map repo-map.yaml --env dev --out public/okf-bundles/blog2 --force --materialize propose
+
+okf-scan: wrote materialization proposal to public\okf-bundles\blog2\.materialize-proposal.json (1 container plan(s), 2 actor proposal(s))
+PS C:\Users\roger\archviz> npm run okf-scan -- --repo-map repo-map.yaml --env dev --out public/okf-bundles/blog2 --materialize apply --plan public\okf-bundles\blog2\.materialize-proposal.json
+
+> archviz@0.1.0 okf-scan
+> tsx scripts/okf-scan/index.ts --repo-map repo-map.yaml --env dev --out public/okf-bundles/blog2 --materialize apply --plan public\okf-bundles\blog2\.materialize-proposal.json
+
+okf-scan: wrote 59, skipped 1 concept(s) into public/okf-bundles/blog2
+okf-scan: 5 concept(s) need manual review:
+  - template-marketing-webapp-nextjs/shared-ui/navigation-layout/ctf-footer:
+      <Link href={...}> with a non-literal value does not resolve to a static path
+  - template-marketing-webapp-nextjs/shared-ui/navigation-layout/ctf-mobile-menu:
+      <Link href={...}> with a non-literal value does not resolve to a static path
+      <Link href={...}> with a non-literal value does not resolve to a static path
+  - template-marketing-webapp-nextjs/shared-ui/navigation-layout/ctf-navigation:
+      <Link href={...}> with a non-literal value does not resolve to a static path
+      <Link href={...}> with a non-literal value does not resolve to a static path
+  - template-marketing-webapp-nextjs/shared-ui/navigation-layout/LanguageSelector:
+      router.push(...) with a non-literal value does not resolve to a static path
+  - template-marketing-webapp-nextjs/shared-ui/settings-personalization/settings-form:
+      router.push(...) with a non-literal value does not resolve to a static path
+
+Add this to DATA_SOURCES in src/lib/data-sources.ts:
+
+  {
+    id: "blog2",
+    label: "blog2",
+    load: () => importOkfBundle("/okf-bundles/blog2").then(validateArchModel),
+    okfBasePath: "/okf-bundles/blog2",
+  },

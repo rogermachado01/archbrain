@@ -183,6 +183,8 @@ Flags:
 | `--concurrency-git N` | não | `20` | chamadas `git ls-remote` simultâneas |
 | `--concurrency-scan N` | não | `4` | repositórios escaneados (worktree + AST) simultaneamente |
 | `--concurrency-llm N` | não | `6` | chamadas ao Claude simultâneas |
+| `--materialize propose\|apply` | não | — | ver "Materialização em containers" abaixo |
+| `--plan <path>` | apenas com `--materialize apply` | — | caminho do plano de materialização (JSON) a aplicar |
 
 Ao final, o comando imprime quantos conceitos foram escritos/pulados, quais precisam de
 revisão manual (`needsReview`) e o trecho pronto para colar em `DATA_SOURCES`
@@ -192,6 +194,47 @@ Um novo run reaproveita o que não mudou: repositórios sem alteração são pul
 de freshness, e mesmo dentro de um repositório que mudou, só os conceitos cujo hash de
 entrada mudou de fato disparam uma nova chamada ao Claude. Use `--force` depois de mudar o
 prompt/lógica de síntese (quando as *entradas* não mudaram, mas a *saída* desejada mudou).
+
+### Materialização em containers (`--materialize`)
+
+Por padrão o pipeline organiza os conceitos escaneados exatamente como o código os expõe (ex.:
+todos os componentes de um repo frontend caem achatados num único container `shared-ui`). Para
+reorganizá-los em containers por domínio (ex.: `business-info`, `content-media`,
+`marketing-blocks`), rode em dois passos:
+
+```bash
+# 1. gera uma proposta de reorganização (não escreve o bundle final)
+npm run okf-scan -- --repo-map repo-map.yaml --env dev --out public/okf-bundles/blog2 --materialize propose
+
+# 2. revise/ajuste o plano em public/okf-bundles/blog2/<arquivo-da-proposta>.json, depois aplique
+npm run okf-scan -- --repo-map repo-map.yaml --env dev --out public/okf-bundles/blog2 --materialize apply --plan public/okf-bundles/blog2/<arquivo-da-proposta>.json
+```
+
+O `propose` usa o Claude para sugerir o agrupamento (e possíveis atores raiz inferidos); o
+`apply` só lê o plano e materializa — não chama o Claude de novo. Containers já materializados
+em uma rodada anterior são pulados automaticamente na próxima `propose`.
+
+### Exemplo: regenerando os bundles `blog` / `blog2`
+
+Este repo já tem um `repo-map.yaml` na raiz apontando para
+`./example/template-marketing-webapp-nextjs` (ambiente `dev`, branch `main`). Para recriar os
+bundles de exemplo `public/okf-bundles/blog` (flat) e `public/okf-bundles/blog2`
+(materializado por domínio):
+
+```bash
+export ANTHROPIC_API_KEY=sk-ant-...
+
+# blog: scan simples, sem reorganização em containers
+npm run okf-scan -- --repo-map repo-map.yaml --env dev --out public/okf-bundles/blog --force
+
+# blog2: scan + materialização em containers (ver seção acima)
+npm run okf-scan -- --repo-map repo-map.yaml --env dev --out public/okf-bundles/blog2 --force --materialize propose
+npm run okf-scan -- --repo-map repo-map.yaml --env dev --out public/okf-bundles/blog2 --materialize apply --plan public/okf-bundles/blog2/<arquivo-da-proposta>.json
+```
+
+`--force` garante um scan completo do zero em vez de reaproveitar o `.scan-manifest.json`
+existente. Sem `--force`, o comando roda incremental — só rescaneia o que mudou desde a última
+rodada.
 
 ### Rodando por ambiente
 

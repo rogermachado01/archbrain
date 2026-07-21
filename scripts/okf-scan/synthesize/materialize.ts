@@ -16,6 +16,13 @@ export interface CapabilityGroup {
   memberIds: string[];
   contextName: string;
   promoted: boolean;
+  /**
+   * True when this group's wrapper container must be a sibling of the
+   * materialized container (parented one level up, at the same level as the
+   * materialized container itself) instead of nested under it. Set for every
+   * group when `dissolvesOriginal` is true — see that field's doc comment.
+   */
+  sibling?: boolean;
 }
 
 export interface MaterializationPlan {
@@ -23,6 +30,19 @@ export interface MaterializationPlan {
   groups: CapabilityGroup[];
   /** old concept id -> new concept id, for every renamed member across all groups */
   idRemap: Record<string, string>;
+  /**
+   * True when the materialized container is itself "container"-level (e.g. a
+   * frontend's synthetic "shared-ui" container), not "context"-level. The C4
+   * model this app validates against is a strict 3-level stack with no level
+   * below "component" — so there's no room to nest a nested "container"-level
+   * wrapper below an already-"container"-level parent while still leaving its
+   * "component"-level members one level further down. Every group therefore
+   * becomes a full sibling of the materialized container instead (same
+   * shape a human curator produced by hand for the reference "blog2"
+   * bundle), and the now-childless original container concept is dropped
+   * from the output entirely by `applyMaterializationPlan`.
+   */
+  dissolvesOriginal?: boolean;
 }
 
 const COMBINING_DIACRITICS = new RegExp("[̀-ͯ]", "g");
@@ -79,6 +99,17 @@ export function computeMaterializationPlan(
   }
 
   const parentOfContainer = containerId.includes("/") ? containerId.slice(0, containerId.lastIndexOf("/")) : null;
+
+  // See MaterializationPlan.dissolvesOriginal's doc comment. When the
+  // container's own level is known and is "container" (not "context"), the
+  // usual nested-wrapper shape below is invalid — fall back to "unknown"
+  // (treated as "context", the pre-existing default) when the container's
+  // own concept isn't present in `allConcepts`, same fallback
+  // applyMaterializationPlan uses.
+  const containerLevel = allConcepts.find((c) => c.id === containerId)?.level;
+  const dissolvesOriginal = containerLevel === "container";
+  if (dissolvesOriginal && parentOfContainer === null) return null; // nowhere to promote siblings to
+
   const groups: CapabilityGroup[] = [];
   const idRemap: Record<string, string> = {};
   // Guards against two distinct context names slugifying to the same string
@@ -90,7 +121,7 @@ export function computeMaterializationPlan(
     if (memberIds.length === 1 && parentOfContainer !== null) {
       const soleId = memberIds[0];
       const referrerCount = referrerGroupsByTargetId.get(soleId)?.size ?? 0;
-      if (referrerCount >= PROMOTION_MIN_EXTERNAL_REFERRERS) {
+      if (dissolvesOriginal || referrerCount >= PROMOTION_MIN_EXTERNAL_REFERRERS) {
         const leafSegment = soleId.split("/").pop()!;
         const newId = `${parentOfContainer}/${leafSegment}`;
         usedContainerIds.add(newId);
@@ -100,21 +131,22 @@ export function computeMaterializationPlan(
       }
     }
     const slug = slugify(contextName);
-    let newContainerId = `${containerId}/${slug}`;
+    const wrapperParent = dissolvesOriginal ? parentOfContainer! : containerId;
+    let newContainerId = `${wrapperParent}/${slug}`;
     let suffix = 2;
     while (usedContainerIds.has(newContainerId)) {
-      newContainerId = `${containerId}/${slug}-${suffix}`;
+      newContainerId = `${wrapperParent}/${slug}-${suffix}`;
       suffix++;
     }
     usedContainerIds.add(newContainerId);
-    groups.push({ containerId: newContainerId, memberIds, contextName, promoted: false });
+    groups.push({ containerId: newContainerId, memberIds, contextName, promoted: false, sibling: dissolvesOriginal || undefined });
     for (const memberId of memberIds) {
       const leafSegment = memberId.split("/").pop()!;
       idRemap[memberId] = `${newContainerId}/${leafSegment}`;
     }
   });
 
-  return { containerId, groups, idRemap };
+  return { containerId, groups, idRemap, dissolvesOriginal: dissolvesOriginal || undefined };
 }
 
 /**
@@ -148,6 +180,22 @@ function validatePlanConsistency(plan: MaterializationPlan): void {
   }
 }
 
+/**
+ * The C4 model this app validates against is a strict 3-level stack
+ * (context -> container -> component, see validate-model.ts's LEVEL_ORDER)
+ * with no level below "component" — so a new wrapper container inserted
+ * between a materialized concept and its members can only be "container"
+ * when that concept is itself "context"-level; when it's already
+ * "container"-level (e.g. the synthetic "shared-ui" container
+ * route-hierarchy.ts creates for a frontend app), the wrapper must be
+ * "component" instead, or the result fails validateArchModel's nesting check.
+ */
+function childLevelOf(level: ConceptFacts["level"]): ConceptFacts["level"] {
+  if (level === "context") return "container";
+  if (level === "container") return "component";
+  throw new Error(`materialize: cannot materialize children of a "component"-level concept — no C4 level exists below it.`);
+}
+
 export function applyMaterializationPlan(allConcepts: ConceptFacts[], plan: MaterializationPlan): ConceptFacts[] {
   validatePlanConsistency(plan);
   const memberToGroup = new Map<string, CapabilityGroup>();
@@ -163,6 +211,15 @@ export function applyMaterializationPlan(allConcepts: ConceptFacts[], plan: Mate
     ? plan.containerId.slice(0, plan.containerId.lastIndexOf("/"))
     : null;
 
+  // The container being materialized may not appear in `allConcepts` (some
+  // callers, and this module's own tests, only ever pass its *children*) —
+  // default to the pre-existing "container" behavior in that case rather than
+  // guessing wrong. When it IS present, derive the real level from it so
+  // materializing an already-"container"-level concept's children produces
+  // valid "component"-level wrappers instead of an invalid container-in-container nesting.
+  const containerLevel = allConcepts.find((c) => c.id === plan.containerId)?.level;
+  const wrapperLevel = containerLevel ? childLevelOf(containerLevel) : "container";
+
   const rewritten = allConcepts.map((concept) => {
     const newId = plan.idRemap[concept.id];
     const relations = concept.relations?.map((rel) => {
@@ -173,8 +230,20 @@ export function applyMaterializationPlan(allConcepts: ConceptFacts[], plan: Mate
       return relations ? { ...concept, relations } : concept;
     }
     const group = memberToGroup.get(concept.id)!;
+    // Only `promoted` changes a *member's* own parent (it becomes the new
+    // container itself, with no separate wrapper) — a `sibling` group still
+    // parents its members at its own wrapper container id, same as the
+    // nested case; `sibling` only changes where that wrapper itself is
+    // parented (handled below, in `newContainers`).
     const newParentId = group.promoted ? parentOfContainer! : group.containerId;
-    return { ...concept, id: newId, parentId: newParentId, relations };
+    // Promoted concepts move up to become a sibling of `plan.containerId`
+    // itself, so their level must match its level, not stay at their old
+    // (deeper) one — same reasoning as `wrapperLevel` above, just one level
+    // shallower. A `sibling` group's members stay directly under its new
+    // wrapper container (which is itself the sibling, not the member), so
+    // their own level is unchanged — same as the nested-wrapper case.
+    const newLevel = group.promoted ? (containerLevel ?? concept.level) : concept.level;
+    return { ...concept, id: newId, parentId: newParentId, level: newLevel, relations };
   });
 
   const rewrittenById = new Map(rewritten.map((c) => [c.id, c]));
@@ -199,14 +268,25 @@ export function applyMaterializationPlan(allConcepts: ConceptFacts[], plan: Mate
       return {
         id: g.containerId,
         type: "UI Capability",
-        level: "container" as const,
-        parentId: plan.containerId,
+        // A `sibling` group's wrapper replaces the materialized container at
+        // its own level and position (parentOfContainer/level=containerLevel);
+        // a nested group's wrapper sits one level below it, inside it.
+        level: g.sibling ? (containerLevel ?? "container") : wrapperLevel,
+        parentId: g.sibling ? parentOfContainer! : plan.containerId,
         relations: relations.length > 0 ? relations : undefined,
         sourceFiles: [],
       };
     });
 
-  return [...rewritten, ...newContainers];
+  // Once every group has been promoted/sibling'd out from under it, the
+  // original materialized container concept is left with zero children —
+  // drop it entirely rather than leaving an empty, pointless leaf node (see
+  // MaterializationPlan.dissolvesOriginal's doc comment).
+  const survivors = plan.dissolvesOriginal
+    ? rewritten.filter((c) => c.id !== plan.containerId)
+    : rewritten;
+
+  return [...survivors, ...newContainers];
 }
 
 export interface MaterializationProposal {

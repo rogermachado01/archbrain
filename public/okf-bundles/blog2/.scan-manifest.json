@@ -7,7 +7,7 @@
   },
   "concepts": {
     "template-marketing-webapp-nextjs": {
-      "inputHash": "c9a54d4e87f704b913c8ac9ff1215387702ff3d4fe2f79f1d0bb6b4a7c4104b5",
+      "inputHash": "97ad7149764267ddeea449c775dc5ab9d9baca0244c9878f18422a26d3040d64",
       "facts": {
         "id": "template-marketing-webapp-nextjs",
         "type": "Frontend Application",
@@ -16,9 +16,17 @@
         "sourceFiles": [
           "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev"
         ],
-        "owner": "contentful/team-workflows"
+        "owner": "contentful/team-workflows",
+        "relations": [
+          {
+            "targetId": "contentful-cms",
+            "label": "Fetches content via GraphQL",
+            "kind": "sync",
+            "evidence": "Fetches content via GraphQL"
+          }
+        ]
       },
-      "lastScannedAt": "2026-07-06T18:52:55.020Z"
+      "lastScannedAt": "2026-07-07T20:06:31.948Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/author": {
       "inputHash": "b66e7b5b5435d643a88407481c0f9a3e03821640a12078395ec4bb923e859560",
@@ -39,7 +47,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.722Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/avatar": {
       "inputHash": "3bf728f6dbf0d51bb9f8f7c5a8ca2066b70c2caf5938f9beb5fde3beebee4189",
@@ -54,7 +62,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.722Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/card-leadership": {
       "inputHash": "d289f546d128d89215320daa3e1ae74005c860bba09b251024e3c45eb0a1b839",
@@ -85,7 +93,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.722Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/card-person": {
       "inputHash": "cce39321511041270cd3f29962630f522d965157c48a9791097f5b93e1c579da",
@@ -111,7 +119,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.722Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/ctf-asset": {
       "inputHash": "caba44a3f4c3d2a8271e57336c9ec4ffb21d79b6dab5e3b0cc32dc05ebc4495d",
@@ -142,7 +150,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.722Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/business-info.generated": {
       "inputHash": "ec966cdfb6309facd39d50e0cef46c6fb90a90726a17595c7752427d0e4c43da",
@@ -168,7 +176,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.722Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/ctf-business-info-gql": {
       "inputHash": "e8afe1bd2e4265a64b7a225c8cafb28f6a07eb79ffdf9d0e9af842818d71f366",
@@ -199,7 +207,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.722Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/ctf-cta": {
       "inputHash": "f4db0d307b3ebf5b32777d8da0048d097be79e79c25c4e08063261df0a3108ad",
@@ -232,7 +240,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.722Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/ctf-duplex": {
       "inputHash": "bebd128bf700fcc7f439b146747e3f5c4cd0e4f9caa1926473f755bc563f321e",
@@ -275,7 +283,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.722Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/ctf-footer": {
       "inputHash": "dc4063e5583e72de8808e56f8cc6af479991257b14c2ace53d349c8ffd6f640c",
@@ -325,7 +333,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.722Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/ctf-hero-banner": {
       "inputHash": "42e2328d417a83889cb133ab7a8505b03f37a76d50e9068e717eee53744d86d0",
@@ -363,7 +371,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.722Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/ctf-image": {
       "inputHash": "a85e75d36b11d0f7fb7a19b5912175c6f24619c755c894c8c7b31c5f82f28868",
@@ -382,7 +390,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.722Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/ctf-info-block": {
       "inputHash": "5f6e830c4dc4726af60b1551b6ec023fc5ea73fd15109652a21ba0a7a06620d8",
@@ -415,7 +423,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.722Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/ctf-mobile-menu": {
       "inputHash": "e19b247e5fb6c19d5ec8584333b63b0673668b882edfa74ad571ff5b2fcab7e5",
@@ -451,7 +459,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.722Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/ctf-navigation": {
       "inputHash": "7cd95e5d982974dd8ac0800417532e6c76449fd162d69914c6988d8de11a48eb",
@@ -497,7 +505,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.722Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/ctf-page.generated": {
       "inputHash": "9781f8dad687943eb294a8ab6e90c9265acc43cf94b67b973f72a80079e6319b",
@@ -522,7 +530,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.722Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/ctf-person": {
       "inputHash": "f2862e80e42d9335e8e7f41ff0d29bf748517214a8eea0cc256918b6abfb4a53",
@@ -545,7 +553,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.722Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/ctf-product-feature.generated": {
       "inputHash": "a409faeaf9f1fb7816bf3122ee510140a57bf6fe4f77eafe178d835d769cbafa",
@@ -566,7 +574,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.722Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/ctf-product-table": {
       "inputHash": "fd74e15c0dbf347d36b4a57baed5e8dde6d8c86a8c8ff5e71efa3b8bfc6d0870",
@@ -609,7 +617,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.722Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/ctf-product": {
       "inputHash": "08027a648615c351fd2cd886fef3df2cbd384d09890f3bb84804c1f276f190f8",
@@ -647,7 +655,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.722Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/ctf-quote": {
       "inputHash": "fba0e18af0a85b618c49709c440c30d4e2ae3d951635522c7ef464b35af38c2d",
@@ -685,7 +693,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.722Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/ctf-richtext": {
       "inputHash": "06e5eb38b99e84e8f96cb1075534442c491c19275af8541a368fb06e87455789",
@@ -722,7 +730,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.723Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/ctf-text-block": {
       "inputHash": "7487b5107c175da6904de5ca6f17f42cc4a0b13aed0bdaf1e9464670a595d501",
@@ -760,7 +768,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.723Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/ctf-video": {
       "inputHash": "a138b99cb9674126cf5a372980382ed470f83d1b61602779dbf176e37295deda",
@@ -785,7 +793,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.723Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/entry-not-found": {
       "inputHash": "7e517202bf59525dcee2641c6dd4258428ebe8defaaebd9b6e3c5908e17878c8",
@@ -806,7 +814,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.723Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/page-error": {
       "inputHash": "1407a67b0ec8dbfd8581fe3cf49a3d205ecb2918c9eb9521b4d486549af8bebe",
@@ -827,7 +835,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.723Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/page-graphql-error": {
       "inputHash": "f6cd99ad5c892f6b83915c72aa1dea00d3c4933073739318652e2dbb3fbc70b7",
@@ -848,7 +856,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.723Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/format-currency": {
       "inputHash": "fb778d2ed888dd585682b7f7cbed931dcfdf6cb57616f87ea21614084f22c5aa",
@@ -869,7 +877,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.723Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/LanguageSelector": {
       "inputHash": "7fc73449d5cdcdc72420e6c8ed7c4fa37603cf954fceb07adffe25fb41ae0c2f",
@@ -887,7 +895,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.723Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/markdown": {
       "inputHash": "e5f0912171fc8176dd028ecde4946b2aa82f691d92bb4bb76cffb652e37cb510",
@@ -902,7 +910,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.723Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/category-link.generated": {
       "inputHash": "5b3f15fa4cf789c9d17e45bf4da49b68343f8c2e3b0e3d524022346f0c849b4f",
@@ -917,7 +925,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.723Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/post-link.generated": {
       "inputHash": "a75ee4adc868abb436a27a9c7f6aeafb3659e9f372dd163eb243605dbc804723",
@@ -932,7 +940,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.723Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/page-link": {
       "inputHash": "e6f6a1284547af5eb65ddcc67614af3f037dfe196997d842f13eeb2345b8d92a",
@@ -958,7 +966,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.723Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/section-headlines": {
       "inputHash": "6e8a1b53fe0d4e2005b6d65b9ca47e346d33ed9f77488833fa99203499f5a8a9",
@@ -979,7 +987,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.723Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/settings-form": {
       "inputHash": "a54d3708ceff60b8404c148aa0bb575252c490007f2d688e21470132fd09b2a3",
@@ -1003,7 +1011,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.723Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/settings": {
       "inputHash": "b7095466bae8a5dc0a4910f91384836425eb5bb2a0e7db5101c6a76612a50c58",
@@ -1024,7 +1032,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.723Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/component-resolver": {
       "inputHash": "ae41e497b6bf78a1685f8badabc56cccb9eee8b52c362a617c2ca71b2509ec57",
@@ -1045,7 +1053,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.723Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/error-box": {
       "inputHash": "5398e93b69af1278d9e1e3d3ee3f845723db2c396d9f5e8e8803b09e34ef4ef5",
@@ -1060,7 +1068,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.723Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/graphql-error": {
       "inputHash": "e51973723ec512e2581cf6911205dc507cae0f83a70e6973c36d256d31c95d77",
@@ -1075,7 +1083,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.723Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/link": {
       "inputHash": "6aca66aa41d96c6be4123f35d0eeb39761d6ca41d134ca07fb447e66773a6d87",
@@ -1094,7 +1102,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.723Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/header": {
       "inputHash": "5f9aee038ea9635bc1271a5a997aea5e5c1dbaf7cc40eae6f68df43ea9d7af3a",
@@ -1130,7 +1138,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.723Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/layout": {
       "inputHash": "a7a45189178108b249b698687e13b27cef2c7bcbe9fe2c7ad497370bb4f14d1f",
@@ -1156,7 +1164,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.723Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/page-container": {
       "inputHash": "0762a5789ddd14a007eac95b1018dd6bea79b23eea8652630f4fbb196f0cab87",
@@ -1171,7 +1179,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.723Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/contentful-context": {
       "inputHash": "3917943e0a538af3e93925e78f5f4d2788b565c16b8f86abadc3811ef947e097",
@@ -1190,7 +1198,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.723Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/ctf-componentMap.generated": {
       "inputHash": "4d34bd786e507a7353c9277446613f07f15255bd8caeb506dbb675755a73cffe",
@@ -1205,7 +1213,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.723Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/ctf-menuGroup.generated": {
       "inputHash": "f2fefca5b8534c1f03db6c5517805ea6d1aa94edb20bf4b757ceecf188a20893",
@@ -1230,10 +1238,10 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.723Z"
     },
     "template-marketing-webapp-nextjs/[slug]": {
-      "inputHash": "0a1a518889e33673d2cc7a05dd221ec69deea904ffe5e034818b3478d7e846c8",
+      "inputHash": "c44202c72440e5ab0703b4223b83a99fc6682adbb0ce496c4058448ad793ae04",
       "facts": {
         "id": "template-marketing-webapp-nextjs/[slug]",
         "type": "Next.js Page",
@@ -1242,17 +1250,17 @@
         "routePath": "/[slug]",
         "relations": [
           {
-            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-footer",
+            "targetId": "template-marketing-webapp-nextjs/layout-navigation/ctf-footer",
             "kind": "sync",
             "evidence": "imports useCtfFooterQuery from \"@src/components/features/ctf-components/ctf-footer/__generated/ctf-footer.generated\""
           },
           {
-            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-navigation",
+            "targetId": "template-marketing-webapp-nextjs/layout-navigation/ctf-navigation",
             "kind": "sync",
             "evidence": "imports useCtfNavigationQuery from \"@src/components/features/ctf-components/ctf-navigation/__generated/ctf-navigation.generated\""
           },
           {
-            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-page.generated",
+            "targetId": "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-page.generated",
             "kind": "sync",
             "evidence": "imports useCtfPageQuery from \"@src/components/features/ctf-components/ctf-page/__generated/ctf-page.generated\""
           }
@@ -1262,10 +1270,10 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
     },
     "template-marketing-webapp-nextjs/index-page": {
-      "inputHash": "b53f981b34109e6d6a9c9f5c25dedfdd5d350d28da07cdf9c1afe8d740605b28",
+      "inputHash": "b769ef361126d15d704f594dfcf5102b9d2780b5b18926e2d1b8e3cb0f4ae653",
       "facts": {
         "id": "template-marketing-webapp-nextjs/index-page",
         "type": "Next.js Page",
@@ -1274,17 +1282,17 @@
         "routePath": "/",
         "relations": [
           {
-            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-footer",
+            "targetId": "template-marketing-webapp-nextjs/layout-navigation/ctf-footer",
             "kind": "sync",
             "evidence": "imports useCtfFooterQuery from \"@src/components/features/ctf-components/ctf-footer/__generated/ctf-footer.generated\""
           },
           {
-            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-navigation",
+            "targetId": "template-marketing-webapp-nextjs/layout-navigation/ctf-navigation",
             "kind": "sync",
             "evidence": "imports useCtfNavigationQuery from \"@src/components/features/ctf-components/ctf-navigation/__generated/ctf-navigation.generated\""
           },
           {
-            "targetId": "template-marketing-webapp-nextjs/shared-ui/ctf-page.generated",
+            "targetId": "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-page.generated",
             "kind": "sync",
             "evidence": "imports useCtfPageQuery from \"@src/components/features/ctf-components/ctf-page/__generated/ctf-page.generated\""
           }
@@ -1294,7 +1302,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
     },
     "template-marketing-webapp-nextjs/shared-ui/theme": {
       "inputHash": "41454439c09f66c08e74bcad26406af8287d6a70482af3e82a22e761a35e6414",
@@ -1313,7 +1321,7 @@
         ],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.723Z"
     },
     "template-marketing-webapp-nextjs/shared-ui": {
       "inputHash": "82340fba330f1b629b8a04685f5e9e5e7b566fca09f9a4e3bc58d94993614a34",
@@ -1325,8 +1333,1413 @@
         "sourceFiles": [],
         "owner": "contentful/team-workflows"
       },
-      "lastScannedAt": "2026-07-06T18:52:55.023Z"
+      "lastScannedAt": "2026-07-07T20:04:16.723Z"
+    },
+    "template-marketing-webapp-nextjs/contentful-content-blocks/author": {
+      "inputHash": "69f84f1a59051a2a5d646822197a4a9aefd1465f99ef724c09a8c0d390c394ba",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/contentful-content-blocks/author",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/contentful-content-blocks",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-person",
+            "kind": "sync",
+            "evidence": "imports PersonFieldsFragment from \"@src/components/features/ctf-components/ctf-person/__generated/ctf-person.generated\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\author\\author.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/layout-navigation/avatar": {
+      "inputHash": "3c43c23298564f12cc2bacdc93831df4afac1fc2720efe2c18fc7e0d6ffbe8d2",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/layout-navigation/avatar",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/layout-navigation",
+        "relations": [],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\avatar\\avatar.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/contentful-content-blocks/card-leadership": {
+      "inputHash": "fc5b79ab69b135c47664ee7886a23f28524eabdffe2bfb46094e666a60ed1f3f",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/contentful-content-blocks/card-leadership",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/contentful-content-blocks",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/contentful-media/ctf-asset",
+            "kind": "sync",
+            "evidence": "imports CtfAsset from \"@src/components/features/ctf-components/ctf-asset/ctf-asset\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-person",
+            "kind": "sync",
+            "evidence": "imports PersonFieldsFragment from \"@src/components/features/ctf-components/ctf-person/__generated/ctf-person.generated\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-richtext",
+            "kind": "sync",
+            "evidence": "imports CtfRichtext from \"@src/components/features/ctf-components/ctf-richtext/ctf-richtext\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\card-leadership\\card-leadership.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/contentful-content-blocks/card-person": {
+      "inputHash": "909300e9f04b761a4d72bb294eed094710e91ab9ed181cd348d0525ec7a00868",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/contentful-content-blocks/card-person",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/contentful-content-blocks",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-person",
+            "kind": "sync",
+            "evidence": "imports PersonFieldsFragment from \"@src/components/features/ctf-components/ctf-person/__generated/ctf-person.generated\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-richtext",
+            "kind": "sync",
+            "evidence": "imports CtfRichtext from \"@src/components/features/ctf-components/ctf-richtext/ctf-richtext\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\card-person\\card-person.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/contentful-media/ctf-asset": {
+      "inputHash": "46e3d2aa9c0e510a1726c752e3225f45761febe1d6440afc4b08023b75dd6a0d",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/contentful-media/ctf-asset",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/contentful-media",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/contentful-media/ctf-image",
+            "kind": "sync",
+            "evidence": "imports CtfImage from \"@src/components/features/ctf-components/ctf-image/ctf-image\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/contentful-media/ctf-video",
+            "kind": "sync",
+            "evidence": "imports CtfVideo from \"@src/components/features/ctf-components/ctf-video/ctf-video\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-asset\\ctf-asset.tsx",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-asset\\__generated\\ctf-asset.generated.ts"
+        ],
+        "usedByRoutes": [
+          "/",
+          "/[slug]"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/business-info-commerce/business-info.generated": {
+      "inputHash": "0d99b6bfe6fd135de65bab932650913b7f909ad747ff0a25a4a2f27844854a42",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/business-info-commerce/business-info.generated",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/business-info-commerce",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/contentful-media/ctf-asset",
+            "kind": "sync",
+            "evidence": "imports AssetFieldsFragment, AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-componentMap.generated",
+            "kind": "sync",
+            "evidence": "imports ComponentReferenceFields_ComponentCta_Fragment, ComponentReferenceFields_ComponentDuplex_Fragment, ComponentReferenceFields_ComponentHeroBanner_Fragment, ComponentReferenceFields_ComponentInfoBlock_Fragment, ComponentReferenceFields_ComponentProductTable_Fragment, ComponentReferenceFields_ComponentQuote_Fragment, ComponentReferenceFields_ComponentTextBlock_Fragment, ComponentReferenceFields_FooterMenu_Fragment, ComponentReferenceFields_MenuGroup_Fragment, ComponentReferenceFields_NavigationMenu_Fragment, ComponentReferenceFields_Page_Fragment, ComponentReferenceFields_Seo_Fragment, ComponentReferenceFields_TopicBusinessInfo_Fragment, ComponentReferenceFields_TopicPerson_Fragment, ComponentReferenceFields_TopicProduct_Fragment, ComponentReferenceFields_TopicProductFeature_Fragment, ComponentReferenceFieldsFragmentDoc from \"../../../../../lib/shared-fragments/__generated/ctf-componentMap.generated\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-business-info\\__generated\\business-info.generated.ts"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/business-info-commerce/ctf-business-info-gql": {
+      "inputHash": "bdcb7b95bad5ae677b3021530acf488a0a5e8d4ddb1a29538f57937e069c370c",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/business-info-commerce/ctf-business-info-gql",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/business-info-commerce",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/business-info-commerce/business-info.generated",
+            "kind": "sync",
+            "evidence": "imports useCtfBusinessInfoQuery from \"./__generated/business-info.generated\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/error-handling/entry-not-found",
+            "kind": "sync",
+            "evidence": "imports EntryNotFound from \"@src/components/features/errors/entry-not-found\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/generic-ui-utilities/contentful-context",
+            "kind": "sync",
+            "evidence": "imports useContentfulContext from \"@src/contentful-context\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-business-info\\ctf-business-info-gql.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-cta": {
+      "inputHash": "0bc262bbf4e833c016f870e9b63b9d2a941973b82c133ca73fb33addc27d007d",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-cta",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/contentful-content-blocks",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-richtext",
+            "kind": "sync",
+            "evidence": "imports CtfRichtext from \"@src/components/features/ctf-components/ctf-richtext/ctf-richtext\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/generic-ui-utilities/theme",
+            "kind": "sync",
+            "evidence": "imports getColorConfigFromPalette from \"@src/theme\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/layout-navigation/page-link",
+            "kind": "sync",
+            "evidence": "imports PageLinkFieldsFragment, PageLinkFieldsFragmentDoc from \"../../../page-link/__generated/page-link.generated\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-cta\\ctf-cta.tsx",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-cta\\__generated\\ctf-cta.generated.ts",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-cta\\ctf-cta-gql.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-duplex": {
+      "inputHash": "e56bd2a7e67a00f159b1168044bb6b984873a994a8985cc65aab4dca87e55d1c",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-duplex",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/contentful-content-blocks",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/contentful-media/ctf-image",
+            "kind": "sync",
+            "evidence": "imports CtfImage from \"@src/components/features/ctf-components/ctf-image/ctf-image\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-richtext",
+            "kind": "sync",
+            "evidence": "imports CtfRichtext from \"@src/components/features/ctf-components/ctf-richtext/ctf-richtext\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/generic-ui-utilities/theme",
+            "kind": "sync",
+            "evidence": "imports getColorConfigFromPalette from \"@src/theme\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/layout-navigation/page-link",
+            "kind": "sync",
+            "evidence": "imports PageLinkFieldsFragment, PageLinkFieldsFragmentDoc from \"../../../page-link/__generated/page-link.generated\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/contentful-media/ctf-asset",
+            "kind": "sync",
+            "evidence": "imports AssetFieldsFragment, AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-duplex\\ctf-duplex.tsx",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-duplex\\__generated\\ctf-duplex.generated.ts",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-duplex\\ctf-duplex-gql.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/layout-navigation/ctf-footer": {
+      "inputHash": "00dd7bb7ef8b0f339b948e708a2280440598238d2374094e46f6b2874ea965f5",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/layout-navigation/ctf-footer",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/layout-navigation",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/layout-navigation/link",
+            "kind": "sync",
+            "evidence": "imports Link from \"@src/components/shared/link\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/generic-ui-utilities/contentful-context",
+            "kind": "sync",
+            "evidence": "imports useContentfulContext from \"@src/contentful-context\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/generic-ui-utilities/theme",
+            "kind": "sync",
+            "evidence": "imports CONTAINER_WIDTH from \"@src/theme\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/layout-navigation/ctf-menuGroup.generated",
+            "kind": "sync",
+            "evidence": "imports MenuGroupFieldsFragment, MenuGroupFieldsFragmentDoc from \"../../../../../lib/shared-fragments/__generated/ctf-menuGroup.generated\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/layout-navigation/page-link",
+            "kind": "sync",
+            "evidence": "imports PageLinkFieldsFragment, PageLinkFieldsFragmentDoc from \"../../../page-link/__generated/page-link.generated\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-footer\\ctf-footer.tsx",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-footer\\__generated\\ctf-footer.generated.ts",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-footer\\ctf-footer-gql.tsx"
+        ],
+        "needsReview": [
+          "<Link href={...}> with a non-literal value does not resolve to a static path"
+        ],
+        "usedByRoutes": [
+          "/",
+          "/[slug]"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-hero-banner": {
+      "inputHash": "e55d3026aad62d57bad5c69e1635af4eae25c4cf54203e77e9a2394acd9b36f4",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-hero-banner",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/contentful-content-blocks",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-richtext",
+            "kind": "sync",
+            "evidence": "imports CtfRichtext from \"@src/components/features/ctf-components/ctf-richtext/ctf-richtext\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/generic-ui-utilities/theme",
+            "kind": "sync",
+            "evidence": "imports getColorConfigFromPalette, HEADER_HEIGHT_MD, HEADER_HEIGHT from \"@src/theme\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/layout-navigation/page-link",
+            "kind": "sync",
+            "evidence": "imports PageLinkFieldsFragment, PageLinkFieldsFragmentDoc from \"../../../page-link/__generated/page-link.generated\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/contentful-media/ctf-asset",
+            "kind": "sync",
+            "evidence": "imports AssetFieldsFragment, AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-hero-banner\\ctf-hero-banner.tsx",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-hero-banner\\__generated\\ctf-hero-banner.generated.ts",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-hero-banner\\ctf-hero-banner-gql.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/contentful-media/ctf-image": {
+      "inputHash": "013b34b73945dc8a9d59958657181a589e20b8e0c2db9826f440412cfa0837fb",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/contentful-media/ctf-image",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/contentful-media",
+        "relations": [],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-image\\ctf-image.tsx"
+        ],
+        "usedByRoutes": [
+          "/",
+          "/[slug]"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-info-block": {
+      "inputHash": "9954ffd5d8e48ed05f9e94f25a373d90d4438a198d638db4ad3384c4fccf0308",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-info-block",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/contentful-content-blocks",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/contentful-media/ctf-asset",
+            "kind": "sync",
+            "evidence": "imports CtfAsset from \"@src/components/features/ctf-components/ctf-asset/ctf-asset\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-richtext",
+            "kind": "sync",
+            "evidence": "imports CtfRichtext from \"@src/components/features/ctf-components/ctf-richtext/ctf-richtext\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/generic-ui-utilities/theme",
+            "kind": "sync",
+            "evidence": "imports getColorConfigFromPalette from \"@src/theme\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-info-block\\ctf-info-block.tsx",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-info-block\\__generated\\ctf-info-block.generated.ts",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-info-block\\ctf-info-block-gql.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/layout-navigation/ctf-mobile-menu": {
+      "inputHash": "2891529efc9b383ae77e3d685fe0e4fbe492d72c7efd674ba491f6bb7073636d",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/layout-navigation/ctf-mobile-menu",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/layout-navigation",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/layout-navigation/ctf-navigation",
+            "kind": "sync",
+            "evidence": "imports NavigationFieldsFragment from \"@src/components/features/ctf-components/ctf-navigation/__generated/ctf-navigation.generated\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/layout-navigation/link",
+            "kind": "sync",
+            "evidence": "imports Link from \"@src/components/shared/link\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/generic-ui-utilities/contentful-context",
+            "kind": "sync",
+            "evidence": "imports useContentfulContext from \"@src/contentful-context\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-mobile-menu\\ctf-mobile-menu.tsx",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-mobile-menu\\ctf-mobile-menu-gql.tsx"
+        ],
+        "needsReview": [
+          "<Link href={...}> with a non-literal value does not resolve to a static path",
+          "<Link href={...}> with a non-literal value does not resolve to a static path"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/layout-navigation/ctf-navigation": {
+      "inputHash": "0245a303313d992960ee0a713e1dfcebc0fb33ab8eff4344cc36e1a3d715064c",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/layout-navigation/ctf-navigation",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/layout-navigation",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/layout-navigation/link",
+            "kind": "sync",
+            "evidence": "imports Link from \"@src/components/shared/link\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/layout-navigation/page-link",
+            "kind": "sync",
+            "evidence": "imports PageLinkFieldsFragment, PageLinkFieldsFragmentDoc from \"../../../page-link/__generated/page-link.generated\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/layout-navigation/ctf-menuGroup.generated",
+            "kind": "sync",
+            "evidence": "imports MenuGroupFieldsFragment, MenuGroupFieldsFragmentDoc from \"../../../../../lib/shared-fragments/__generated/ctf-menuGroup.generated\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/generic-ui-utilities/contentful-context",
+            "kind": "sync",
+            "evidence": "imports useContentfulContext from \"@src/contentful-context\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-navigation\\ctf-navigation.tsx",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-navigation\\__generated\\ctf-navigation.generated.ts",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-navigation\\ctf-navigation-gql.tsx"
+        ],
+        "needsReview": [
+          "<Link href={...}> with a non-literal value does not resolve to a static path",
+          "<Link href={...}> with a non-literal value does not resolve to a static path"
+        ],
+        "usedByRoutes": [
+          "/",
+          "/[slug]"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-page.generated": {
+      "inputHash": "908dd10cc175627edcb1ca5a0eb59b9ad923ae11ac8b31b2975239427328cb12",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-page.generated",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/contentful-content-blocks",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/contentful-media/ctf-asset",
+            "kind": "sync",
+            "evidence": "imports AssetFieldsFragment, AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-page\\__generated\\ctf-page.generated.ts"
+        ],
+        "usedByRoutes": [
+          "/",
+          "/[slug]"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-person": {
+      "inputHash": "22fb28b776b0498086b0b6f60cbb48f98d888777dbfcdaf71f8a198d29286da2",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-person",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/contentful-content-blocks",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/contentful-media/ctf-asset",
+            "kind": "sync",
+            "evidence": "imports AssetFieldsFragment, AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-person\\ctf-person.tsx",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-person\\__generated\\ctf-person.generated.ts",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-person\\ctf-person-gql.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/business-info-commerce/ctf-product-feature.generated": {
+      "inputHash": "767d3959fc956f9b25b9a1ab23e26f669e88f963e5907dd4848f232ccd928e92",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/business-info-commerce/ctf-product-feature.generated",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/business-info-commerce",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/contentful-media/ctf-asset",
+            "kind": "sync",
+            "evidence": "imports AssetFieldsFragment, AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-product-feature\\__generated\\ctf-product-feature.generated.ts"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/business-info-commerce/ctf-product-table": {
+      "inputHash": "99782e54ed7804cd6a328e3785e77dfa6358cba63e7e5678cc29c47b38ea369f",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/business-info-commerce/ctf-product-table",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/business-info-commerce",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-richtext",
+            "kind": "sync",
+            "evidence": "imports CtfRichtext from \"@src/components/features/ctf-components/ctf-richtext/ctf-richtext\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/business-info-commerce/ctf-product",
+            "kind": "sync",
+            "evidence": "imports ProductFieldsFragment, ProductFieldsFragmentDoc from \"../../ctf-product/__generated/ctf-product.generated\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/contentful-media/ctf-asset",
+            "kind": "sync",
+            "evidence": "imports AssetFieldsFragment, AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/business-info-commerce/ctf-product-feature.generated",
+            "kind": "sync",
+            "evidence": "imports ProductFeatureFieldsFragment, ProductFeatureFieldsFragmentDoc from \"../../ctf-product-feature/__generated/ctf-product-feature.generated\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/error-handling/entry-not-found",
+            "kind": "sync",
+            "evidence": "imports EntryNotFound from \"@src/components/features/errors/entry-not-found\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-product-table\\ctf-product-table.tsx",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-product-table\\__generated\\ctf-product-table.generated.ts",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-product-table\\ctf-product-table-gql.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/business-info-commerce/ctf-product": {
+      "inputHash": "0232ced6b5631643813eb6b8defef58cbd0c56ea7807eaa14ad34435f93ed467",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/business-info-commerce/ctf-product",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/business-info-commerce",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/contentful-media/ctf-asset",
+            "kind": "sync",
+            "evidence": "imports CtfAsset from \"@src/components/features/ctf-components/ctf-asset/ctf-asset\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-richtext",
+            "kind": "sync",
+            "evidence": "imports CtfRichtext from \"@src/components/features/ctf-components/ctf-richtext/ctf-richtext\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/business-info-commerce/ctf-product-feature.generated",
+            "kind": "sync",
+            "evidence": "imports ProductFeatureFieldsFragment, ProductFeatureFieldsFragmentDoc from \"../../ctf-product-feature/__generated/ctf-product-feature.generated\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/error-handling/entry-not-found",
+            "kind": "sync",
+            "evidence": "imports EntryNotFound from \"@src/components/features/errors/entry-not-found\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-product\\ctf-product.tsx",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-product\\__generated\\ctf-product.generated.ts",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-product\\ctf-product-gql.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-quote": {
+      "inputHash": "b4f49d1b94c4743d6626912dc78f2277c8a7f677a4708c8b77292cdd0b8ed303",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-quote",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/contentful-content-blocks",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-richtext",
+            "kind": "sync",
+            "evidence": "imports CtfRichtext from \"@src/components/features/ctf-components/ctf-richtext/ctf-richtext\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/generic-ui-utilities/theme",
+            "kind": "sync",
+            "evidence": "imports getColorConfigFromPalette from \"@src/theme\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-componentMap.generated",
+            "kind": "sync",
+            "evidence": "imports ComponentReferenceFields_ComponentCta_Fragment, ComponentReferenceFields_ComponentDuplex_Fragment, ComponentReferenceFields_ComponentHeroBanner_Fragment, ComponentReferenceFields_ComponentInfoBlock_Fragment, ComponentReferenceFields_ComponentProductTable_Fragment, ComponentReferenceFields_ComponentQuote_Fragment, ComponentReferenceFields_ComponentTextBlock_Fragment, ComponentReferenceFields_FooterMenu_Fragment, ComponentReferenceFields_MenuGroup_Fragment, ComponentReferenceFields_NavigationMenu_Fragment, ComponentReferenceFields_Page_Fragment, ComponentReferenceFields_Seo_Fragment, ComponentReferenceFields_TopicBusinessInfo_Fragment, ComponentReferenceFields_TopicPerson_Fragment, ComponentReferenceFields_TopicProduct_Fragment, ComponentReferenceFields_TopicProductFeature_Fragment, ComponentReferenceFieldsFragmentDoc from \"../../../../../lib/shared-fragments/__generated/ctf-componentMap.generated\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/contentful-media/ctf-asset",
+            "kind": "sync",
+            "evidence": "imports AssetFieldsFragment, AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-quote\\ctf-quote.tsx",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-quote\\__generated\\ctf-quote.generated.ts",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-quote\\ctf-quote-gql.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-richtext": {
+      "inputHash": "bb66f9e81ba26c5f0bc208e8525d9fb860bf85a47e86afb5d51054e4451870e1",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-richtext",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/contentful-content-blocks",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/contentful-media/ctf-asset",
+            "kind": "sync",
+            "evidence": "imports CtfAsset from \"../ctf-asset/ctf-asset\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/contentful-content-blocks/component-resolver",
+            "kind": "sync",
+            "evidence": "imports ComponentResolver from \"@src/components/shared/component-resolver\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/generic-ui-utilities/contentful-context",
+            "kind": "sync",
+            "evidence": "imports useContentfulContext from \"@src/contentful-context\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/layout-navigation/page-link",
+            "kind": "sync",
+            "evidence": "imports PageLinkFieldsFragment, PageLinkFieldsFragmentDoc from \"../../../page-link/__generated/page-link.generated\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-richtext\\ctf-richtext.tsx",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-richtext\\__generated\\ctf-richtext.generated.ts"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-text-block": {
+      "inputHash": "9f3db16da15ca9d5ef90507e1770d990d78c085088f96b9267bf250d337a960a",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-text-block",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/contentful-content-blocks",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-richtext",
+            "kind": "sync",
+            "evidence": "imports CtfRichtext from \"@src/components/features/ctf-components/ctf-richtext/ctf-richtext\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/generic-ui-utilities/theme",
+            "kind": "sync",
+            "evidence": "imports getColorConfigFromPalette from \"@src/theme\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-componentMap.generated",
+            "kind": "sync",
+            "evidence": "imports ComponentReferenceFields_ComponentCta_Fragment, ComponentReferenceFields_ComponentDuplex_Fragment, ComponentReferenceFields_ComponentHeroBanner_Fragment, ComponentReferenceFields_ComponentInfoBlock_Fragment, ComponentReferenceFields_ComponentProductTable_Fragment, ComponentReferenceFields_ComponentQuote_Fragment, ComponentReferenceFields_ComponentTextBlock_Fragment, ComponentReferenceFields_FooterMenu_Fragment, ComponentReferenceFields_MenuGroup_Fragment, ComponentReferenceFields_NavigationMenu_Fragment, ComponentReferenceFields_Page_Fragment, ComponentReferenceFields_Seo_Fragment, ComponentReferenceFields_TopicBusinessInfo_Fragment, ComponentReferenceFields_TopicPerson_Fragment, ComponentReferenceFields_TopicProduct_Fragment, ComponentReferenceFields_TopicProductFeature_Fragment, ComponentReferenceFieldsFragmentDoc from \"../../../../../lib/shared-fragments/__generated/ctf-componentMap.generated\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/contentful-media/ctf-asset",
+            "kind": "sync",
+            "evidence": "imports AssetFieldsFragment, AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-text-block\\ctf-text-block.tsx",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-text-block\\__generated\\ctf-text-block.generated.ts",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-text-block\\ctf-text-block-gql.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/contentful-media/ctf-video": {
+      "inputHash": "6a1631fc91c8db3fc833035c578984561e8148215099447bfb3768a18f4c8ea2",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/contentful-media/ctf-video",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/contentful-media",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/contentful-media/ctf-asset",
+            "kind": "sync",
+            "evidence": "imports AssetFieldsFragment from \"@src/components/features/ctf-components/ctf-asset/__generated/ctf-asset.generated\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\ctf-components\\ctf-video\\ctf-video.tsx"
+        ],
+        "usedByRoutes": [
+          "/",
+          "/[slug]"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/error-handling/entry-not-found": {
+      "inputHash": "ab29e42951e8e90fd493df219cf29e643142749b019540ceb0612f7db6c3b891",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/error-handling/entry-not-found",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/error-handling",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/error-handling/error-box",
+            "kind": "sync",
+            "evidence": "imports ErrorBox from \"@src/components/shared/error-box\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\errors\\entry-not-found.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/error-handling/page-error": {
+      "inputHash": "d0c76644e634b7962db37f7d1972203eb803ca55c147af1405671b6635110749",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/error-handling/page-error",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/error-handling",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/generic-ui-utilities/theme",
+            "kind": "sync",
+            "evidence": "imports colorfulTheme from \"@src/theme\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\errors\\page-error.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/error-handling/page-graphql-error": {
+      "inputHash": "19f77fd647a2c468452a0aa25209e429151bf939771c923870968dd2e688f286",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/error-handling/page-graphql-error",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/error-handling",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/error-handling/graphql-error",
+            "kind": "sync",
+            "evidence": "imports GraphqlError from \"@src/components/shared/graphql-error\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\errors\\page-graphql-error.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/business-info-commerce/format-currency": {
+      "inputHash": "387ccd15ff3188e22857d38e31d2cd342c00806c0ff0ded37f13c0933ae67cce",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/business-info-commerce/format-currency",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/business-info-commerce",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/generic-ui-utilities/contentful-context",
+            "kind": "sync",
+            "evidence": "imports useContentfulContext from \"@src/contentful-context\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\format-currency\\format-currency.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/layout-navigation/LanguageSelector": {
+      "inputHash": "77eef2b7a009337e10b25dac14ccdca011259e295d4864fd3752d9e8b60db75c",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/layout-navigation/LanguageSelector",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/layout-navigation",
+        "relations": [],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\language-selector\\LanguageSelector.tsx"
+        ],
+        "needsReview": [
+          "router.push(...) with a non-literal value does not resolve to a static path"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/generic-ui-utilities/markdown": {
+      "inputHash": "0b8c77d55bbbffe808705b10a950f9225da7a4b441f30a1fbdc7b398ad7b278b",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/generic-ui-utilities/markdown",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/generic-ui-utilities",
+        "relations": [],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\markdown.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/layout-navigation/category-link.generated": {
+      "inputHash": "f2e74d233a7cca7154befb515a5f1dfa8a0a92becc83ccff5440bc70d5376359",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/layout-navigation/category-link.generated",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/layout-navigation",
+        "relations": [],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\page-link\\__generated\\category-link.generated.ts"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/layout-navigation/post-link.generated": {
+      "inputHash": "6028770626952cc1e019063a71b70802606f2b639623baf8dd8f3a91f34a58a6",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/layout-navigation/post-link.generated",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/layout-navigation",
+        "relations": [],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\page-link\\__generated\\post-link.generated.ts"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/layout-navigation/page-link": {
+      "inputHash": "53b6ae5014ad3f9e2f065f2f26f42bdb5cd31875dd0c63dfba4a1b0ac6e250a7",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/layout-navigation/page-link",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/layout-navigation",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/layout-navigation/link",
+            "kind": "sync",
+            "evidence": "imports Link, LinkProps from \"@src/components/shared/link\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\page-link\\page-link.tsx",
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\page-link\\__generated\\page-link.generated.ts"
+        ],
+        "usedByRoutes": [
+          "/",
+          "/[slug]"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/generic-ui-utilities/section-headlines": {
+      "inputHash": "fa3fa019b693d0e5d0bf2dd50378d153574bb2037c8475dfa6986b2d75eb0acb",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/generic-ui-utilities/section-headlines",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/generic-ui-utilities",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/generic-ui-utilities/markdown",
+            "kind": "sync",
+            "evidence": "imports Markdown from \"@src/components/features/markdown\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\section-headlines\\section-headlines.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/settings-preferences/settings-form": {
+      "inputHash": "9027afb9da537aa04e9e7082d5f5e4246cb3cd25463cc119fa8005ee6608337a",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/settings-preferences/settings-form",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/settings-preferences",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/generic-ui-utilities/contentful-context",
+            "kind": "sync",
+            "evidence": "imports useContentfulContext from \"@src/contentful-context\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\settings\\settings-form.tsx"
+        ],
+        "needsReview": [
+          "router.push(...) with a non-literal value does not resolve to a static path"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/settings-preferences/settings": {
+      "inputHash": "6ab0d2ae4d358d8cc497cf10d8d8e16a6e415c890aa5987f4a9319e7d0279810",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/settings-preferences/settings",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/settings-preferences",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/settings-preferences/settings-form",
+            "kind": "sync",
+            "evidence": "imports SettingsForm from \"@src/components/features/settings/settings-form\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\features\\settings\\settings.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/contentful-content-blocks/component-resolver": {
+      "inputHash": "64bd6d36a43e46e2087d4133b5356aaacd739c3c42a7556ec75870c205bd93db",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/contentful-content-blocks/component-resolver",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/contentful-content-blocks",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/generic-ui-utilities/contentful-context",
+            "kind": "sync",
+            "evidence": "imports useContentfulContext from \"@src/contentful-context\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\shared\\component-resolver.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/error-handling/error-box": {
+      "inputHash": "7a46d6ec68514772deae714b2cb7891eee48d6d92de82a96d13ef9113f6d7075",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/error-handling/error-box",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/error-handling",
+        "relations": [],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\shared\\error-box.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/error-handling/graphql-error": {
+      "inputHash": "5e1c80e2957faeff5e951f3c98a82acc113c36cc0f52a2998b599b83628952ce",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/error-handling/graphql-error",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/error-handling",
+        "relations": [],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\shared\\graphql-error.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/layout-navigation/link": {
+      "inputHash": "6a50ea9909772286bdaefaae655c442d22ea470fadf74766847525993ddd5843",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/layout-navigation/link",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/layout-navigation",
+        "relations": [],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\shared\\link.tsx"
+        ],
+        "usedByRoutes": [
+          "/",
+          "/[slug]"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/layout-navigation/header": {
+      "inputHash": "9e9090a18af1f8d13074bb71b14606f233582dbc239e5674a85653139463ea7b",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/layout-navigation/header",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/layout-navigation",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/layout-navigation/ctf-navigation",
+            "kind": "sync",
+            "evidence": "imports CtfNavigationGql from \"@src/components/features/ctf-components/ctf-navigation/ctf-navigation-gql\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/layout-navigation/link",
+            "kind": "sync",
+            "evidence": "imports Link from \"@src/components/shared/link\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/generic-ui-utilities/theme",
+            "kind": "sync",
+            "evidence": "imports HEADER_HEIGHT, HEADER_HEIGHT_MD, CONTAINER_WIDTH from \"@src/theme\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/index-page",
+            "kind": "sync",
+            "evidence": "<Link href=\"/\"> resolves to page \"template-marketing-webapp-nextjs/index-page\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\templates\\header\\header.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/layout-navigation/layout": {
+      "inputHash": "6e89478f7b1e2e898f3ea0b99044905d2f78060db85177216c2bd948ba360d59",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/layout-navigation/layout",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/layout-navigation",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/layout-navigation/ctf-footer",
+            "kind": "sync",
+            "evidence": "imports CtfFooterGql from \"@src/components/features/ctf-components/ctf-footer/ctf-footer-gql\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/layout-navigation/ctf-mobile-menu",
+            "kind": "sync",
+            "evidence": "imports CtfMobileMenuGql from \"@src/components/features/ctf-components/ctf-mobile-menu/ctf-mobile-menu-gql\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\templates\\layout\\layout.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/generic-ui-utilities/page-container": {
+      "inputHash": "53a549af80ad8d145e8108f7ed6f41317aa527479a59998f58fb28929ac2bcf1",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/generic-ui-utilities/page-container",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/generic-ui-utilities",
+        "relations": [],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\components\\templates\\page-container\\page-container.tsx"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/generic-ui-utilities/contentful-context": {
+      "inputHash": "8f37a189988b3a39a4246ce14d860ca6f903be9f5ecf94e5adeb7b9bc8e1d6ea",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/generic-ui-utilities/contentful-context",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/generic-ui-utilities",
+        "relations": [],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\contentful-context.tsx"
+        ],
+        "usedByRoutes": [
+          "/",
+          "/[slug]"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-componentMap.generated": {
+      "inputHash": "595d7082c2a6c6f4e59531270fa1fe192658377b66056df5e5d9db14fe52377d",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-componentMap.generated",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/contentful-content-blocks",
+        "relations": [],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\lib\\shared-fragments\\__generated\\ctf-componentMap.generated.ts"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/layout-navigation/ctf-menuGroup.generated": {
+      "inputHash": "fc3d2e30dea1a306fb8a74aec0f2797ba307292ea4553f825af207d4d20a31b0",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/layout-navigation/ctf-menuGroup.generated",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/layout-navigation",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/layout-navigation/page-link",
+            "kind": "sync",
+            "evidence": "imports PageLinkFieldsFragment, PageLinkFieldsFragmentDoc from \"../../../components/features/page-link/__generated/page-link.generated\""
+          }
+        ],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\lib\\shared-fragments\\__generated\\ctf-menuGroup.generated.ts"
+        ],
+        "usedByRoutes": [
+          "/",
+          "/[slug]"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/generic-ui-utilities/theme": {
+      "inputHash": "2c6026ddf7c6cef41462d703e41ffebde9f554b3fbc344e5566b1e3238fa5094",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/generic-ui-utilities/theme",
+        "type": "React Component",
+        "level": "component",
+        "parentId": "template-marketing-webapp-nextjs/generic-ui-utilities",
+        "relations": [],
+        "sourceFiles": [
+          "C:\\Users\\roger\\archviz\\.okf-scan-cache\\worktrees\\template-marketing-webapp-nextjs-dev\\src\\theme.ts"
+        ],
+        "usedByRoutes": [
+          "/",
+          "/[slug]"
+        ],
+        "owner": "contentful/team-workflows"
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/contentful-content-blocks": {
+      "inputHash": "67c17d16b537914d09c27d9ff8435fc59af15c1f83097270372f5d2fdd9591c4",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/contentful-content-blocks",
+        "type": "UI Capability",
+        "level": "container",
+        "parentId": "template-marketing-webapp-nextjs",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/contentful-media",
+            "kind": "sync",
+            "evidence": "imports CtfAsset from \"@src/components/features/ctf-components/ctf-asset/ctf-asset\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/generic-ui-utilities",
+            "kind": "sync",
+            "evidence": "imports getColorConfigFromPalette from \"@src/theme\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/layout-navigation",
+            "kind": "sync",
+            "evidence": "imports PageLinkFieldsFragment, PageLinkFieldsFragmentDoc from \"../../../page-link/__generated/page-link.generated\""
+          }
+        ],
+        "sourceFiles": []
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/layout-navigation": {
+      "inputHash": "b8988964094c7682b9fca1026c8ddf56087e01d6f0d195d6b156f1fa9a96c041",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/layout-navigation",
+        "type": "UI Capability",
+        "level": "container",
+        "parentId": "template-marketing-webapp-nextjs",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/generic-ui-utilities",
+            "kind": "sync",
+            "evidence": "imports useContentfulContext from \"@src/contentful-context\""
+          }
+        ],
+        "sourceFiles": []
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/contentful-media": {
+      "inputHash": "7e02dc81e6be22563211b3e26a6c5b1a95f168f054549a742ac411e5e178f5f9",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/contentful-media",
+        "type": "UI Capability",
+        "level": "container",
+        "parentId": "template-marketing-webapp-nextjs",
+        "sourceFiles": []
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/business-info-commerce": {
+      "inputHash": "17556b58719a724ae9426ce7daba8aeab86a59f5a92a2355694735568aeb3ed3",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/business-info-commerce",
+        "type": "UI Capability",
+        "level": "container",
+        "parentId": "template-marketing-webapp-nextjs",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/contentful-media",
+            "kind": "sync",
+            "evidence": "imports AssetFieldsFragment, AssetFieldsFragmentDoc from \"../../ctf-asset/__generated/ctf-asset.generated\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/contentful-content-blocks",
+            "kind": "sync",
+            "evidence": "imports ComponentReferenceFields_ComponentCta_Fragment, ComponentReferenceFields_ComponentDuplex_Fragment, ComponentReferenceFields_ComponentHeroBanner_Fragment, ComponentReferenceFields_ComponentInfoBlock_Fragment, ComponentReferenceFields_ComponentProductTable_Fragment, ComponentReferenceFields_ComponentQuote_Fragment, ComponentReferenceFields_ComponentTextBlock_Fragment, ComponentReferenceFields_FooterMenu_Fragment, ComponentReferenceFields_MenuGroup_Fragment, ComponentReferenceFields_NavigationMenu_Fragment, ComponentReferenceFields_Page_Fragment, ComponentReferenceFields_Seo_Fragment, ComponentReferenceFields_TopicBusinessInfo_Fragment, ComponentReferenceFields_TopicPerson_Fragment, ComponentReferenceFields_TopicProduct_Fragment, ComponentReferenceFields_TopicProductFeature_Fragment, ComponentReferenceFieldsFragmentDoc from \"../../../../../lib/shared-fragments/__generated/ctf-componentMap.generated\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/error-handling",
+            "kind": "sync",
+            "evidence": "imports EntryNotFound from \"@src/components/features/errors/entry-not-found\""
+          },
+          {
+            "targetId": "template-marketing-webapp-nextjs/generic-ui-utilities",
+            "kind": "sync",
+            "evidence": "imports useContentfulContext from \"@src/contentful-context\""
+          }
+        ],
+        "sourceFiles": []
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/error-handling": {
+      "inputHash": "da4a509ff2e90614c97718d631e265bdf161f7f3b59f47ec8c7d41dda12ddc9a",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/error-handling",
+        "type": "UI Capability",
+        "level": "container",
+        "parentId": "template-marketing-webapp-nextjs",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/generic-ui-utilities",
+            "kind": "sync",
+            "evidence": "imports colorfulTheme from \"@src/theme\""
+          }
+        ],
+        "sourceFiles": []
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/generic-ui-utilities": {
+      "inputHash": "e2eccf22167bbc29c3672c94233141f637d3bc63553fe755bfeebf409cf41670",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/generic-ui-utilities",
+        "type": "UI Capability",
+        "level": "container",
+        "parentId": "template-marketing-webapp-nextjs",
+        "sourceFiles": []
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "template-marketing-webapp-nextjs/settings-preferences": {
+      "inputHash": "fc49850f10e74ae7b7f4efd478d9d890b076c61de34118a0ed1baf90d729ba53",
+      "facts": {
+        "id": "template-marketing-webapp-nextjs/settings-preferences",
+        "type": "UI Capability",
+        "level": "container",
+        "parentId": "template-marketing-webapp-nextjs",
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs/generic-ui-utilities",
+            "kind": "sync",
+            "evidence": "imports useContentfulContext from \"@src/contentful-context\""
+          }
+        ],
+        "sourceFiles": []
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "contentful-cms": {
+      "inputHash": "54b84899203357979182988d0211e74606bb1fac051b3b82d8faff8146a70017",
+      "facts": {
+        "id": "contentful-cms",
+        "type": "External System",
+        "level": "context",
+        "parentId": null,
+        "external": true,
+        "sourceFiles": []
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
+    },
+    "site-visitor": {
+      "inputHash": "6552544c5db59050dc5456d2546d760d222dd7d8737c215a9e1e777d48ce84f8",
+      "facts": {
+        "id": "site-visitor",
+        "type": "Person",
+        "level": "context",
+        "parentId": null,
+        "external": true,
+        "relations": [
+          {
+            "targetId": "template-marketing-webapp-nextjs",
+            "label": "Browses the marketing site",
+            "kind": "sync",
+            "evidence": "Browses the marketing site"
+          }
+        ],
+        "sourceFiles": []
+      },
+      "lastScannedAt": "2026-07-07T20:06:31.949Z"
     }
   },
-  "lambdaEnvVarBindings": {}
+  "lambdaEnvVarBindings": {},
+  "materializedContainers": {
+    "template-marketing-webapp-nextjs/shared-ui": {
+      "appliedAt": "2026-07-07T20:06:31.966Z"
+    }
+  }
 }

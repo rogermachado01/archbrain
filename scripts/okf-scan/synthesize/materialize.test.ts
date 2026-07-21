@@ -188,7 +188,47 @@ describe("applyMaterializationPlan", () => {
     const navContainer = result.find((c) => c.id === "app/shared-ui/navigation")!;
     expect(navContainer.parentId).toBe("app/shared-ui");
     expect(navContainer.type).toBe("UI Capability");
+    // `allConcepts` here doesn't include a facts entry for "app/shared-ui"
+    // itself, so its level is unknown and the wrapper falls back to the
+    // pre-existing default of "container" (see the next test for the case
+    // where the container's own level IS known and isn't "context").
     expect(navContainer.level).toBe("container");
+  });
+
+  it("dissolves an already-\"container\"-level concept (e.g. a frontend's synthetic shared-ui container) into sibling containers instead of nesting a container-in-container", () => {
+    // Mirrors route-hierarchy.ts's real output: a synthetic "shared-ui"
+    // container (level "container", child of the app's context-level root)
+    // whose own children are "component"-level React components. The C4
+    // model here is a strict 3-level stack (context -> container ->
+    // component, see validate-model.ts) with no level below "component" — so
+    // there's no room to nest a wrapper "container" below an already-
+    // "container"-level parent while still leaving its members one level
+    // further down. Every group must instead become a full sibling of
+    // "app/shared-ui" (replacing it), exactly the shape a human curator
+    // produced by hand for the reference "blog2" bundle.
+    const sharedUi: ConceptFacts = {
+      id: "app/shared-ui",
+      type: "Shared UI & Utilities",
+      level: "container",
+      parentId: "app",
+      sourceFiles: [],
+    };
+    const children = Array.from({ length: 16 }, (_, i) => component(`app/shared-ui/c${i}`, i < 8 ? "Navigation" : "Content"));
+    const allConcepts = [sharedUi, ...children];
+    const assignments: Record<string, ContextAssignment> = {};
+    children.forEach((c, i) => (assignments[c.id] = { context: i < 8 ? "Navigation" : "Content" }));
+    const plan = computeMaterializationPlan("app/shared-ui", children, assignments, allConcepts)!;
+
+    const result = applyMaterializationPlan(allConcepts, plan);
+    const navContainer = result.find((c) => c.id === "app/navigation")!;
+    expect(navContainer.level).toBe("container");
+    expect(navContainer.parentId).toBe("app");
+    const c0 = result.find((c) => c.id === "app/navigation/c0")!;
+    expect(c0.level).toBe("component");
+    expect(c0.parentId).toBe("app/navigation");
+    // The dissolved "app/shared-ui" concept must be gone entirely — it has no
+    // members left, and nothing should render an empty leaf node for it.
+    expect(result.find((c) => c.id === "app/shared-ui")).toBeUndefined();
   });
 
   it("aggregates cross-group relations onto the new capability containers, deduplicated by target group", () => {

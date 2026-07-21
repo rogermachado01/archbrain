@@ -1,0 +1,178 @@
+{
+  "containerPlans": [
+    {
+      "containerId": "template-marketing-webapp-nextjs/shared-ui",
+      "groups": [
+        {
+          "containerId": "template-marketing-webapp-nextjs/contentful-content-blocks",
+          "memberIds": [
+            "template-marketing-webapp-nextjs/shared-ui/author",
+            "template-marketing-webapp-nextjs/shared-ui/card-leadership",
+            "template-marketing-webapp-nextjs/shared-ui/card-person",
+            "template-marketing-webapp-nextjs/shared-ui/ctf-cta",
+            "template-marketing-webapp-nextjs/shared-ui/ctf-duplex",
+            "template-marketing-webapp-nextjs/shared-ui/ctf-hero-banner",
+            "template-marketing-webapp-nextjs/shared-ui/ctf-info-block",
+            "template-marketing-webapp-nextjs/shared-ui/ctf-page.generated",
+            "template-marketing-webapp-nextjs/shared-ui/ctf-person",
+            "template-marketing-webapp-nextjs/shared-ui/ctf-quote",
+            "template-marketing-webapp-nextjs/shared-ui/ctf-richtext",
+            "template-marketing-webapp-nextjs/shared-ui/ctf-text-block",
+            "template-marketing-webapp-nextjs/shared-ui/component-resolver",
+            "template-marketing-webapp-nextjs/shared-ui/ctf-componentMap.generated"
+          ],
+          "contextName": "Contentful Content Blocks",
+          "promoted": false,
+          "sibling": true
+        },
+        {
+          "containerId": "template-marketing-webapp-nextjs/layout-navigation",
+          "memberIds": [
+            "template-marketing-webapp-nextjs/shared-ui/avatar",
+            "template-marketing-webapp-nextjs/shared-ui/ctf-footer",
+            "template-marketing-webapp-nextjs/shared-ui/ctf-mobile-menu",
+            "template-marketing-webapp-nextjs/shared-ui/ctf-navigation",
+            "template-marketing-webapp-nextjs/shared-ui/LanguageSelector",
+            "template-marketing-webapp-nextjs/shared-ui/category-link.generated",
+            "template-marketing-webapp-nextjs/shared-ui/post-link.generated",
+            "template-marketing-webapp-nextjs/shared-ui/page-link",
+            "template-marketing-webapp-nextjs/shared-ui/link",
+            "template-marketing-webapp-nextjs/shared-ui/header",
+            "template-marketing-webapp-nextjs/shared-ui/layout",
+            "template-marketing-webapp-nextjs/shared-ui/ctf-menuGroup.generated"
+          ],
+          "contextName": "Layout & Navigation",
+          "promoted": false,
+          "sibling": true
+        },
+        {
+          "containerId": "template-marketing-webapp-nextjs/contentful-media",
+          "memberIds": [
+            "template-marketing-webapp-nextjs/shared-ui/ctf-asset",
+            "template-marketing-webapp-nextjs/shared-ui/ctf-image",
+            "template-marketing-webapp-nextjs/shared-ui/ctf-video"
+          ],
+          "contextName": "Contentful Media",
+          "promoted": false,
+          "sibling": true
+        },
+        {
+          "containerId": "template-marketing-webapp-nextjs/business-info-commerce",
+          "memberIds": [
+            "template-marketing-webapp-nextjs/shared-ui/business-info.generated",
+            "template-marketing-webapp-nextjs/shared-ui/ctf-business-info-gql",
+            "template-marketing-webapp-nextjs/shared-ui/ctf-product-feature.generated",
+            "template-marketing-webapp-nextjs/shared-ui/ctf-product-table",
+            "template-marketing-webapp-nextjs/shared-ui/ctf-product",
+            "template-marketing-webapp-nextjs/shared-ui/format-currency"
+          ],
+          "contextName": "Business Info & Commerce",
+          "promoted": false,
+          "sibling": true
+        },
+        {
+          "containerId": "template-marketing-webapp-nextjs/error-handling",
+          "memberIds": [
+            "template-marketing-webapp-nextjs/shared-ui/entry-not-found",
+            "template-marketing-webapp-nextjs/shared-ui/page-error",
+            "template-marketing-webapp-nextjs/shared-ui/page-graphql-error",
+            "template-marketing-webapp-nextjs/shared-ui/error-box",
+            "template-marketing-webapp-nextjs/shared-ui/graphql-error"
+          ],
+          "contextName": "Error Handling",
+          "promoted": false,
+          "sibling": true
+        },
+        {
+          "containerId": "template-marketing-webapp-nextjs/generic-ui-utilities",
+          "memberIds": [
+            "template-marketing-webapp-nextjs/shared-ui/markdown",
+            "template-marketing-webapp-nextjs/shared-ui/section-headlines",
+            "template-marketing-webapp-nextjs/shared-ui/page-container",
+            "template-marketing-webapp-nextjs/shared-ui/contentful-context",
+            "template-marketing-webapp-nextjs/shared-ui/theme"
+          ],
+          "contextName": "Generic UI Utilities",
+          "promoted": false,
+          "sibling": true
+        },
+        {
+          "containerId": "template-marketing-webapp-nextjs/settings-preferences",
+          "memberIds": [
+            "template-marketing-webapp-nextjs/shared-ui/settings-form",
+            "template-marketing-webapp-nextjs/shared-ui/settings"
+          ],
+          "contextName": "Settings & Preferences",
+          "promoted": false,
+          "sibling": true
+        }
+      ],
+      "idRemap": {
+        "template-marketing-webapp-nextjs/shared-ui/author": "template-marketing-webapp-nextjs/contentful-content-blocks/author",
+        "template-marketing-webapp-nextjs/shared-ui/card-leadership": "template-marketing-webapp-nextjs/contentful-content-blocks/card-leadership",
+        "template-marketing-webapp-nextjs/shared-ui/card-person": "template-marketing-webapp-nextjs/contentful-content-blocks/card-person",
+        "template-marketing-webapp-nextjs/shared-ui/ctf-cta": "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-cta",
+        "template-marketing-webapp-nextjs/shared-ui/ctf-duplex": "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-duplex",
+        "template-marketing-webapp-nextjs/shared-ui/ctf-hero-banner": "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-hero-banner",
+        "template-marketing-webapp-nextjs/shared-ui/ctf-info-block": "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-info-block",
+        "template-marketing-webapp-nextjs/shared-ui/ctf-page.generated": "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-page.generated",
+        "template-marketing-webapp-nextjs/shared-ui/ctf-person": "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-person",
+        "template-marketing-webapp-nextjs/shared-ui/ctf-quote": "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-quote",
+        "template-marketing-webapp-nextjs/shared-ui/ctf-richtext": "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-richtext",
+        "template-marketing-webapp-nextjs/shared-ui/ctf-text-block": "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-text-block",
+        "template-marketing-webapp-nextjs/shared-ui/component-resolver": "template-marketing-webapp-nextjs/contentful-content-blocks/component-resolver",
+        "template-marketing-webapp-nextjs/shared-ui/ctf-componentMap.generated": "template-marketing-webapp-nextjs/contentful-content-blocks/ctf-componentMap.generated",
+        "template-marketing-webapp-nextjs/shared-ui/avatar": "template-marketing-webapp-nextjs/layout-navigation/avatar",
+        "template-marketing-webapp-nextjs/shared-ui/ctf-footer": "template-marketing-webapp-nextjs/layout-navigation/ctf-footer",
+        "template-marketing-webapp-nextjs/shared-ui/ctf-mobile-menu": "template-marketing-webapp-nextjs/layout-navigation/ctf-mobile-menu",
+        "template-marketing-webapp-nextjs/shared-ui/ctf-navigation": "template-marketing-webapp-nextjs/layout-navigation/ctf-navigation",
+        "template-marketing-webapp-nextjs/shared-ui/LanguageSelector": "template-marketing-webapp-nextjs/layout-navigation/LanguageSelector",
+        "template-marketing-webapp-nextjs/shared-ui/category-link.generated": "template-marketing-webapp-nextjs/layout-navigation/category-link.generated",
+        "template-marketing-webapp-nextjs/shared-ui/post-link.generated": "template-marketing-webapp-nextjs/layout-navigation/post-link.generated",
+        "template-marketing-webapp-nextjs/shared-ui/page-link": "template-marketing-webapp-nextjs/layout-navigation/page-link",
+        "template-marketing-webapp-nextjs/shared-ui/link": "template-marketing-webapp-nextjs/layout-navigation/link",
+        "template-marketing-webapp-nextjs/shared-ui/header": "template-marketing-webapp-nextjs/layout-navigation/header",
+        "template-marketing-webapp-nextjs/shared-ui/layout": "template-marketing-webapp-nextjs/layout-navigation/layout",
+        "template-marketing-webapp-nextjs/shared-ui/ctf-menuGroup.generated": "template-marketing-webapp-nextjs/layout-navigation/ctf-menuGroup.generated",
+        "template-marketing-webapp-nextjs/shared-ui/ctf-asset": "template-marketing-webapp-nextjs/contentful-media/ctf-asset",
+        "template-marketing-webapp-nextjs/shared-ui/ctf-image": "template-marketing-webapp-nextjs/contentful-media/ctf-image",
+        "template-marketing-webapp-nextjs/shared-ui/ctf-video": "template-marketing-webapp-nextjs/contentful-media/ctf-video",
+        "template-marketing-webapp-nextjs/shared-ui/business-info.generated": "template-marketing-webapp-nextjs/business-info-commerce/business-info.generated",
+        "template-marketing-webapp-nextjs/shared-ui/ctf-business-info-gql": "template-marketing-webapp-nextjs/business-info-commerce/ctf-business-info-gql",
+        "template-marketing-webapp-nextjs/shared-ui/ctf-product-feature.generated": "template-marketing-webapp-nextjs/business-info-commerce/ctf-product-feature.generated",
+        "template-marketing-webapp-nextjs/shared-ui/ctf-product-table": "template-marketing-webapp-nextjs/business-info-commerce/ctf-product-table",
+        "template-marketing-webapp-nextjs/shared-ui/ctf-product": "template-marketing-webapp-nextjs/business-info-commerce/ctf-product",
+        "template-marketing-webapp-nextjs/shared-ui/format-currency": "template-marketing-webapp-nextjs/business-info-commerce/format-currency",
+        "template-marketing-webapp-nextjs/shared-ui/entry-not-found": "template-marketing-webapp-nextjs/error-handling/entry-not-found",
+        "template-marketing-webapp-nextjs/shared-ui/page-error": "template-marketing-webapp-nextjs/error-handling/page-error",
+        "template-marketing-webapp-nextjs/shared-ui/page-graphql-error": "template-marketing-webapp-nextjs/error-handling/page-graphql-error",
+        "template-marketing-webapp-nextjs/shared-ui/error-box": "template-marketing-webapp-nextjs/error-handling/error-box",
+        "template-marketing-webapp-nextjs/shared-ui/graphql-error": "template-marketing-webapp-nextjs/error-handling/graphql-error",
+        "template-marketing-webapp-nextjs/shared-ui/markdown": "template-marketing-webapp-nextjs/generic-ui-utilities/markdown",
+        "template-marketing-webapp-nextjs/shared-ui/section-headlines": "template-marketing-webapp-nextjs/generic-ui-utilities/section-headlines",
+        "template-marketing-webapp-nextjs/shared-ui/page-container": "template-marketing-webapp-nextjs/generic-ui-utilities/page-container",
+        "template-marketing-webapp-nextjs/shared-ui/contentful-context": "template-marketing-webapp-nextjs/generic-ui-utilities/contentful-context",
+        "template-marketing-webapp-nextjs/shared-ui/theme": "template-marketing-webapp-nextjs/generic-ui-utilities/theme",
+        "template-marketing-webapp-nextjs/shared-ui/settings-form": "template-marketing-webapp-nextjs/settings-preferences/settings-form",
+        "template-marketing-webapp-nextjs/shared-ui/settings": "template-marketing-webapp-nextjs/settings-preferences/settings"
+      },
+      "dissolvesOriginal": true
+    }
+  ],
+  "actorProposals": [
+    {
+      "type": "External System",
+      "title": "Contentful CMS",
+      "description": "The pervasive \"ctf-\" prefixed components, contentful-context, and graphql-error handling indicate content and business data is fetched from Contentful via GraphQL.",
+      "relationLabel": "Fetches content via GraphQL",
+      "relationKind": "sync"
+    },
+    {
+      "type": "Person",
+      "title": "Site Visitor",
+      "description": "The marketing webapp renders pages, navigation, forms, and language selection intended for an end user browsing the site.",
+      "relationLabel": "Browses the marketing site",
+      "relationKind": "sync"
+    }
+  ]
+}
