@@ -1,6 +1,6 @@
-# ArchViz
+# ArchBrain
 
-ArchViz é um visualizador interativo de arquitetura de nuvem. Ele combina as camadas do
+ArchBrain é um visualizador interativo de arquitetura de nuvem. Ele combina as camadas do
 **modelo C4** (Context → Container → Component) com o **detalhamento de recursos AWS**,
 permitindo navegar ("drill down") entre os níveis de uma arquitetura em um canvas e inspecionar
 a configuração AWS de qualquer recurso selecionado.
@@ -254,13 +254,10 @@ topologias e configurações genuinamente diferentes, então não são mesclados
   Terraform e o código declaram estaticamente.
 - Lambdas apenas em Node/TypeScript.
 
-Para o desenho completo do pipeline (arquitetura, scanners, formato do manifest de
-incrementalidade), veja `docs/superpowers/specs/2026-07-03-okf-repo-scan-design.md`. Para as
-convenções de bundle OKF que o pipeline produz, veja `CLAUDE.md`.
+Para as convenções de bundle OKF que o pipeline produz, veja `CLAUDE.md`.
 
 ## Saiba mais
 
 - [Documentação do Next.js](https://nextjs.org/docs)
 - `CLAUDE.md` — arquitetura interna da aplicação (modelo de dados, pipeline de renderização,
   convenções de bundle OKF, etc.)
-- `docs/superpowers/specs/2026-07-03-okf-repo-scan-design.md` — design do pipeline de scan
