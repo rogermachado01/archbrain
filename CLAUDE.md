@@ -522,6 +522,39 @@ import either way. See `docs/superpowers/specs/2026-07-07-pipeline-visual-flow-d
 for the full design and non-goals (no multiple repo-map configs, no live
 progress streaming during a scan).
 
+## Roadmap: editable flows & wiki with AI-assisted sync
+
+The MVP is read-only ("What this is" above). The next major expansion is manual editing —
+of both the flowchart (nodes/relations) and the OKF wiki markdown — plus an AI-assisted step
+that keeps the two in sync when only one side is edited by hand, without clobbering prior
+manual edits on either side. This is big enough to need its own phased rollout, each phase
+getting its own brainstorming spec (`docs/superpowers/specs/`) and implementation plan, the
+same way the `/pipeline` wizard was built incrementally (see its own commit history / the
+`propose`/`review`/`apply` pattern in `src/lib/pipeline/materialize-review.ts` — that reviewer
+model, where an AI proposal is diffed against and merged with human edits, is the direct
+precedent for the "AI regeneration without losing manual adjustments" requirement below).
+
+Planned phases (order may adjust as earlier phases surface constraints):
+
+1. **Wiki editor** *(in progress — see latest spec in `docs/superpowers/specs/`)* — make
+   `OkfWikiViewer`'s markdown editable in place and add a save path back to the bundle's `.md`
+   files on disk (currently 100% read-only, fetched and rendered via `marked`).
+2. **Persistence/save foundation** — generalize whatever save mechanism the wiki editor phase
+   establishes (write route, conflict handling, git or no) so the flow editor phase can reuse
+   it rather than inventing a second one for `ArchModel` data (JSON sources and/or OKF bundle
+   frontmatter+sections).
+3. **Visual flow editor** — editing nodes/relations directly on the X6 canvas (add, move,
+   reconnect, edit AWS/DDD properties) with save-back to the underlying source (plain JSON file,
+   or OKF bundle markdown/frontmatter — two different serialization targets to reconcile).
+4. **AI-assisted sync/regeneration** — when the user edits only one side (flow or wiki), detect
+   what the other side is now missing/stale and propose a regeneration, merged against existing
+   manual edits rather than overwriting them — conceptually an extension of the existing
+   materialize-review reducer pattern to a bidirectional flow↔wiki diff instead of a one-way
+   code-scan↔bundle diff.
+
+Each phase should update this list (mark done, adjust remaining phases) as it completes, so the
+roadmap doesn't drift from what's actually landed.
+
 ## Working with this user (brainstorming/visual companion)
 
 When using the `superpowers:brainstorming` skill's visual companion in this repo: only open it
